@@ -1,0 +1,65 @@
+items:
+  - id: ceo-fact-2026-03-06-founding-engineer-approved
+    fact: Founding Engineer hire approval was approved and the agent is idle/ready for assignment.
+    source: heartbeat run 22fb65cf-faf7-4fa7-98c7-a3e9d306cb90
+    created_at: 2026-03-06T18:55:28Z
+    last_accessed: 2026-03-06T19:56:30Z
+    access_count: 2
+    status: active
+
+  - id: ceo-fact-2026-03-06-bin3-four-hires-submitted
+    fact: Issue BIN-3 was completed by submitting four hire requests for Marketing Product, Market Research, Code Reviewer, and Logs/Ops.
+    source: issue BIN-3 and heartbeat run 6231170f-3f4a-43df-bcb6-3c66485ecab5
+    created_at: 2026-03-06T19:00:48Z
+    last_accessed: 2026-03-06T19:56:30Z
+    access_count: 2
+    status: active
+
+  - id: ceo-fact-2026-03-06-pending-approvals
+    fact: Four hire approvals are pending board decision (fbdb1308-d94d-4770-bc5e-3a231e3b519c, 19495551-84cc-473f-af45-222c189ac66d, 81036a69-01ab-4484-8d38-1d989bacb6a5, 4954cc67-e96c-4fff-8d38-4e300da5160b).
+    source: approvals linked from BIN-3 completion comment
+    created_at: 2026-03-06T19:00:48Z
+    last_accessed: 2026-03-06T19:56:30Z
+    access_count: 2
+    status: active
+
+  - id: ceo-fact-2026-03-06-assignment-router-market-research
+    fact: CEO assignment-handoff polling reassigned BIN-12, BIN-13, BIN-14, BIN-15, and BIN-16 to Market Research from Assign to directives.
+    source: heartbeat run 64862f59-bfa7-455b-b30c-ac67ccff457a
+    created_at: 2026-03-06T20:00:12Z
+    last_accessed: 2026-03-06T20:06:54Z
+    access_count: 2
+    status: active
+
+  - id: ceo-fact-2026-03-06-assignment-router-marketing-product
+    fact: CEO assignment-handoff polling reassigned BIN-17 to Marketing Product from an Assign to directive.
+    source: heartbeat run 4e071d73-abf8-40e2-a179-1a17415afdc9
+    created_at: 2026-03-06T20:22:06Z
+    last_accessed: 2026-03-06T20:22:06Z
+    access_count: 1
+    status: active
+
+  - id: ceo-fact-2026-03-06-assignment-router-pagination-market-research
+    fact: CEO assignment-handoff polling with pagination fetched all active project issues and reassigned BIN-18, BIN-19, and BIN-20 to Market Research.
+    source: heartbeat run 783e9ad5-6fed-4a87-abb8-868093318aea
+    created_at: 2026-03-06T20:28:01Z
+    last_accessed: 2026-03-06T20:28:01Z
+    access_count: 1
+    status: active
+
+  - id: ceo-fact-2026-03-06-design-hire-submitted
+    fact: Design hire request was submitted from BIN-48 and is pending board approval 21feebee-d73d-45b5-a7e4-593f45bbe0ac.
+    source: heartbeat run c116238e-47bd-4f17-b552-d8e91d34115b and issue BIN-48
+    created_at: 2026-03-06T22:25:33Z
+    last_accessed: 2026-03-06T22:27:44Z
+    access_count: 2
+    status: superseded
+    superseded_by: ceo-fact-2026-03-06-design-hire-approved
+
+  - id: ceo-fact-2026-03-06-design-hire-approved
+    fact: Design hire approval 21feebee-d73d-45b5-a7e4-593f45bbe0ac was approved, agent Design is idle, and BIN-48 was closed done.
+    source: heartbeat run b1bad0f4-ccf5-4d02-8504-cc0e026ad536, approval 21feebee-d73d-45b5-a7e4-593f45bbe0ac, issue BIN-48
+    created_at: 2026-03-06T22:27:44Z
+    last_accessed: 2026-03-06T22:27:44Z
+    access_count: 1
+    status: active
