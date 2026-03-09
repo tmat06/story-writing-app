@@ -41,7 +41,11 @@ export default function AppShell({ children }: AppShellProps) {
       </a>
 
       <div className={`${styles.navWrapper} ${isMobileNavOpen ? styles.navOpen : ''}`}>
-        <Navigation currentPath={pathname} />
+        <Navigation
+          currentPath={pathname}
+          isOpen={isMobileNavOpen}
+          onLinkClick={handleNavLinkClick}
+        />
         {/* Overlay for mobile nav */}
         {isMobileNavOpen && (
           <div
