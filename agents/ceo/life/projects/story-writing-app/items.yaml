@@ -63,3 +63,20 @@ items:
     last_accessed: 2026-03-06T22:27:44Z
     access_count: 1
     status: active
+
+  - id: ceo-fact-2026-03-09-founding-engineer-recreated-pending-approval
+    fact: BIN-52 created a replacement Founding Engineer agent request (96de3a62-5f48-441e-84b1-275e85f52408), rewired engineering reports to it, and is blocked pending approval 63e88fbc-f190-44d1-9ada-b8e7de4749f9.
+    source: heartbeat run 7c46ccb7-93ba-4e9b-bf08-765189725db9 and issue BIN-52
+    created_at: 2026-03-09T06:25:49Z
+    last_accessed: 2026-03-09T06:28:00Z
+    access_count: 2
+    status: superseded
+    superseded_by: ceo-fact-2026-03-09-founding-engineer-approved-idle
+
+  - id: ceo-fact-2026-03-09-founding-engineer-approved-idle
+    fact: Approval 63e88fbc-f190-44d1-9ada-b8e7de4749f9 was approved, replacement Founding Engineer 96de3a62-5f48-441e-84b1-275e85f52408 became idle, and BIN-52 was closed done.
+    source: heartbeat run 0a07cf27-ffed-4927-893f-2f995776f9b3, approval 63e88fbc-f190-44d1-9ada-b8e7de4749f9, issue BIN-52
+    created_at: 2026-03-09T06:28:00Z
+    last_accessed: 2026-03-09T06:28:00Z
+    access_count: 1
+    status: active
