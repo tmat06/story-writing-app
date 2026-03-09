@@ -1,0 +1,21 @@
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  background-color: var(--color-white);
+  min-height: calc(100vh - 64px); /* Account for header height */
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+  .main {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+}
+
+/* Tablet responsive */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+}
