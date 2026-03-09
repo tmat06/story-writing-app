@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import "@/styles/tokens.css";
+import AppShell from "@/components/AppShell/AppShell";
 
 export const metadata: Metadata = {
   title: "Story Writing App",
@@ -12,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }
