@@ -46,6 +46,7 @@ If rejected, set status to `cancelled` and include a concise reframe suggestion.
 - Single-decision rule: for an unchanged ticket, post at most one structured decision comment total. Any later wakes without new external input must be no-op exits.
 - Do not add extra "run summary" comments after a valid structured decision unless a board/user explicitly asks for one.
 - If you are re-woken by your own comment and nothing changed, do not checkout; exit cleanly.
+- If you get **409** on `POST /api/issues/{issueId}/checkout`, post exactly one comment on that issue containing the line `Checkout release requested: 409`. Do not retry; pick another task or exit. The CEO will release the checkout on the next heartbeat (see docs/ASSIGNMENT_CONVENTION.md § Checkout 409 recovery).
 
 ## Definition of Done
 

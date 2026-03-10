@@ -1,0 +1,110 @@
+{
+  "runId": "13fc86c1-9b11-4964-8b40-e0ae7b1de8cf",
+  "outDir": "agents/ceo/tmp/heartbeat_2026-03-10_0537",
+  "projectId": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+  "projectName": "Story Writing App",
+  "paginationPages": 1,
+  "scannedIssues": 18,
+  "reassigned": 2,
+  "alreadyCorrect": 15,
+  "noValidDirective": 1,
+  "invalidTargets": 0,
+  "skippedFailures": 0,
+  "pingPongWarnings": 0,
+  "inbox": {
+    "todo": 0,
+    "in_progress": 0,
+    "blocked": 0
+  },
+  "issueResults": [
+    {
+      "identifier": "BIN-78",
+      "action": "reassigned",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-77",
+      "action": "reassigned",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-73",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-76",
+      "action": "no_directive"
+    },
+    {
+      "identifier": "BIN-71",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-74",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-59",
+      "action": "already_correct",
+      "targetName": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-58",
+      "action": "already_correct",
+      "targetName": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-72",
+      "action": "already_correct",
+      "targetName": "Market Research"
+    },
+    {
+      "identifier": "BIN-60",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-68",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-79",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-75",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-69",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-70",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-66",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-61",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-65",
+      "action": "already_correct",
+      "targetName": "Design"
+    }
+  ]
+}

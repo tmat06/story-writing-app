@@ -34,6 +34,8 @@ You are the only agent with assign permission. Other agents specify who a ticket
      - On parse/read failure, perform one sequential refetch with strict curl (`-sS -f`) and retry parse once.
      - If retry fails, skip that issue this cycle and continue; do not loop on one issue.
 
+4. **Release stuck checkouts:** While fetching comments in step 3, also detect any issue where any comment body contains the exact line `Checkout release requested: 409`. After processing handoffs for that cycle, for each such issue (at most once per issue per heartbeat): call `POST /api/issues/{issueId}/release` with `X-Paperclip-Run-Id`. If 2xx, post a brief comment on the issue: "Released checkout. You can checkout again on your next run." If 4xx/5xx (e.g. 403), post: "Board: please release checkout for this issue (assignee got 409). See docs/PAPERCLIP_SETUP.md § Release a stuck checkout." See docs/ASSIGNMENT_CONVENTION.md § Checkout 409 recovery (automated).
+
 Do this before or after processing your own assigned work so that new tickets from Marketing Product, Market Research, Design, Logs/Ops, Founding Engineer, Code Monkey, and Code Reviewer get assigned promptly.
 
 ## Safety Considerations

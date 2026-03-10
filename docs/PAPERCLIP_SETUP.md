@@ -155,6 +155,36 @@ Codex will pick up assigned tasks on the next heartbeat (or when you trigger a r
 
 ---
 
+## Release a stuck checkout (board)
+
+When a run fails (e.g. rate limit, `process_lost`, timeout) and that run had **checked out** an issue, the issue stays locked. The assignee will get **409 Conflict** on their next checkout and cannot continue until the checkout is released.
+
+**Automated flow:** Agents are instructed to post a comment containing `Checkout release requested: 409` when they get 409 on checkout. The CEO, on each heartbeat, scans for that phrase and calls `POST /api/issues/{issueId}/release` for those issues. If the CEO has permission to release, the checkout is cleared automatically and the assignee can continue on their next run. If the API returns 403 (or similar), the CEO posts a comment asking the board to release manually (options below).
+
+**When to do this:** You see a failed run for an issue (e.g. "Process lost" or "Transcript (0)") and the same issue is still assigned to an agent who should keep working on it. On the agent's next heartbeat they will try to checkout and get 409.
+
+**Option 1 – Paperclip UI**
+
+- Open the issue in the Paperclip UI.
+- If there is a **Release**, **Unlock**, or **Release checkout** action (on the issue or in a run/activity menu), use it. That clears the checkout; the issue remains assigned so the agent can checkout again on their next run.
+
+**Option 2 – API**
+
+- Call the release endpoint with your Paperclip authentication (same auth you use for the UI, e.g. session cookie or API key):
+
+  ```http
+  POST {PAPERCLIP_API_URL}/api/issues/{issueId}/release
+  Authorization: Bearer <your-token>
+  ```
+
+  Use the issue's **id** or **identifier** as `{issueId}` (e.g. the value from the issue URL, such as `BIN-61` or the internal id if the API expects it). Base URL is typically `http://localhost:3100` when running Paperclip locally.
+
+- No request body is required. After a successful response, the issue is no longer checked out; leave it in `todo` or `in_progress` and assigned to the same agent so they can checkout again on their next heartbeat.
+
+**After release:** Ensure the issue status is `todo` or `in_progress` (not `backlog`) so it appears in the assignee's inbox. Then let normal heartbeats run; see **docs/ASSIGNMENT_CONVENTION.md** (§ After rate limit or process loss) for the full recovery flow.
+
+---
+
 ## Troubleshooting
 
 - **“codex not found” when Paperclip runs the agent**  

@@ -2,21 +2,20 @@
 approve
 
 ## Differentiation thesis
-This feature should be approved because it can differentiate on **workflow speed inside drafting**, not just data modeling: scene context (POV/location/timeframe) is visible and editable where writing happens, and filter combinations let writers resolve continuity questions without leaving the manuscript flow. That is a better experience than forcing writers into separate planning/worldbuilding surfaces.
+This feature strengthens a core wedge: continuity-safe drafting without forcing writers out of flow. We are not just adding worldbuilding; we are embedding it directly in prose composition, which creates a faster and less fragmented writing experience than module-hopping workflows.
 
 ## Competitor evidence
-- Living Writer emphasizes structure, scenes, and planning boards (including scene/location plot points), which shows metadata-driven organization is expected baseline behavior: https://guides.livingwriter.com/product-documentation/boards/planning-board/freeform-grid and https://guides.livingwriter.com/product-documentation/boards/planning-board/standard-grid
-- Living Writer navigation focus (tabbed chapters) indicates fast movement across manuscript is a core competitive axis; our filterable navigator can outperform by adding context-aware retrieval, not only tab switching: https://guides.livingwriter.com/product-documentation/tabbed-viewing
-- Campfire’s positioning is module-heavy worldbuilding (encyclopedia/locations/magic/species), which is powerful but can push users into parallel panels; we can stand out with lighter, inline context controls while drafting: https://campfirewriting.com/worldbuilding-tools
-- Dabble links scene cards and plot points to manuscript workflow, reinforcing that context + scene-level retrieval is market-proven value: https://help.dabblewriter.com/en/articles/2692382-exploring-dabble-s-plot-grid
+- Campfire positions world context through dedicated modules and tagged sidebar notes rather than a primary inline mention workflow in the manuscript editor ("Encylopedia module" + "notes sidebar" patterns): https://www.campfirewriting.com/
+- LivingWriter emphasizes structure tools (plot board, story organization) and separate story elements management in its public materials; I did not find a clearly marketed inline entity-chip + quick-peek drafting loop in these references: https://guides.livingwriter.com/product-updates/new-plot-board and https://livingwriter.com/blog/story-elements-the-complete-guide-for-fiction-writers/
+- Inkitt’s writer-facing proposition is centered on audience growth/reader ecosystem, not deep in-editor worldbuilding linkage, which leaves room for us to differentiate on drafting continuity UX: https://writers.inkitt.com/
 
 ## Risks / trade-offs
-- Free-text metadata can fragment values (e.g., “NYC” vs “New York”), weakening filters unless lightweight normalization/suggestions are included.
-- Added header metadata could increase visual noise if not carefully designed for focus mode.
-- If filter UX is slow or hidden, this devolves into parity instead of differentiation.
+- Chip-heavy text can add visual noise and reduce reading flow if styling is too prominent.
+- Broken or renamed entities can create trust issues unless link behavior is predictable.
+- Export/import compatibility can regress if mention fallback rules are not strict.
 
 ## Recommendation
-Proceed, but keep the differentiator explicit in Design brief: prioritize **single-glance context + one-step filtering** in the drafting flow, and include lightweight value suggestions to reduce metadata drift.
+Approve with design constraints that preserve writing flow: subtle chip styling, keyboard-first insertion, non-blocking hover peek, and deterministic fallback text behavior on delete/export.
 
 ## Handoff
 Assign to: Design

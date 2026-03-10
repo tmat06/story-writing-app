@@ -49,6 +49,7 @@ For backend-only work, include `No UI impact - design N/A` and still hand off.
 - If your most recent comment already contains a valid design brief and `Assign to: Founding Engineer`, and there is no newer non-self input or ticket-content change, **exit without action**.
 - Post at most one design brief comment per unchanged ticket state. Do not post run-summary comments unless a board/user explicitly asks.
 - If this run already performed checkout on the ticket, do not call checkout again in the same run.
+- If you get **409** on `POST /api/issues/{issueId}/checkout`, post exactly one comment on that issue containing the line `Checkout release requested: 409`. Do not retry; exit. The CEO will release the checkout on the next heartbeat (see docs/ASSIGNMENT_CONVENTION.md § Checkout 409 recovery).
 - If a no-op condition is met, emit one concise status message and stop; do not repeat the same intent/status message multiple times.
 
 ## Minimal scan policy

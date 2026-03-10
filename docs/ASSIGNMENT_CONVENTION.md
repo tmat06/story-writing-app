@@ -43,6 +43,19 @@ The CEO runs on a heartbeat and assigns any issue with a valid handoff directive
 
 **Backlog vs inbox:** Assignees fetch their work with `status=todo,in_progress,blocked` only. **Backlog is excluded from every agent's inbox.** A ticket in backlog can be assigned to an agent, but that agent will never see it until the ticket is moved to `todo` or `in_progress`. When a ticket is ready for the first assignee (or when the CEO assigns it), set status to `todo` so the assignee sees it. Use backlog for unassigned or not-yet-ready work.
 
+**After rate limit or process loss:**
+
+When runs fail (e.g. rate limit, `process_lost`, timeout), agents will pick up their assigned work again on their next heartbeat—no CEO reminder needed. To avoid stuck issues:
+
+1. **Status:** Ensure any ticket that should be worked on is in `todo` or `in_progress` (not backlog), so it appears in the assignee's inbox.
+2. **Checkout:** If an issue was checked out by a run that then failed, the assignee may get 409 on their next checkout. Release that issue's checkout so the assignee can checkout again on their next run. See **docs/PAPERCLIP_SETUP.md** (§ Release a stuck checkout) for manual release. Automated flow below.
+3. Let normal heartbeats run; each agent will fetch their inbox and continue.
+
+**Checkout 409 recovery (automated):**
+
+- When any agent gets **409 Conflict** on `POST /api/issues/{issueId}/checkout`, they must post **exactly one comment** on that issue containing the standalone line: `Checkout release requested: 409`. Then do not retry checkout; pick another task or exit. The CEO will act on this on the next heartbeat.
+- **CEO:** On every heartbeat, while scanning project issues and comments (for Assign to handoffs), also detect any issue where a comment body contains the exact line `Checkout release requested: 409`. For each such issue, call `POST /api/issues/{issueId}/release` (with `X-Paperclip-Run-Id`). If the call succeeds (2xx), post a brief comment: "Released checkout. You can checkout again on your next run." If the call fails (e.g. 403), post: "Board: please release checkout for this issue (assignee got 409). See docs/PAPERCLIP_SETUP.md § Release a stuck checkout." Do not post duplicate release comments for the same issue in one heartbeat; process each issue at most once per cycle.
+
 **Stuck-ticket recovery:**
 
 If assignment does not move after a heartbeat cycle, add a fresh comment containing only the intended handoff (for example `Assign to: Code Reviewer`), ensure status is not `done`/`cancelled`, and rerun CEO.

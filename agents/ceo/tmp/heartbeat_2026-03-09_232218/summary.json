@@ -1,0 +1,122 @@
+{
+  "ok": true,
+  "outDir": "agents/ceo/tmp/heartbeat_2026-03-09_232218",
+  "phase": "complete",
+  "agentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+  "projectId": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+  "projectName": "Story Writing App",
+  "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+  "issuesScanned": 18,
+  "reassigned": 3,
+  "alreadyCorrect": 14,
+  "noDirective": 1,
+  "invalidTarget": 0,
+  "skippedError": 0,
+  "pingPongClarifications": 0,
+  "inboxCounts": {
+    "todo": 0,
+    "in_progress": 0,
+    "blocked": 0
+  },
+  "inbox": [],
+  "details": [
+    {
+      "identifier": "BIN-78",
+      "result": "reassigned",
+      "target": "Market Research",
+      "source": "comment",
+      "directiveAt": "2026-03-10T05:15:43.716Z",
+      "directiveId": "9041883d-6b93-48a9-bb45-c8e4797033de"
+    },
+    {
+      "identifier": "BIN-77",
+      "result": "reassigned",
+      "target": "Market Research",
+      "source": "comment",
+      "directiveAt": "2026-03-10T05:15:43.705Z",
+      "directiveId": "94086fd3-73ad-4205-a089-4fa3834f6c34"
+    },
+    {
+      "identifier": "BIN-73",
+      "result": "already_correct",
+      "target": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-76",
+      "result": "no_directive"
+    },
+    {
+      "identifier": "BIN-71",
+      "result": "already_correct",
+      "target": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-74",
+      "result": "already_correct",
+      "target": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-59",
+      "result": "already_correct",
+      "target": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-58",
+      "result": "already_correct",
+      "target": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-72",
+      "result": "already_correct",
+      "target": "Market Research"
+    },
+    {
+      "identifier": "BIN-60",
+      "result": "already_correct",
+      "target": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-68",
+      "result": "already_correct",
+      "target": "Design"
+    },
+    {
+      "identifier": "BIN-79",
+      "result": "reassigned",
+      "target": "Market Research",
+      "source": "comment",
+      "directiveAt": "2026-03-10T05:15:43.730Z",
+      "directiveId": "2c688dee-bfb7-4352-a997-16d7ac59e741"
+    },
+    {
+      "identifier": "BIN-75",
+      "result": "already_correct",
+      "target": "Design"
+    },
+    {
+      "identifier": "BIN-69",
+      "result": "already_correct",
+      "target": "Design"
+    },
+    {
+      "identifier": "BIN-70",
+      "result": "already_correct",
+      "target": "Design"
+    },
+    {
+      "identifier": "BIN-66",
+      "result": "already_correct",
+      "target": "Design"
+    },
+    {
+      "identifier": "BIN-61",
+      "result": "already_correct",
+      "target": "Design"
+    },
+    {
+      "identifier": "BIN-65",
+      "result": "already_correct",
+      "target": "Design"
+    }
+  ]
+}
