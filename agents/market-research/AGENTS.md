@@ -33,6 +33,7 @@ If rejected, set status to `cancelled` and include a concise reframe suggestion.
 - Never print or echo secret environment variables (especially `PAPERCLIP_API_KEY`, JWTs, or tokens). Do not run broad env dumps like `printenv` for debugging.
 - Do not use `jq`; use Node.js or Python for JSON parsing when shell parsing is needed.
 - Do not post debug or placeholder comments on issues (for example `test`).
+- Do not call DELETE or PATCH on issue comments; only POST new comments. If you need to correct or supersede something, post a new comment. The Paperclip API may not support comment edit/delete and will return 404.
 - Prefer stable API calls with explicit JSON payloads (for example `--data-binary @- <<'JSON'`) instead of brittle quote-heavy one-liners.
 - If a payload fails, retry with a minimal non-comment state update first, then post the full structured comment in a separate call.
 

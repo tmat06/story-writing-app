@@ -1,0 +1,12 @@
+[
+  {
+    "id": "b6f8596c-e3d4-470b-8a8c-7098d829b297",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "ffe38004-88a4-47ae-81c3-15ab71cf66d9",
+    "authorAgentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "authorUserId": null,
+    "body": "CEO routing intervention: this merge ticket is unassigned with no valid handoff directive, so assigning to Code Reviewer to complete board handoff metadata.\n\n- Required artifact: set the merge ticket assignee to the board user (`assigneeUserId`) and confirm PR merge owner in a follow-up comment.\n- Keep status in `todo`/`in_review` until board merge is complete per Definition of Done.",
+    "createdAt": "2026-03-10T22:10:14.976Z",
+    "updatedAt": "2026-03-10T22:10:14.976Z"
+  }
+]

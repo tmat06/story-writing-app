@@ -1,0 +1,197 @@
+{
+  "runId": "ef12b84a-8232-46e9-b701-317d3d59feeb",
+  "outDir": "agents/ceo/tmp/heartbeat_2026-03-10_2146",
+  "projectId": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+  "projectName": "Story Writing App",
+  "pages": {
+    "projects": 1,
+    "agents": 1,
+    "issues": 1
+  },
+  "scannedIssues": 31,
+  "reassigned": 1,
+  "alreadyCorrect": 28,
+  "noValidDirective": 0,
+  "invalidTargets": 0,
+  "skippedFailures": 0,
+  "pingPongWarnings": 0,
+  "checkout409Candidates": 2,
+  "checkout409Recovered": 2,
+  "checkout409RecoveryFailed": 0,
+  "checkout409SkippedNoDirective": 0,
+  "checkout409SkippedInvalidTarget": 0,
+  "inbox": {
+    "todo": 0,
+    "in_progress": 0,
+    "blocked": 0
+  },
+  "issueResults": [
+    {
+      "identifier": "BIN-101",
+      "action": "reassigned",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-100",
+      "action": "skip_assign_checkout_409"
+    },
+    {
+      "identifier": "BIN-73",
+      "action": "already_correct",
+      "targetName": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-97",
+      "action": "already_correct",
+      "targetName": "Market Research"
+    },
+    {
+      "identifier": "BIN-98",
+      "action": "already_correct",
+      "targetName": "Market Research"
+    },
+    {
+      "identifier": "BIN-87",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-92",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-84",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-83",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-72",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-58",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-74",
+      "action": "already_correct",
+      "targetName": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-60",
+      "action": "already_correct",
+      "targetName": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-71",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-68",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-77",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-78",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-102",
+      "action": "skip_assign_checkout_409"
+    },
+    {
+      "identifier": "BIN-96",
+      "action": "already_correct",
+      "targetName": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-99",
+      "action": "already_correct",
+      "targetName": "Market Research"
+    },
+    {
+      "identifier": "BIN-93",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-94",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-95",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-85",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-65",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-66",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-61",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-70",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-79",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-75",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-69",
+      "action": "already_correct",
+      "targetName": "Design"
+    }
+  ],
+  "releaseResults": [
+    {
+      "identifier": "BIN-100",
+      "action": "recovered_clone_cancel",
+      "newIssueIdentifier": "BIN-103",
+      "reassignedTo": "Design"
+    },
+    {
+      "identifier": "BIN-102",
+      "action": "recovered_clone_cancel",
+      "newIssueIdentifier": "BIN-104",
+      "reassignedTo": "Design"
+    }
+  ]
+}

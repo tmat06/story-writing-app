@@ -221,6 +221,9 @@ When a run fails (e.g. rate limit, `process_lost`, timeout) and that run had **c
 - **CODEX_HOME**  
   Set `export CODEX_HOME="$HOME/.codex"` (and add to `~/.zshrc` if you want) so Paperclip and Codex both use the same skills directory.
 
+- **`curl: (3) URL rejected: No host part in the URL`**  
+  The agent is calling the Paperclip API with an empty or relative URL. **Cause:** `PAPERCLIP_API_URL` is not set (or is empty) in the run environment when Paperclip starts the agent. The adapter must inject the full base URL (e.g. `http://localhost:3100`) so the agent can build URLs like `${PAPERCLIP_API_URL}/api/agents/me`. Fix: In Paperclip, check the agent’s adapter config and the run/env payload; ensure the control-plane URL is passed as `PAPERCLIP_API_URL` for every run (including `issue_assigned` and other wake reasons). If you use `paperclipai agent local-cli`, confirm the printed env includes `PAPERCLIP_API_URL`.
+
 - **Code Monkey / agent: git push fails (`could not read Username for 'https://github.com'`)**  
   The agent runs in a process started by Paperclip. That process often doesn’t have your SSH agent or GitHub credentials. Use one of the following.
 

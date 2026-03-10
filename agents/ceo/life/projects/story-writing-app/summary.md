@@ -10,3 +10,4 @@ Current state (2026-03-06):
 
 Update (2026-03-10):
 - Replacement-agent approvals for Code Monkey, Founding Engineer, and Code Reviewer were approved and their blocked tickets (`BIN-53`, `BIN-54`, `BIN-55`) were closed done.
+- CEO routing remains active across all non-terminal statuses; latest cycle reassigned `BIN-101` to `Design` and recovered stuck checkout tickets by superseding `BIN-100`/`BIN-102` with `BIN-103`/`BIN-104`.

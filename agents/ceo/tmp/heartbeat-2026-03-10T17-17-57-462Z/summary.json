@@ -1,0 +1,34 @@
+{
+  "runId": "e584aacf-5602-43b9-bdc0-21c5f4442a26",
+  "generatedAt": "2026-03-10T17:17:57.462Z",
+  "outDir": "/Users/tim/code/story-writing-app/agents/ceo/tmp/heartbeat-2026-03-10T17-17-57-462Z",
+  "summary": {
+    "projectId": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+    "projectName": "Story Writing App",
+    "totalIssuesScanned": 22,
+    "reassigned": 0,
+    "skippedAlreadyCorrect": 22,
+    "noValidDirective": 0,
+    "invalidDirective": 0,
+    "commentDirectiveWins": 19,
+    "descriptionDirectiveUsed": 3,
+    "releasesAttempted": 2,
+    "releasesSucceeded": 0,
+    "releasesFailed": 2,
+    "releaseIssueIds": [],
+    "assignmentChanges": [],
+    "failures": [
+      {
+        "issue": "BIN-88",
+        "stage": "release",
+        "error": "HTTP 409 for issue_BIN-88_release"
+      },
+      {
+        "issue": "BIN-89",
+        "stage": "release",
+        "error": "HTTP 409 for issue_BIN-89_release"
+      }
+    ]
+  },
+  "inbox": []
+}

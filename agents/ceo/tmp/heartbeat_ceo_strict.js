@@ -247,33 +247,6 @@ function pingPongArtifact(issue, comments) {
   return 'plan revision';
 }
 
-function formatCommentContext(comment, agentsById) {
-  let label = '[User]';
-  if (comment.authorAgentId && agentsById.has(comment.authorAgentId)) {
-    label = `[${agentsById.get(comment.authorAgentId).name}]`;
-  }
-  const body = String(comment.body || '').trimEnd();
-  return `${label}:\n${body}`;
-}
-
-function buildRecoveryDescription(issue, comments, agentsById, boardCommentBody) {
-  const blocks = [];
-  const base = String(issue.description || '').trimEnd();
-  if (base) blocks.push(base);
-  blocks.push('---');
-  blocks.push('## Context from previous issue');
-
-  const ordered = [...comments].sort((a, b) => {
-    const ta = String(a.createdAt || '');
-    const tb = String(b.createdAt || '');
-    if (ta !== tb) return ta.localeCompare(tb);
-    return String(a.id || '').localeCompare(String(b.id || ''));
-  });
-  ordered.forEach((c) => blocks.push(formatCommentContext(c, agentsById)));
-  blocks.push(`[CEO]:\n${boardCommentBody}`);
-  return `${blocks.join('\n\n')}\n`;
-}
-
 (async () => {
   const summary = {
     runId,
@@ -291,9 +264,11 @@ function buildRecoveryDescription(issue, comments, agentsById, boardCommentBody)
     checkout409Candidates: 0,
     checkout409Recovered: 0,
     checkout409RecoveryFailed: 0,
+    checkout409SkippedNoDirective: 0,
+    checkout409SkippedInvalidTarget: 0,
     inbox: { todo: 0, in_progress: 0, blocked: 0 },
     issueResults: [],
-    recoveryResults: [],
+    releaseResults: [],
   };
 
   const meRes = await requestJson({ name: 'agents_me', url: `${apiUrl}/api/agents/me` });
@@ -387,6 +362,11 @@ function buildRecoveryDescription(issue, comments, agentsById, boardCommentBody)
       if (hasCheckoutReleaseRequested409(c.body || '')) stuckIssueIds.add(issue.id);
     });
 
+    if (stuckIssueIds.has(issue.id)) {
+      summary.issueResults.push({ identifier: issue.identifier, action: 'skip_assign_checkout_409' });
+      continue;
+    }
+
     const selected = selectLatestDirective(issue, comments);
     if (!selected) {
       summary.noValidDirective += 1;
@@ -441,110 +421,142 @@ function buildRecoveryDescription(issue, comments, agentsById, boardCommentBody)
   summary.checkout409Candidates = stuckIssueIds.size;
   const recoveryBoardComment =
     'Board: please release checkout for this issue (assignee got 409). See docs/PAPERCLIP_SETUP.md § Release a stuck checkout.';
+  const recoveryNewComment = 'Recovery ticket; previous issue stuck (checkout 409) and cancelled.';
 
   for (const issueId of stuckIssueIds) {
-    const oldIssue = issueById.get(issueId);
-    const comments = commentsByIssueId.get(issueId) || [];
-    if (!oldIssue) {
+    const issue = issueById.get(issueId);
+    if (!issue) {
       summary.checkout409RecoveryFailed += 1;
-      summary.recoveryResults.push({ issueId, action: 'skip_missing_issue' });
+      summary.releaseResults.push({ issueId, action: 'skip_missing_issue' });
+      continue;
+    }
+
+    const comments = commentsByIssueId.get(issue.id) || [];
+    const selected = selectLatestDirective(issue, comments);
+    if (!selected) {
+      summary.checkout409SkippedNoDirective += 1;
+      summary.checkout409RecoveryFailed += 1;
+      summary.releaseResults.push({
+        identifier: issue.identifier,
+        action: 'recovery_skipped_no_directive',
+      });
+      continue;
+    }
+    const targetName = stripBracketsAndTrim(selected.targetName);
+    const target = activeAgentByName.get(targetName);
+    if (!target) {
+      summary.checkout409SkippedInvalidTarget += 1;
+      summary.checkout409RecoveryFailed += 1;
+      summary.releaseResults.push({
+        identifier: issue.identifier,
+        action: 'recovery_skipped_invalid_target',
+        targetName,
+      });
       continue;
     }
 
     const boardCommentRes = await requestJson({
-      name: `recovery_board_comment_${oldIssue.identifier || oldIssue.id}`,
-      url: `${apiUrl}/api/issues/${oldIssue.id}/comments`,
+      name: `recovery_board_comment_${issue.identifier || issue.id}`,
+      url: `${apiUrl}/api/issues/${issue.id}/comments`,
       method: 'POST',
       body: { body: recoveryBoardComment },
       mutate: true,
     });
     if (!boardCommentRes.ok) {
       summary.checkout409RecoveryFailed += 1;
-      summary.recoveryResults.push({
-        identifier: oldIssue.identifier,
-        action: 'failed_board_comment',
+      summary.releaseResults.push({
+        identifier: issue.identifier,
+        action: 'recovery_failed_board_comment',
         error: boardCommentRes.error,
       });
       continue;
     }
 
     const cancelRes = await requestJson({
-      name: `recovery_cancel_${oldIssue.identifier || oldIssue.id}`,
-      url: `${apiUrl}/api/issues/${oldIssue.id}`,
+      name: `recovery_cancel_${issue.identifier || issue.id}`,
+      url: `${apiUrl}/api/issues/${issue.id}`,
       method: 'PATCH',
       body: { status: 'cancelled', assigneeAgentId: null },
       mutate: true,
     });
     if (!cancelRes.ok) {
       summary.checkout409RecoveryFailed += 1;
-      summary.recoveryResults.push({
-        identifier: oldIssue.identifier,
-        action: 'failed_cancel',
+      summary.releaseResults.push({
+        identifier: issue.identifier,
+        action: 'recovery_failed_cancel',
         error: cancelRes.error,
       });
       continue;
     }
 
-    const selected = selectLatestDirective(oldIssue, comments);
-    const targetName = selected ? stripBracketsAndTrim(selected.targetName) : '';
-    const targetAgent = targetName ? activeAgentByName.get(targetName) : null;
+    const renderedComments = comments
+      .slice()
+      .sort((a, b) => {
+        const ac = String(a.createdAt || '');
+        const bc = String(b.createdAt || '');
+        if (ac !== bc) return ac.localeCompare(bc);
+        return String(a.id || '').localeCompare(String(b.id || ''));
+      })
+      .map((c) => {
+        const agentName = c.authorAgentId && agentsById.get(c.authorAgentId)
+          ? (agentsById.get(c.authorAgentId).name || 'Agent')
+          : null;
+        const authorLabel = agentName ? `[${agentName}]` : '[User]';
+        return `${authorLabel}:\n${String(c.body || '')}`;
+      })
+      .join('\n\n');
+    const newDescription = `${String(issue.description || '')}\n\n---\n\nRecovered from ${issue.identifier || issue.id} after checkout 409.\n\n${renderedComments}`;
 
     const createRes = await requestJson({
-      name: `recovery_create_${oldIssue.identifier || oldIssue.id}`,
+      name: `recovery_create_${issue.identifier || issue.id}`,
       url: `${apiUrl}/api/companies/${companyId}/issues`,
       method: 'POST',
       body: {
-        projectId: oldIssue.projectId,
-        goalId: oldIssue.goalId || null,
-        parentId: oldIssue.parentId || null,
-        title: oldIssue.title,
-        description: buildRecoveryDescription(oldIssue, comments, agentsById, recoveryBoardComment),
+        title: issue.title,
+        description: newDescription,
+        projectId: issue.projectId,
+        goalId: issue.goalId || null,
+        parentId: issue.parentId || null,
         status: 'todo',
-        assigneeAgentId: targetAgent ? targetAgent.id : null,
-        priority: oldIssue.priority || 'medium',
+        assigneeAgentId: target.id,
       },
       mutate: true,
     });
     if (!createRes.ok) {
       summary.checkout409RecoveryFailed += 1;
-      summary.recoveryResults.push({
-        identifier: oldIssue.identifier,
-        action: 'failed_create_replacement',
-        targetName: targetName || null,
+      summary.releaseResults.push({
+        identifier: issue.identifier,
+        action: 'recovery_failed_create',
         error: createRes.error,
       });
       continue;
     }
-
     const newIssue = createRes.data || {};
-    const supersedeRes = await requestJson({
-      name: `recovery_superseded_comment_${oldIssue.identifier || oldIssue.id}`,
-      url: `${apiUrl}/api/issues/${oldIssue.id}/comments`,
+
+    const oldSupersedeRes = await requestJson({
+      name: `recovery_old_superseded_${issue.identifier || issue.id}`,
+      url: `${apiUrl}/api/issues/${issue.id}/comments`,
       method: 'POST',
       body: { body: `Superseded by ${newIssue.identifier || newIssue.id}.` },
       mutate: true,
     });
-    if (!supersedeRes.ok) summary.skippedFailures += 1;
+    if (!oldSupersedeRes.ok) summary.skippedFailures += 1;
 
-    if (newIssue.id) {
-      const newInfoRes = await requestJson({
-        name: `recovery_new_info_comment_${newIssue.identifier || newIssue.id}`,
-        url: `${apiUrl}/api/issues/${newIssue.id}/comments`,
-        method: 'POST',
-        body: {
-          body: `Recovery ticket; previous ${oldIssue.identifier || oldIssue.id} stuck (checkout 409) and cancelled.`,
-        },
-        mutate: true,
-      });
-      if (!newInfoRes.ok) summary.skippedFailures += 1;
-    }
+    const newTicketCommentRes = await requestJson({
+      name: `recovery_new_comment_${issue.identifier || issue.id}`,
+      url: `${apiUrl}/api/issues/${newIssue.id}/comments`,
+      method: 'POST',
+      body: { body: `${recoveryNewComment} Previous: ${issue.identifier || issue.id}.` },
+      mutate: true,
+    });
+    if (!newTicketCommentRes.ok) summary.skippedFailures += 1;
 
     summary.checkout409Recovered += 1;
-    summary.recoveryResults.push({
-      oldIdentifier: oldIssue.identifier,
-      newIdentifier: newIssue.identifier || newIssue.id,
-      targetName: targetAgent ? targetAgent.name : null,
-      action: 'recovered_clone_and_cancel',
+    summary.releaseResults.push({
+      identifier: issue.identifier,
+      action: 'recovered_clone_cancel',
+      newIssueIdentifier: newIssue.identifier || null,
+      reassignedTo: target.name,
     });
   }
 

@@ -1,0 +1,21 @@
+{
+  "projectId": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+  "projectName": "Story Writing App",
+  "scannedIssues": 30,
+  "issuePages": 1,
+  "commentPages": 30,
+  "reassigned": 0,
+  "alreadyCorrect": 30,
+  "noValidDirective": 0,
+  "invalidTargets": 0,
+  "skippedFailures": 0,
+  "skipped409InAssign": 0,
+  "recoveryCandidates": 0,
+  "recoveredIssues": 0,
+  "recoveryFailures": 0,
+  "inbox": {
+    "in_progress": 0,
+    "todo": 0,
+    "blocked": 0
+  }
+}

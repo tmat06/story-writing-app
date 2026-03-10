@@ -1,0 +1,40 @@
+{
+  "project": {
+    "id": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+    "name": "Story Writing App"
+  },
+  "scannedIssueCount": 25,
+  "routing": {
+    "reassigned": 1,
+    "alreadyCorrect": 24,
+    "skippedNoValidDirectiveOrNoAgentMatch": 0,
+    "parseSkippedIssues": 0
+  },
+  "release": {
+    "candidates": 4,
+    "results": [
+      {
+        "issueId": "d71e4fde-03f0-46a0-a936-17db99ccb039",
+        "result": "release_failed_409"
+      },
+      {
+        "issueId": "5c8384db-a5e8-43c0-991e-2cea39f07ac7",
+        "result": "release_failed_409"
+      },
+      {
+        "issueId": "42de9512-a79c-44aa-a5ec-29aad57d85ff",
+        "result": "release_failed_409"
+      },
+      {
+        "issueId": "59cea3a0-35c0-440a-b152-8bcd5c50e534",
+        "result": "release_failed_409"
+      }
+    ]
+  },
+  "pingPongDetected": [],
+  "inbox": {
+    "count": 0,
+    "issues": []
+  },
+  "outputDir": "/Users/tim/code/story-writing-app/agents/ceo/tmp/heartbeat/1773166298190-c329be57"
+}
