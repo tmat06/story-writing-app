@@ -123,6 +123,27 @@
   }
 }
 
+/* Corkboard layout */
+.corkboardLayout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--color-white);
+}
+
+.corkboardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-bottom: var(--border-width) solid var(--color-fashion-300);
+  background-color: var(--color-white);
+}
+
+.corkboardHeader .titleInput {
+  flex: 1;
+}
+
 @media (max-width: 767px) {
   .page {
     margin: calc(var(--spacing-lg) * -1) calc(var(--spacing-md) * -1);
@@ -130,6 +151,13 @@
 
   .editorHeader {
     padding: var(--spacing-md);
+  }
+
+  .corkboardHeader {
+    padding: var(--spacing-md);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
   }
 
   .titleInput {

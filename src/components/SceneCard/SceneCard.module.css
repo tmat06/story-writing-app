@@ -1,0 +1,109 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-elephant-500);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.dragging {
+  opacity: 0.5;
+  box-shadow: var(--shadow-lg);
+  cursor: grabbing;
+}
+
+.dragHandle {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  color: var(--color-cement-400);
+  font-size: var(--font-size-sm);
+  cursor: grab;
+  user-select: none;
+  line-height: 1;
+}
+
+.card:active .dragHandle {
+  cursor: grabbing;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+  line-height: var(--line-height-tight);
+}
+
+.chapter {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  line-height: var(--line-height-normal);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  margin-top: var(--spacing-xs);
+}
+
+.statusSelect {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+  background-color: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.statusSelect:hover {
+  background-color: var(--color-fog-200);
+}
+
+.statusSelect:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 1px;
+}
