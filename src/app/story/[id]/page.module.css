@@ -144,6 +144,15 @@
   flex: 1;
 }
 
+/* Submissions layout */
+.submissionsLayout {
+  height: 100%;
+  background-color: var(--color-white);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 767px) {
   .page {
     margin: calc(var(--spacing-lg) * -1) calc(var(--spacing-md) * -1);

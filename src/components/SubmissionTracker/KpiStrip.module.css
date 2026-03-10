@@ -1,0 +1,45 @@
+.strip {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--color-polar-100);
+  border-bottom: var(--border-width) solid var(--color-fashion-300);
+  overflow-x: auto;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.divider {
+  display: block;
+  width: var(--border-width);
+  height: 1.5rem;
+  background-color: var(--color-fashion-300);
+  margin: 0 var(--spacing-md);
+}
+
+.dl {
+  margin: 0;
+  text-align: center;
+}
+
+.label {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.count {
+  display: block;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+  margin: 0;
+}

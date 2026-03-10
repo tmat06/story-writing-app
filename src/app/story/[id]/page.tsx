@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { ViewModeSwitch, type ViewMode } from '@/components/ViewModeSwitch/ViewModeSwitch';
 import { Corkboard } from '@/components/Corkboard/Corkboard';
+import { SubmissionTracker } from '@/components/SubmissionTracker/SubmissionTracker';
 import { getScenes, updateSceneOrder, updateSceneStatus } from '@/lib/scenes';
 import type { Scene, SceneStatus } from '@/types/scene';
 import styles from './page.module.css';
@@ -16,6 +17,7 @@ export default function StoryPage({ params }: StoryPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);
+  const [storyTitle, setStoryTitle] = useState(`Story ${id}`);
 
   // Load scenes for corkboard view
   useEffect(() => {
@@ -57,7 +59,8 @@ export default function StoryPage({ params }: StoryPageProps) {
                 className={styles.titleInput}
                 placeholder="Untitled Story"
                 aria-label="Story title"
-                defaultValue={`Story ${id}`}
+                value={storyTitle}
+                onChange={(e) => setStoryTitle(e.target.value)}
               />
               <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
             </div>
@@ -84,7 +87,7 @@ export default function StoryPage({ params }: StoryPageProps) {
             </div>
           </aside>
         </div>
-      ) : (
+      ) : viewMode === 'corkboard' ? (
         <div className={styles.corkboardLayout}>
           <div className={styles.corkboardHeader}>
             <input
@@ -92,7 +95,8 @@ export default function StoryPage({ params }: StoryPageProps) {
               className={styles.titleInput}
               placeholder="Untitled Story"
               aria-label="Story title"
-              defaultValue={`Story ${id}`}
+              value={storyTitle}
+              onChange={(e) => setStoryTitle(e.target.value)}
             />
             <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
           </div>
@@ -102,6 +106,16 @@ export default function StoryPage({ params }: StoryPageProps) {
             onSceneClick={handleSceneClick}
             onReorder={handleSceneReorder}
             onStatusChange={handleSceneStatusChange}
+          />
+        </div>
+      ) : (
+        <div className={styles.submissionsLayout}>
+          <SubmissionTracker
+            storyId={id}
+            storyTitle={storyTitle}
+            onTitleChange={setStoryTitle}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
           />
         </div>
       )}
