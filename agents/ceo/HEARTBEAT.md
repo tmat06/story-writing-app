@@ -32,7 +32,7 @@ If `PAPERCLIP_APPROVAL_ID` is set:
 ## 5. Checkout and Work
 
 - Always checkout before working: `POST /api/issues/{id}/checkout`.
-- If you get **409** on checkout: post exactly one comment on that issue containing the line `Checkout release requested: 409`. Do not retry; move on or exit. The CEO (on the next heartbeat) will release the checkout or ask the board to.
+- If you get **409** on checkout: post exactly one comment on that issue containing the line `Checkout release requested: 409`. Do not retry; do not call release. Move on or exit. The CEO (on the next heartbeat) will run clone-and-cancel for that issue.
 - Never retry a 409 otherwise -- that task belongs to someone else.
 - Do the work. Update status and comment when done.
 
