@@ -19,11 +19,8 @@ export function SceneCard({
     onStatusChange(e.target.value as SceneStatus);
   };
 
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Don't trigger onClick if clicking the status select
-    if ((e.target as HTMLElement).tagName === 'SELECT') {
-      return;
-    }
+  const handleCardClick = () => {
+    // stopPropagation on select handlers is sufficient, no need for tagName check
     onClick();
   };
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -12,7 +12,7 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
+  rectSortingStrategy,
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -77,6 +77,10 @@ export function Corkboard({
   loading = false,
 }: CorkboardProps) {
   const [scenes, setScenes] = useState(initialScenes);
+
+  useEffect(() => {
+    setScenes(initialScenes);
+  }, [initialScenes]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -155,7 +159,7 @@ export function Corkboard({
       >
         <SortableContext
           items={scenes.map((s) => s.id)}
-          strategy={verticalListSortingStrategy}
+          strategy={rectSortingStrategy}
         >
           <div className={styles.grid} role="list">
             {scenes.map((scene) => (

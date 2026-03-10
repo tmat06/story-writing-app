@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, use } from 'react';
+import { useState, useEffect, use } from 'react';
 import { ViewModeSwitch, type ViewMode } from '@/components/ViewModeSwitch/ViewModeSwitch';
 import { Corkboard } from '@/components/Corkboard/Corkboard';
 import { getScenes, updateSceneOrder, updateSceneStatus } from '@/lib/scenes';
-import type { SceneStatus } from '@/types/scene';
+import type { Scene, SceneStatus } from '@/types/scene';
 import styles from './page.module.css';
 
 interface StoryPageProps {
@@ -14,9 +14,22 @@ interface StoryPageProps {
 export default function StoryPage({ params }: StoryPageProps) {
   const { id } = use(params);
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
+  const [scenes, setScenes] = useState<Scene[]>([]);
+  const [scenesLoading, setLoading] = useState(true);
 
   // Load scenes for corkboard view
-  const scenes = getScenes(id);
+  useEffect(() => {
+    setLoading(true);
+    const loadedScenes = getScenes(id);
+    setScenes(loadedScenes);
+    setLoading(false);
+  }, [id]);
+
+  // Refresh scenes after updates
+  const refreshScenes = () => {
+    const refreshedScenes = getScenes(id);
+    setScenes(refreshedScenes);
+  };
 
   const handleSceneClick = (sceneId: string) => {
     // TODO: Navigate to specific scene in editor
@@ -25,10 +38,12 @@ export default function StoryPage({ params }: StoryPageProps) {
 
   const handleSceneReorder = (sceneId: string, newOrder: number) => {
     updateSceneOrder(id, sceneId, newOrder);
+    refreshScenes(); // Re-fetch after update
   };
 
   const handleSceneStatusChange = (sceneId: string, status: SceneStatus) => {
     updateSceneStatus(id, sceneId, status);
+    refreshScenes(); // Re-fetch after update
   };
 
   return (
@@ -83,6 +98,7 @@ export default function StoryPage({ params }: StoryPageProps) {
           </div>
           <Corkboard
             scenes={scenes}
+            loading={scenesLoading}
             onSceneClick={handleSceneClick}
             onReorder={handleSceneReorder}
             onStatusChange={handleSceneStatusChange}
