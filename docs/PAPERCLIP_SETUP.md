@@ -155,6 +155,28 @@ Codex will pick up assigned tasks on the next heartbeat (or when you trigger a r
 
 ---
 
+## Board: Verify and merge the PR
+
+When a **Review and merge: BIN-XX** ticket lands in your queue, Code Reviewer has approved an implementation. The ticket description should include a **branch name** (e.g. `ticket/BIN-64`) and a **PR or compare link** (e.g. `https://github.com/owner/repo/compare/main...ticket/BIN-64`). Only Code Monkey’s commits on that branch should be merged into `main`. If merged PRs don’t seem to change the app, the cause is usually one of these:
+
+1. **Push never reached GitHub** – Code Monkey runs in a process that may not have SSH/credentials. If `git push` failed, the branch on origin is missing or outdated. The implementation ticket may say "push failed" and give the branch name; you’d need to pull the branch from the agent’s workspace or fix credentials and have the agent push again.
+2. **Wrong branch or empty PR** – A PR opened from the wrong branch (e.g. `main` vs `main`) or from a branch that was never pushed has no real diff. Merging it does nothing.
+3. **App not rebuilt / cached** – After merging, run `git pull origin main` in the app repo and rebuild (e.g. `npm run build` or restart the dev server) so you’re running the new code.
+
+**Before you merge:**
+
+1. From the merge ticket, note the **branch name** (e.g. `ticket/BIN-64`).
+2. In the repo: `git fetch origin`
+3. Check that the branch has commits ahead of main:  
+   `git log main..origin/<branch> --oneline`  
+   You should see one or more implementation commits (e.g. "Implement … (BIN-64)"). If the list is **empty**, that branch was not pushed or is behind main—do not merge it; check the implementation ticket for a push-failure comment or recover the branch from the agent workspace.
+4. Open the PR/compare link from the ticket. Ensure the PR is **base: main**, **head: &lt;branch&gt;** (e.g. `ticket/BIN-64`). If you only have a compare URL, use "Open pull request", then merge that PR. Merging that PR is what brings Code Monkey’s (and only Code Monkey’s) changes into main.
+5. After merging, pull and rebuild locally: `git pull origin main` then `npm run build` (or your usual run).
+
+**Founding Engineer** only writes the implementation plan (in the ticket). **Code Monkey** is the one who commits and pushes code. So the only commits that should be in the PR are Code Monkey’s on the ticket branch.
+
+---
+
 ## Release a stuck checkout (board)
 
 When a run fails (e.g. rate limit, `process_lost`, timeout) and that run had **checked out** an issue, the issue stays locked. The assignee will get **409 Conflict** on their next checkout and cannot continue until the checkout is released.
