@@ -82,6 +82,23 @@
   text-overflow: ellipsis;
 }
 
+.metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: calc(var(--spacing-xs) * -1);
+}
+
+.metaChip {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  display: inline-block;
+}
+
 .footer {
   display: flex;
   align-items: center;

@@ -121,6 +121,43 @@ export function updateSceneOrder(
 }
 
 /**
+ * Update scene metadata (POV, location, timeframe)
+ * Persists to localStorage for v1
+ *
+ * @param storyId - The story identifier
+ * @param sceneId - The scene to update
+ * @param metadata - Partial metadata fields to update
+ *
+ * TODO: Replace with API call (PATCH /api/stories/:storyId/scenes/:sceneId)
+ */
+export function updateSceneMetadata(
+  storyId: string,
+  sceneId: string,
+  metadata: { pov?: string; location?: string; timeframe?: string }
+): void {
+  console.log(`Updated metadata for scene ${sceneId}: ${metadata.pov}, ${metadata.location}, ${metadata.timeframe}`);
+
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const scenes = getScenes(storyId);
+  const scene = scenes.find((s) => s.id === sceneId);
+
+  if (!scene) {
+    console.error(`Scene ${sceneId} not found`);
+    return;
+  }
+
+  if (metadata.pov !== undefined) scene.pov = metadata.pov;
+  if (metadata.location !== undefined) scene.location = metadata.location;
+  if (metadata.timeframe !== undefined) scene.timeframe = metadata.timeframe;
+
+  const storageKey = `story-${storyId}-scenes`;
+  localStorage.setItem(storageKey, JSON.stringify(scenes));
+}
+
+/**
  * Update scene status
  * Persists to localStorage for v1
  *

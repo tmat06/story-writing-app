@@ -1,0 +1,81 @@
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.filterField {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-elephant-500);
+  white-space: nowrap;
+}
+
+.select {
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+  background-color: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  padding: 3px var(--spacing-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.select:hover {
+  background-color: var(--color-fog-200);
+}
+
+.select:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 1px;
+}
+
+.select.active {
+  background-color: var(--color-fog-200);
+  border-color: var(--color-elephant-500);
+  font-weight: var(--font-weight-medium);
+}
+
+.clearButton {
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  background: none;
+  border: none;
+  padding: 3px var(--spacing-xs);
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.15s ease;
+}
+
+.clearButton:hover {
+  color: var(--color-black-700);
+}
+
+.clearButton:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 1px;
+  border-radius: var(--border-radius-sm);
+}
+
+@media (max-width: 767px) {
+  .filters {
+    gap: var(--spacing-xs);
+  }
+
+  .label {
+    font-size: var(--font-size-xs);
+  }
+
+  .select {
+    font-size: var(--font-size-xs);
+    padding: 2px var(--spacing-xs);
+  }
+}

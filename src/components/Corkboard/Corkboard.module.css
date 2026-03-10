@@ -74,6 +74,28 @@
   text-align: center;
 }
 
+.clearFiltersLink {
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  display: block;
+}
+
+.clearFiltersLink:hover {
+  color: var(--color-black-700);
+}
+
+.clearFiltersLink:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 1px;
+  border-radius: var(--border-radius-sm);
+}
+
 .skeleton {
   height: 200px;
   background-color: var(--color-fog-200);

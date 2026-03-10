@@ -24,4 +24,13 @@ export interface Scene {
 
   /** Position/order number for sequencing (lower = earlier) */
   order: number;
+
+  /** Point-of-view character for this scene */
+  pov?: string;
+
+  /** Primary location where this scene takes place */
+  location?: string;
+
+  /** Timeframe or time period of this scene */
+  timeframe?: string;
 }

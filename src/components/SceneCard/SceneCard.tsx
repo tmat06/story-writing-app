@@ -50,6 +50,26 @@ export function SceneCard({
 
         <p className={styles.summary}>{scene.summary}</p>
 
+        {(scene.pov || scene.location || scene.timeframe) && (
+          <div className={styles.metadata}>
+            {scene.pov && (
+              <span className={styles.metaChip} title={scene.pov}>
+                POV: {scene.pov}
+              </span>
+            )}
+            {scene.location && (
+              <span className={styles.metaChip} title={scene.location}>
+                Loc: {scene.location}
+              </span>
+            )}
+            {scene.timeframe && (
+              <span className={styles.metaChip} title={scene.timeframe}>
+                Time: {scene.timeframe}
+              </span>
+            )}
+          </div>
+        )}
+
         <div className={styles.footer}>
           <select
             value={scene.status}

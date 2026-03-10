@@ -21,6 +21,22 @@
   border-bottom: var(--border-width) solid var(--color-fashion-300);
 }
 
+.editorHeaderTop {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.editorHeaderTop .titleInput {
+  flex: 1;
+}
+
+.metadataRowWrapper {
+  padding-top: var(--spacing-sm);
+  border-top: var(--border-width) solid var(--color-fashion-300);
+  margin-top: var(--spacing-sm);
+}
+
 .titleInput {
   width: 100%;
   font-size: var(--font-size-2xl);

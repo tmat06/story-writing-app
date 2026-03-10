@@ -18,6 +18,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import type { Scene, SceneStatus } from '@/types/scene';
 import { SceneCard } from '@/components/SceneCard/SceneCard';
+import { MetadataFilters } from '@/components/MetadataFilters/MetadataFilters';
 import styles from './Corkboard.module.css';
 
 interface CorkboardProps {
@@ -77,10 +78,39 @@ export function Corkboard({
   loading = false,
 }: CorkboardProps) {
   const [scenes, setScenes] = useState(initialScenes);
+  const [activePov, setActivePov] = useState<string | null>(null);
+  const [activeLocation, setActiveLocation] = useState<string | null>(null);
+  const [activeTimeframe, setActiveTimeframe] = useState<string | null>(null);
 
   useEffect(() => {
     setScenes(initialScenes);
   }, [initialScenes]);
+
+  const povOptions = Array.from(new Set(scenes.map((s) => s.pov).filter((v): v is string => Boolean(v)))).sort();
+  const locationOptions = Array.from(new Set(scenes.map((s) => s.location).filter((v): v is string => Boolean(v)))).sort();
+  const timeframeOptions = Array.from(new Set(scenes.map((s) => s.timeframe).filter((v): v is string => Boolean(v)))).sort();
+
+  const filteredScenes = scenes.filter((scene) => {
+    if (activePov && scene.pov !== activePov) return false;
+    if (activeLocation && scene.location !== activeLocation) return false;
+    if (activeTimeframe && scene.timeframe !== activeTimeframe) return false;
+    return true;
+  });
+
+  const hasActiveFilters = activePov !== null || activeLocation !== null || activeTimeframe !== null;
+
+  const handleFilterChange = (field: 'pov' | 'location' | 'timeframe', value: string | null) => {
+    console.log(`Applied filters: POV=${activePov}, Location=${activeLocation}, Timeframe=${activeTimeframe}`);
+    if (field === 'pov') setActivePov(value);
+    else if (field === 'location') setActiveLocation(value);
+    else if (field === 'timeframe') setActiveTimeframe(value);
+  };
+
+  const handleClearFilters = () => {
+    setActivePov(null);
+    setActiveLocation(null);
+    setActiveTimeframe(null);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -145,10 +175,21 @@ export function Corkboard({
         aria-label="Scene planning controls"
       >
         <span className={styles.sceneCount}>
-          {scenes.length} {scenes.length === 1 ? 'scene' : 'scenes'}
+          {hasActiveFilters
+            ? `${filteredScenes.length} of ${scenes.length} ${scenes.length === 1 ? 'scene' : 'scenes'}`
+            : `${scenes.length} ${scenes.length === 1 ? 'scene' : 'scenes'}`}
         </span>
         <div className={styles.toolbarRight}>
-          {/* Future: filter controls */}
+          <MetadataFilters
+            povOptions={povOptions}
+            locationOptions={locationOptions}
+            timeframeOptions={timeframeOptions}
+            activePov={activePov}
+            activeLocation={activeLocation}
+            activeTimeframe={activeTimeframe}
+            onFilterChange={handleFilterChange}
+            onClearAll={handleClearFilters}
+          />
         </div>
       </div>
 
@@ -161,16 +202,29 @@ export function Corkboard({
           items={scenes.map((s) => s.id)}
           strategy={rectSortingStrategy}
         >
-          <div className={styles.grid} role="list">
-            {scenes.map((scene) => (
-              <SortableSceneCard
-                key={scene.id}
-                scene={scene}
-                onClick={() => onSceneClick(scene.id)}
-                onStatusChange={(status) => onStatusChange(scene.id, status)}
-              />
-            ))}
-          </div>
+          {filteredScenes.length === 0 && hasActiveFilters ? (
+            <div className={styles.emptyState}>
+              <p>No scenes match the active filters.</p>
+              <button
+                className={styles.clearFiltersLink}
+                onClick={handleClearFilters}
+                type="button"
+              >
+                Clear filters
+              </button>
+            </div>
+          ) : (
+            <div className={styles.grid} role="list">
+              {filteredScenes.map((scene) => (
+                <SortableSceneCard
+                  key={scene.id}
+                  scene={scene}
+                  onClick={() => onSceneClick(scene.id)}
+                  onStatusChange={(status) => onStatusChange(scene.id, status)}
+                />
+              ))}
+            </div>
+          )}
         </SortableContext>
       </DndContext>
     </div>

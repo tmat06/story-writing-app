@@ -3,8 +3,9 @@
 import { useState, useEffect, use } from 'react';
 import { ViewModeSwitch, type ViewMode } from '@/components/ViewModeSwitch/ViewModeSwitch';
 import { Corkboard } from '@/components/Corkboard/Corkboard';
-import { getScenes, updateSceneOrder, updateSceneStatus } from '@/lib/scenes';
+import { getScenes, updateSceneOrder, updateSceneStatus, updateSceneMetadata } from '@/lib/scenes';
 import type { Scene, SceneStatus } from '@/types/scene';
+import { MetadataRow } from '@/components/MetadataRow/MetadataRow';
 import styles from './page.module.css';
 
 interface StoryPageProps {
@@ -16,6 +17,8 @@ export default function StoryPage({ params }: StoryPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);
+  const [selectedScene, setSelectedScene] = useState<Scene | null>(null);
+  const metadataDebounceRef = useState<ReturnType<typeof setTimeout> | null>(null);
 
   // Load scenes for corkboard view
   useEffect(() => {
@@ -32,8 +35,22 @@ export default function StoryPage({ params }: StoryPageProps) {
   };
 
   const handleSceneClick = (sceneId: string) => {
-    // TODO: Navigate to specific scene in editor
-    console.log('Navigate to scene:', sceneId);
+    const scene = scenes.find((s) => s.id === sceneId) ?? null;
+    setSelectedScene(scene);
+    setViewMode('editor');
+  };
+
+  const handleMetadataChange = (field: 'pov' | 'location' | 'timeframe', value: string) => {
+    if (!selectedScene) return;
+
+    const updated = { ...selectedScene, [field]: value };
+    setSelectedScene(updated);
+    setScenes((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+
+    if (metadataDebounceRef[0]) clearTimeout(metadataDebounceRef[0]);
+    metadataDebounceRef[0] = setTimeout(() => {
+      updateSceneMetadata(id, updated.id, { [field]: value });
+    }, 500);
   };
 
   const handleSceneReorder = (sceneId: string, newOrder: number) => {
@@ -52,14 +69,26 @@ export default function StoryPage({ params }: StoryPageProps) {
         <div className={styles.editorLayout}>
           <div className={styles.editorMain}>
             <div className={styles.editorHeader}>
-              <input
-                type="text"
-                className={styles.titleInput}
-                placeholder="Untitled Story"
-                aria-label="Story title"
-                defaultValue={`Story ${id}`}
-              />
-              <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
+              <div className={styles.editorHeaderTop}>
+                <input
+                  type="text"
+                  className={styles.titleInput}
+                  placeholder="Untitled Story"
+                  aria-label="Story title"
+                  defaultValue={`Story ${id}`}
+                />
+                <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
+              </div>
+              {selectedScene && (
+                <div className={styles.metadataRowWrapper}>
+                  <MetadataRow
+                    pov={selectedScene.pov}
+                    location={selectedScene.location}
+                    timeframe={selectedScene.timeframe}
+                    onChange={handleMetadataChange}
+                  />
+                </div>
+              )}
             </div>
             <div className={styles.editorCanvas}>
               <label htmlFor="story-editor" className={styles.visuallyHidden}>
