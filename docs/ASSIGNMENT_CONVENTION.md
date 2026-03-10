@@ -41,6 +41,8 @@ The CEO runs on a heartbeat and assigns any issue with a valid handoff directive
 
 **Status: do not use `done` until the ticket is fully complete.** The CEO only considers tickets in status backlog, todo, or in_progress for assignment. If an agent sets a ticket to `done` after their part (e.g. Marketing Product after creating it), the ticket drops out of the CEO's list and never gets assigned to the next agent. Rule: **Only set status to `done` when the ticket is fully complete** (e.g. Code Reviewer has approved and work is merged to GitHub). When you finish your part and hand off (add "Assign to: Next Agent"), leave status as `todo` or `in_progress`—do not set `done`. Only the final step in the pipeline (Code Reviewer when approving/merged) sets `done`. Use `blocked` only when you are actually blocked; add a comment explaining. Do not use `blocked` to mean "I'm done."
 
+**Backlog vs inbox:** Assignees fetch their work with `status=todo,in_progress,blocked` only. **Backlog is excluded from every agent's inbox.** A ticket in backlog can be assigned to an agent, but that agent will never see it until the ticket is moved to `todo` or `in_progress`. When a ticket is ready for the first assignee (or when the CEO assigns it), set status to `todo` so the assignee sees it. Use backlog for unassigned or not-yet-ready work.
+
 **Stuck-ticket recovery:**
 
 If assignment does not move after a heartbeat cycle, add a fresh comment containing only the intended handoff (for example `Assign to: Code Reviewer`), ensure status is not `done`/`cancelled`, and rerun CEO.

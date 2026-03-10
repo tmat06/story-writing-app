@@ -1,0 +1,105 @@
+{
+  "ok": true,
+  "phase": "complete",
+  "tmpDir": "agents/ceo/tmp/heartbeat_20260309_212433",
+  "agentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+  "projectId": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+  "projectName": "Story Writing App",
+  "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+  "issuesScanned": 10,
+  "reassigned": 1,
+  "alreadyCorrect": 9,
+  "noDirective": 0,
+  "invalidTarget": 0,
+  "skippedError": 0,
+  "pingPongClarifications": 0,
+  "inboxCount": 3,
+  "inbox": [
+    {
+      "id": "812a7699-9ccc-4a92-a6a9-8fe984d23357",
+      "identifier": "BIN-55",
+      "status": "blocked",
+      "priority": "medium",
+      "title": "Recreate agent: Code Reviewer (reports to Founding Engineer)"
+    },
+    {
+      "id": "6abad0b5-91c3-4564-b907-31facf395d44",
+      "identifier": "BIN-53",
+      "status": "blocked",
+      "priority": "medium",
+      "title": "Recreate agent: Code Monkey (reports to Founding Engineer)"
+    },
+    {
+      "id": "26465acd-d157-49fe-bfc9-d602e641539b",
+      "identifier": "BIN-54",
+      "status": "blocked",
+      "priority": "medium",
+      "title": "Recreate agent: Founding Engineer (reports to CEO)"
+    }
+  ],
+  "details": [
+    {
+      "issueId": "8a6135b7-fd4f-4eb2-9972-427ab3368eb1",
+      "identifier": "BIN-64",
+      "result": "reassigned",
+      "target": "Design",
+      "source": "comment",
+      "directiveAt": "2026-03-10T03:21:56.717Z",
+      "directiveId": "8bcbe56d-2f4c-4a81-b1f0-3d8667eab0c1"
+    },
+    {
+      "issueId": "020bbb6f-5aee-449f-bc21-9ff045c4e0c2",
+      "identifier": "BIN-58",
+      "result": "already_correct",
+      "target": "Market Research"
+    },
+    {
+      "issueId": "aeb95f63-805e-4049-b1ec-2bf382d464c0",
+      "identifier": "BIN-60",
+      "result": "already_correct",
+      "target": "Market Research"
+    },
+    {
+      "issueId": "aef2352e-acf1-4e6a-9c51-ebd3072add95",
+      "identifier": "BIN-59",
+      "result": "already_correct",
+      "target": "Market Research"
+    },
+    {
+      "issueId": "8cb2c592-06dd-4497-b5c0-2f44f9afd63b",
+      "identifier": "BIN-66",
+      "result": "already_correct",
+      "target": "Market Research"
+    },
+    {
+      "issueId": "0c69ebfc-d18f-4cae-bcb4-b531cb4a6198",
+      "identifier": "BIN-65",
+      "result": "already_correct",
+      "target": "Market Research"
+    },
+    {
+      "issueId": "f48c65e6-c2e9-4bd1-8ba7-4f4c2d69f2a9",
+      "identifier": "BIN-61",
+      "result": "already_correct",
+      "target": "Market Research"
+    },
+    {
+      "issueId": "812a7699-9ccc-4a92-a6a9-8fe984d23357",
+      "identifier": "BIN-55",
+      "result": "already_correct",
+      "target": "CEO"
+    },
+    {
+      "issueId": "6abad0b5-91c3-4564-b907-31facf395d44",
+      "identifier": "BIN-53",
+      "result": "already_correct",
+      "target": "CEO"
+    },
+    {
+      "issueId": "26465acd-d157-49fe-bfc9-d602e641539b",
+      "identifier": "BIN-54",
+      "result": "already_correct",
+      "target": "CEO"
+    }
+  ]
+}

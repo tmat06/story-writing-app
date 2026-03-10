@@ -80,3 +80,19 @@ items:
     last_accessed: 2026-03-09T06:28:00Z
     access_count: 1
     status: active
+
+  - id: ceo-fact-2026-03-10-replacement-agent-approvals-closed
+    fact: Approvals a4bafa05-6445-40c1-a4a7-d9901cfeefaf, ae62c2c8-cc0a-40c1-bba6-ceff9136ee6e, and dc4c113d-ed22-4511-8e11-f4c78bb5077a were approved; blocked issues BIN-53, BIN-54, and BIN-55 were closed as done.
+    source: heartbeat run 21453a7f-680c-4d16-91f9-b5dbd004a814 with approval checks and issue updates
+    created_at: 2026-03-10T04:24:33Z
+    last_accessed: 2026-03-10T04:08:33Z
+    access_count: 2
+    status: active
+
+  - id: ceo-fact-2026-03-10-routing-five-reassignments
+    fact: Heartbeat run f8867972-1fa4-4474-b4a8-fd9e89cc278e scanned 10 active Story Writing App issues and reassigned 5 by latest valid standalone Assign to directives (BIN-59 and BIN-60 to Founding Engineer, BIN-64 to Code Monkey, BIN-69 and BIN-70 to Market Research).
+    source: heartbeat run f8867972-1fa4-4474-b4a8-fd9e89cc278e summary and patch artifacts
+    created_at: 2026-03-10T04:08:33Z
+    last_accessed: 2026-03-10T04:08:33Z
+    access_count: 1
+    status: active
