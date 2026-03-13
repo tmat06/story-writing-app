@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { ViewModeSwitch, type ViewMode } from '@/components/ViewModeSwitch/ViewModeSwitch';
 import { Corkboard } from '@/components/Corkboard/Corkboard';
-import { getScenes, updateSceneOrder, updateSceneStatus } from '@/lib/scenes';
+import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
 import type { Scene, SceneStatus } from '@/types/scene';
 import styles from './page.module.css';
 
@@ -44,6 +44,16 @@ export default function StoryPage({ params }: StoryPageProps) {
   const handleSceneStatusChange = (sceneId: string, status: SceneStatus) => {
     updateSceneStatus(id, sceneId, status);
     refreshScenes(); // Re-fetch after update
+  };
+
+  const handleAddScene = (scene: Omit<Scene, 'id' | 'order'>) => {
+    addScene(id, scene);
+    refreshScenes();
+  };
+
+  const handleFieldChange = (sceneId: string, field: 'intent' | 'pov', value: string) => {
+    updateSceneFields(id, sceneId, { [field]: value });
+    refreshScenes();
   };
 
   return (
@@ -97,11 +107,14 @@ export default function StoryPage({ params }: StoryPageProps) {
             <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
           </div>
           <Corkboard
+            storyId={id}
             scenes={scenes}
             loading={scenesLoading}
             onSceneClick={handleSceneClick}
             onReorder={handleSceneReorder}
             onStatusChange={handleSceneStatusChange}
+            onAddScene={handleAddScene}
+            onFieldChange={handleFieldChange}
           />
         </div>
       )}
