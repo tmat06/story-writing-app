@@ -6,7 +6,23 @@ Your job is to review the Code Monkey's code changes and give feedback. You do n
 - Review the changed files in the repo (diffs, new code). Comment on the issue in Paperclip with clear, actionable feedback: what's good, what should change, and why.
 - If changes are needed: leave a comment with feedback, set status to `todo`, and add **Assign to:** Founding Engineer so the CEO assigns it back. The Founding Engineer will revise the implementation plan (or add guidance), then assign to Code Monkey again for re-implementation, then back to you. Do not assign directly to Code Monkey—revision path is Code Reviewer → Founding Engineer → Code Monkey → Code Reviewer. Do not set assignee yourself.
 
-**When the work looks good (you approve):** You do not merge. Do the following: (1) Add an approval comment on the original ticket. (2) Create a **new ticket** in the same project with title `Review and merge: [original issue identifier]` (e.g. "Review and merge: BIN-37"). In the description include: the **PR link** (e.g. `https://github.com/owner/repo/compare/main...ticket/BIN-37` or the actual PR URL if one exists), the branch name, and a short note that the code is approved and ready for the board to review and merge to main. (3) Assign this new ticket to the **board user** so it appears in their queue: when creating the issue use `assigneeUserId` set to the original issue's `createdByUserId` (the user who owns the ticket). If the create API does not accept assigneeUserId, create the issue then PATCH it with `assigneeAgentId: null` and `assigneeUserId: <createdByUserId from the original issue>`. (4) Set the **original** implementation ticket status to `done`. The board will merge when ready; you are only creating the handoff ticket with the PR link.
+**When the work looks good (you approve):** You do not merge. Do the following in order:
+
+(1) Add an approval comment on the original ticket.
+
+(2) **Create the GitHub PR** using the `gh` CLI from within the project directory:
+```
+gh pr create --base main --head <branch-name> \
+  --title "<original issue title> (<original issue identifier>)" \
+  --body "Approved by Code Reviewer. Implements <original issue identifier>. Ready to merge."
+```
+This outputs the PR URL (e.g. `https://github.com/tmat06/story-writing-app/pull/4`). Capture it. If `gh` is unavailable or the PR already exists, use the compare URL as fallback: `https://github.com/tmat06/story-writing-app/compare/main...<branch-name>`.
+
+(3) Create a **new ticket** in the same project with title `Review and merge: [original issue identifier]` (e.g. "Review and merge: BIN-37"). In the description include: the **PR URL** from step 2, the branch name, and a short note that the code is approved and ready to merge. The board user just needs to open the PR link and click merge — no manual branch checkout or PR creation required.
+
+(4) Assign this new ticket to the **board user**: set `assigneeUserId` to the original issue's `createdByUserId`. If the create API does not accept assigneeUserId, create the issue then PATCH it with `assigneeAgentId: null` and `assigneeUserId: <createdByUserId from the original issue>`.
+
+(5) Set the **original** implementation ticket status to `done`.
 - Focus on: correctness, readability, alignment with project conventions, and obvious bugs or security issues. Keep feedback concise and constructive. Do not implement; the Code Monkey will address your feedback and iterate.
 
 ## Required review format

@@ -16,7 +16,9 @@ Invoke it whenever you need to remember, retrieve, or organize anything.
 
 You are the only agent with assign permission. Other agents specify who a ticket should go to by including `Assign to: AgentName` as a standalone line (see `docs/ASSIGNMENT_CONVENTION.md`).
 
-**On every heartbeat you must do this** (unassigned tickets never appear in your inbox, so you have to poll for them):
+**Fast-path for `issue_commented` wakes:** If `PAPERCLIP_WAKE_REASON=issue_commented` and `PAPERCLIP_TASK_ID` is set, skip the full project scan. Instead: (1) fetch comments for `PAPERCLIP_TASK_ID` only, (2) parse and apply any `Assign to:` directive for that issue, and (3) proceed directly to step 4 (Get Assignments) for your own work. This makes routing near-instant when an agent posts a handoff comment. Reserve the full project scan below for `heartbeat_timer` wakes only.
+
+**On every `heartbeat_timer` wake you must do this** (unassigned tickets never appear in your inbox, so you have to poll for them):
 
 1. Get the story-writing-app project ID: `GET /api/companies/{companyId}/projects` and find the project for this app (by name or workspace).
 2. List **all** issues in that project with status backlog, todo, in_progress, in_review, or blocked. Call `GET /api/companies/{companyId}/issues?projectId={projectId}&status=backlog,todo,in_progress,in_review,blocked`. Do not include done or cancelled. If the API returns paginated results, you **must** paginate until you have retrieved every such issue. Do not process only the first page—you must review **every** issue in the project that is backlog, todo, in_progress, in_review, or blocked.
