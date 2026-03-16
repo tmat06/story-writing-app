@@ -6,6 +6,7 @@ Run this checklist on every heartbeat. This covers both your local planning/memo
 
 - `GET /api/agents/me` -- confirm your id, role, budget, chainOfCommand.
 - Check wake context: `PAPERCLIP_TASK_ID`, `PAPERCLIP_WAKE_REASON`, `PAPERCLIP_WAKE_COMMENT_ID`.
+- **If `PAPERCLIP_WAKE_REASON=issue_commented`:** run the fast-path from `AGENTS.md` (route only the commented issue, then get your own assignments). Skip steps 2–3 below and jump to step 4.
 
 ## 2. Local Planning Check
 
@@ -32,7 +33,7 @@ If `PAPERCLIP_APPROVAL_ID` is set:
 ## 5. Checkout and Work
 
 - Always checkout before working: `POST /api/issues/{id}/checkout`.
-- If you get **409** on checkout: post exactly one comment on that issue containing the line `Checkout release requested: 409`. Do not retry; move on or exit. The CEO (on the next heartbeat) will release the checkout or ask the board to.
+- If you get **409** on checkout: post exactly one comment on that issue containing the line `Checkout release requested: 409`. Do not retry; do not call release. Move on or exit. The CEO (on the next heartbeat) will run clone-and-cancel for that issue.
 - Never retry a 409 otherwise -- that task belongs to someone else.
 - Do the work. Update status and comment when done.
 

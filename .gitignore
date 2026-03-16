@@ -3,3 +3,8 @@ dist/
 .DS_Store
 .env
 .next/
+
+# Agent runtime state (ephemeral artifacts, not source)
+agents/ceo/tmp/
+agents/ceo/memory/
+agents/market-research/tmp/

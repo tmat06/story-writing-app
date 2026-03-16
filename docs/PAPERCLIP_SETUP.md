@@ -157,23 +157,29 @@ Codex will pick up assigned tasks on the next heartbeat (or when you trigger a r
 
 ## Board: Verify and merge the PR
 
-When a **Review and merge: BIN-XX** ticket lands in your queue, Code Reviewer has approved an implementation. The ticket description should include a **branch name** (e.g. `ticket/BIN-64`) and a **PR or compare link** (e.g. `https://github.com/owner/repo/compare/main...ticket/BIN-64`). Only Code Monkey’s commits on that branch should be merged into `main`. If merged PRs don’t seem to change the app, the cause is usually one of these:
+When a **Review and merge: BIN-XX** ticket lands in your queue, Code Reviewer has approved the implementation and already created a GitHub PR for you.
 
-1. **Push never reached GitHub** – Code Monkey runs in a process that may not have SSH/credentials. If `git push` failed, the branch on origin is missing or outdated. The implementation ticket may say "push failed" and give the branch name; you’d need to pull the branch from the agent’s workspace or fix credentials and have the agent push again.
-2. **Wrong branch or empty PR** – A PR opened from the wrong branch (e.g. `main` vs `main`) or from a branch that was never pushed has no real diff. Merging it does nothing.
-3. **App not rebuilt / cached** – After merging, run `git pull origin main` in the app repo and rebuild (e.g. `npm run build` or restart the dev server) so you’re running the new code.
+**Normal flow:**
 
-**Before you merge:**
+1. Open the **PR URL** in the merge ticket (e.g. `https://github.com/tmat06/story-writing-app/pull/4`).
+2. Verify the diff looks right — it should contain only Code Monkey’s changes for that ticket.
+3. Click **Merge pull request** on GitHub.
+4. After merging, pull and rebuild locally: `git pull origin main` then restart the dev server.
 
-1. From the merge ticket, note the **branch name** (e.g. `ticket/BIN-64`).
-2. In the repo: `git fetch origin`
-3. Check that the branch has commits ahead of main:  
-   `git log main..origin/<branch> --oneline`  
-   You should see one or more implementation commits (e.g. "Implement … (BIN-64)"). If the list is **empty**, that branch was not pushed or is behind main—do not merge it; check the implementation ticket for a push-failure comment or recover the branch from the agent workspace.
-4. Open the PR/compare link from the ticket. Ensure the PR is **base: main**, **head: &lt;branch&gt;** (e.g. `ticket/BIN-64`). If you only have a compare URL, use "Open pull request", then merge that PR. Merging that PR is what brings Code Monkey’s (and only Code Monkey’s) changes into main.
-5. After merging, pull and rebuild locally: `git pull origin main` then `npm run build` (or your usual run).
+That’s it. The PR is already open and approved — you just need to merge it.
 
-**Founding Engineer** only writes the implementation plan (in the ticket). **Code Monkey** is the one who commits and pushes code. So the only commits that should be in the PR are Code Monkey’s on the ticket branch.
+**If the ticket has a compare URL instead of a PR URL** (fallback case where `gh pr create` failed):
+
+1. Open the compare URL (e.g. `https://github.com/tmat06/story-writing-app/compare/main...ticket/BIN-64`).
+2. Click **Open pull request**, review, and merge.
+
+**If merged PRs don’t seem to change the app:**
+
+1. **Push never reached GitHub** — check the implementation ticket for a "push failed" comment. If the branch isn’t on origin, the agent’s push failed and you’ll need to push manually or re-run Code Monkey.
+2. **App not rebuilt** — after merging, always run `git pull origin main` and restart the dev server.
+3. **Wrong branch** — verify the PR head branch matches the ticket identifier (e.g. `ticket/BIN-64`).
+
+**Founding Engineer** only writes the implementation plan. **Code Monkey** commits and pushes code. **Code Reviewer** creates the PR. You only merge.
 
 ---
 
@@ -181,7 +187,7 @@ When a **Review and merge: BIN-XX** ticket lands in your queue, Code Reviewer ha
 
 When a run fails (e.g. rate limit, `process_lost`, timeout) and that run had **checked out** an issue, the issue stays locked. The assignee will get **409 Conflict** on their next checkout and cannot continue until the checkout is released.
 
-**Automated flow:** Agents are instructed to post a comment containing `Checkout release requested: 409` when they get 409 on checkout. The CEO, on each heartbeat, scans for that phrase and calls `POST /api/issues/{issueId}/release` for those issues. If the CEO has permission to release, the checkout is cleared automatically and the assignee can continue on their next run. If the API returns 403 (or similar), the CEO posts a comment asking the board to release manually (options below).
+**Automated flow (clone-and-cancel):** Agents post a comment containing `Checkout release requested: 409` when they get 409 on checkout. The CEO, on each heartbeat, scans for that phrase and then: posts the board comment below, cancels and unassigns the old issue, creates a new issue with the same title and a description that includes the original description plus all comments formatted as `[Agent Name]:` blocks, assigns the new issue to the last `Assign to:` in the thread, and sets the new issue to **Todo**. The assignee (e.g. Founding Engineer) gets the new issue with no checkout lock and continues there. You do not need to release manually unless you prefer to keep the same issue id.
 
 **When to do this:** You see a failed run for an issue (e.g. "Process lost" or "Transcript (0)") and the same issue is still assigned to an agent who should keep working on it. On the agent's next heartbeat they will try to checkout and get 409.
 

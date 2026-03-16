@@ -1,0 +1,55 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+  margin-top: var(--spacing-sm);
+  border-top: var(--border-width) solid var(--color-fashion-300);
+  min-height: 28px;
+}
+
+.statusText {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+}
+
+.idle,
+.saved {
+  color: var(--color-cement-400);
+}
+
+.saving {
+  color: var(--color-cement-400);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.failed {
+  color: var(--color-black-700);
+}
+
+.retryButton {
+  background: none;
+  border: none;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-carbon-600);
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  text-decoration: underline;
+}
+
+.retryButton:hover {
+  color: var(--color-black-700);
+}
+
+.retryButton:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

@@ -1,0 +1,128 @@
+{
+  "runId": "975f3220-be2c-43a3-9064-1150bd95f032",
+  "outDir": "agents/ceo/tmp/heartbeat_2026-03-10_1552",
+  "projectId": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+  "projectName": "Story Writing App",
+  "paginationPages": 1,
+  "scannedIssues": 21,
+  "reassigned": 7,
+  "alreadyCorrect": 13,
+  "noValidDirective": 1,
+  "invalidTargets": 0,
+  "skippedFailures": 0,
+  "pingPongWarnings": 0,
+  "checkoutReleaseCandidates": 3,
+  "checkoutReleaseSuccess": 0,
+  "checkoutReleaseEscalated": 3,
+  "inbox": {
+    "todo": 0,
+    "in_progress": 0,
+    "blocked": 0
+  },
+  "issueResults": [
+    {
+      "identifier": "BIN-74",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-73",
+      "action": "reassigned",
+      "targetName": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-81",
+      "action": "already_correct",
+      "targetName": "Market Research"
+    },
+    {
+      "identifier": "BIN-71",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-80",
+      "action": "reassigned",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-60",
+      "action": "reassigned",
+      "targetName": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-68",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-72",
+      "action": "reassigned",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-58",
+      "action": "reassigned",
+      "targetName": "Code Reviewer"
+    },
+    {
+      "identifier": "BIN-77",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-78",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-76",
+      "action": "no_directive"
+    },
+    {
+      "identifier": "BIN-59",
+      "action": "already_correct",
+      "targetName": "Code Monkey"
+    },
+    {
+      "identifier": "BIN-61",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-82",
+      "action": "already_correct",
+      "targetName": "Market Research"
+    },
+    {
+      "identifier": "BIN-66",
+      "action": "reassigned",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-70",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-65",
+      "action": "reassigned",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-79",
+      "action": "already_correct",
+      "targetName": "Founding Engineer"
+    },
+    {
+      "identifier": "BIN-75",
+      "action": "already_correct",
+      "targetName": "Design"
+    },
+    {
+      "identifier": "BIN-69",
+      "action": "already_correct",
+      "targetName": "Design"
+    }
+  ]
+}

@@ -24,4 +24,10 @@ export interface Scene {
 
   /** Position/order number for sequencing (lower = earlier) */
   order: number;
+
+  /** What this scene must accomplish narratively */
+  intent?: string;
+
+  /** Point-of-view character name */
+  pov?: string;
 }
