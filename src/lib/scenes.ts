@@ -12,6 +12,8 @@ const MOCK_SCENES: Scene[] = [
     summary: 'The protagonist wakes up to discover an unexpected letter on their doorstep.',
     status: 'done',
     order: 1,
+    intent: 'Establish stakes',
+    pov: 'Alex',
   },
   {
     id: 'scene-2',
@@ -20,6 +22,8 @@ const MOCK_SCENES: Scene[] = [
     summary: 'After reading the mysterious letter, the protagonist must decide whether to follow its cryptic instructions.',
     status: 'drafting',
     order: 2,
+    intent: 'Force a choice',
+    pov: 'Alex',
   },
   {
     id: 'scene-3',
@@ -28,6 +32,8 @@ const MOCK_SCENES: Scene[] = [
     summary: 'The protagonist sets out on an unexpected journey, leaving behind everything familiar.',
     status: 'planned',
     order: 3,
+    intent: 'Launch the journey',
+    pov: 'Alex',
   },
   {
     id: 'scene-4',
@@ -36,6 +42,8 @@ const MOCK_SCENES: Scene[] = [
     summary: 'An unexpected challenge tests the protagonist\'s resolve and resourcefulness.',
     status: 'planned',
     order: 4,
+    intent: 'Test resolve',
+    pov: 'Alex',
   },
   {
     id: 'scene-5',
@@ -44,6 +52,8 @@ const MOCK_SCENES: Scene[] = [
     summary: 'The protagonist encounters a stranger who offers cryptic advice and unexpected help.',
     status: 'planned',
     order: 5,
+    intent: 'Introduce ally',
+    pov: 'Alex',
   },
 ];
 
@@ -67,7 +77,10 @@ export function getScenes(storyId: string): Scene[] {
   if (stored) {
     try {
       const scenes = JSON.parse(stored) as Scene[];
-      return scenes.sort((a, b) => a.order - b.order);
+      // Migrate: ensure intent/pov fields exist on stored scenes
+      return scenes
+        .map((s) => ({ intent: '', pov: '', ...s }))
+        .sort((a, b) => a.order - b.order);
     } catch (error) {
       console.error('Failed to parse stored scenes:', error);
     }
@@ -118,6 +131,74 @@ export function updateSceneOrder(
 
   const storageKey = `story-${storyId}-scenes`;
   localStorage.setItem(storageKey, JSON.stringify(sortedScenes));
+}
+
+/**
+ * Add a new scene to a story
+ * Persists to localStorage for v1
+ *
+ * @param storyId - The story identifier
+ * @param scene - Scene data without id and order (auto-assigned)
+ * @returns The created scene
+ *
+ * TODO: Replace with API call (POST /api/stories/:storyId/scenes)
+ */
+export function addScene(
+  storyId: string,
+  scene: Omit<Scene, 'id' | 'order'>
+): Scene {
+  if (typeof window === 'undefined') {
+    throw new Error('addScene requires browser environment');
+  }
+
+  console.log(`Adding scene to story ${storyId}:`, scene.title);
+
+  const scenes = getScenes(storyId);
+  const maxOrder = scenes.reduce((max, s) => Math.max(max, s.order), 0);
+  const newScene: Scene = {
+    ...scene,
+    id: crypto.randomUUID(),
+    order: maxOrder + 1,
+  };
+  scenes.push(newScene);
+  const storageKey = `story-${storyId}-scenes`;
+  localStorage.setItem(storageKey, JSON.stringify(scenes));
+  return newScene;
+}
+
+/**
+ * Update scene fields (title, summary, intent, pov)
+ * Persists to localStorage for v1
+ *
+ * @param storyId - The story identifier
+ * @param sceneId - The scene to update
+ * @param updates - Partial field updates
+ *
+ * TODO: Replace with API call (PATCH /api/stories/:storyId/scenes/:sceneId)
+ */
+export function updateSceneFields(
+  storyId: string,
+  sceneId: string,
+  updates: Partial<Pick<Scene, 'title' | 'summary' | 'intent' | 'pov'>>
+): void {
+  console.log(`Updating scene fields: ${sceneId}`, updates);
+
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const scenes = getScenes(storyId);
+  const scene = scenes.find((s) => s.id === sceneId);
+
+  if (!scene) {
+    console.error(`Scene ${sceneId} not found`);
+    return;
+  }
+
+  Object.assign(scene, updates);
+
+  const storageKey = `story-${storyId}-scenes`;
+  localStorage.setItem(storageKey, JSON.stringify(scenes));
 }
 
 /**
