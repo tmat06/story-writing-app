@@ -54,6 +54,7 @@ When runs fail (e.g. rate limit, `process_lost`, timeout), agents will pick up t
 **Checkout 409 recovery (automated):**
 
 - When any agent gets **409 Conflict** on `POST /api/issues/{issueId}/checkout`, they must post **exactly one comment** on that issue containing the standalone line: `Checkout release requested: 409`. Then do not retry checkout; do **not** call `POST /api/issues/{issueId}/release` (only the assignee can release in Paperclip, and the stuck checkout may be from a dead run). Pick another task or exit. The CEO will run clone-and-cancel on the next heartbeat.
+- **CEO:** Do **not** assign any issue that has a comment containing `Checkout release requested: 409` (skip it in the normal Assign to handoff); otherwise the CEO would reassign the agent to the same stuck issue after the board unassigns.
 - **CEO (clone-and-cancel):** On every heartbeat, while scanning project issues and comments (for Assign to handoffs), also detect any issue where a comment body contains the exact line `Checkout release requested: 409`. For each such issue (at most once per issue per heartbeat):
   1. Post a comment on the issue: "Board: please release checkout for this issue (assignee got 409). See docs/PAPERCLIP_SETUP.md § Release a stuck checkout."
   2. Set the issue status to **cancelled** and unassign (set `assigneeAgentId` to null).

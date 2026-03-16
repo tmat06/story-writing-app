@@ -1,0 +1,14 @@
+.chip {
+  display: inline-block;
+  padding: 0.125rem var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  color: var(--color-carbon-600);
+  background-color: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-carbon-600);
+  border-radius: var(--border-radius-lg);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}

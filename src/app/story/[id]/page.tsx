@@ -6,6 +6,7 @@ import { Corkboard } from '@/components/Corkboard/Corkboard';
 import { SaveStatus } from '@/components/SaveStatus/SaveStatus';
 import { RecoveryBanner } from '@/components/RecoveryBanner/RecoveryBanner';
 import { ErrorBanner } from '@/components/ErrorBanner/ErrorBanner';
+import { SubmissionTracker } from '@/components/SubmissionTracker/SubmissionTracker';
 import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
 import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
 import { useAutosave } from '@/hooks/useAutosave';
@@ -21,6 +22,7 @@ export default function StoryPage({ params }: StoryPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);
+  const [storyTitle, setStoryTitle] = useState(`Story ${id}`);
   const [showRecovery, setShowRecovery] = useState(false);
   const [showError, setShowError] = useState(false);
 
@@ -113,7 +115,8 @@ export default function StoryPage({ params }: StoryPageProps) {
                 className={styles.titleInput}
                 placeholder="Untitled Story"
                 aria-label="Story title"
-                defaultValue={`Story ${id}`}
+                value={storyTitle}
+                onChange={(e) => setStoryTitle(e.target.value)}
               />
               <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
               <SaveStatus saveState={saveState} lastSaved={lastSaved} onRetry={retrySave} />
@@ -161,7 +164,7 @@ export default function StoryPage({ params }: StoryPageProps) {
             </div>
           </aside>
         </div>
-      ) : (
+      ) : viewMode === 'corkboard' ? (
         <div className={styles.corkboardLayout}>
           <div className={styles.corkboardHeader}>
             <input
@@ -169,7 +172,8 @@ export default function StoryPage({ params }: StoryPageProps) {
               className={styles.titleInput}
               placeholder="Untitled Story"
               aria-label="Story title"
-              defaultValue={`Story ${id}`}
+              value={storyTitle}
+              onChange={(e) => setStoryTitle(e.target.value)}
             />
             <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
             <span className={styles.corkboardSaveStatus}>
@@ -186,6 +190,16 @@ export default function StoryPage({ params }: StoryPageProps) {
             onStatusChange={handleSceneStatusChange}
             onAddScene={handleAddScene}
             onFieldChange={handleFieldChange}
+          />
+        </div>
+      ) : (
+        <div className={styles.submissionsLayout}>
+          <SubmissionTracker
+            storyId={id}
+            storyTitle={storyTitle}
+            onTitleChange={setStoryTitle}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
           />
         </div>
       )}

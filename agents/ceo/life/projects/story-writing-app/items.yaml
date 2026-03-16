@@ -96,3 +96,11 @@ items:
     last_accessed: 2026-03-10T04:08:33Z
     access_count: 1
     status: active
+
+  - id: ceo-fact-2026-03-10-routing-409-recovery-bin100-bin102
+    fact: Heartbeat run ef12b84a-8232-46e9-b701-317d3d59feeb scanned 31 active Story Writing App issues, reassigned BIN-101 to Design, and completed required checkout-409 clone-and-cancel recovery for BIN-100 and BIN-102 by creating BIN-103 and BIN-104 assigned to Design.
+    source: heartbeat run ef12b84a-8232-46e9-b701-317d3d59feeb summary and recovery artifacts
+    created_at: 2026-03-10T21:46:00Z
+    last_accessed: 2026-03-10T21:46:00Z
+    access_count: 1
+    status: active

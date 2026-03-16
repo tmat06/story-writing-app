@@ -1,0 +1,97 @@
+.card {
+  background-color: var(--color-white);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  outline: none;
+}
+
+.card:hover {
+  background-color: var(--color-polar-100);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.highlighted {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+  background-color: var(--color-polar-100);
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.recipient {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.channel {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.dateItem {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+}
+
+.dateLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.responseType {
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  text-transform: capitalize;
+}
+
+.artifact {
+  font-size: var(--font-size-xs);
+  color: var(--color-elephant-500);
+}
+
+.artifact code {
+  font-family: var(--font-mono);
+  background-color: var(--color-fog-200);
+  padding: 0.1em 0.3em;
+  border-radius: var(--border-radius-sm);
+}
+
+.artifactEmpty {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  font-style: italic;
+}

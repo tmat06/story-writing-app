@@ -39,6 +39,7 @@ For backend-only work, include `No UI impact - design N/A` and still hand off.
 - Never print or echo secret environment variables (especially `PAPERCLIP_API_KEY`, JWTs, or tokens). Do not run broad env dumps for debugging.
 - Do not use `jq`; use Node.js or Python for JSON parsing when shell parsing is needed.
 - Do not post debug or placeholder comments on issues.
+- Do not call DELETE or PATCH on issue comments; only POST new comments. The Paperclip API may not support comment edit/delete and will return 404.
 - Prefer stable API calls with explicit JSON payloads (for example `--data-binary @- <<'JSON'`) instead of brittle quote-heavy one-liners.
 - Do not run `printenv`/`env` for `PAPERCLIP_*` keys. If you need context, read only specific non-secret vars directly (for example `PAPERCLIP_TASK_ID`, `PAPERCLIP_WAKE_REASON`).
 

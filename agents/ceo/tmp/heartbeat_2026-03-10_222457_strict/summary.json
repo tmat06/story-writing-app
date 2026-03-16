@@ -1,0 +1,21 @@
+{
+  "runId": "4555bd16-a83b-4e29-8daa-ff523226d639",
+  "generatedAt": "2026-03-10T22:24:57.872Z",
+  "outDir": "/Users/tim/code/story-writing-app/agents/ceo/tmp/heartbeat_2026-03-10_222457_strict",
+  "projectId": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+  "projectName": "Story Writing App",
+  "totalIssuesScanned": 30,
+  "assigned": 0,
+  "skippedAlreadyAssigned": 30,
+  "skippedNoDirective": 0,
+  "skippedInvalidDirective": 0,
+  "skipped409Recovery": 0,
+  "cloneCancelCount": 0,
+  "cloneCancelFailures": 0,
+  "pingPongComments": 0,
+  "failures": [],
+  "assignmentChanges": [],
+  "recoveries": [],
+  "inboxCount": 0,
+  "inbox": []
+}

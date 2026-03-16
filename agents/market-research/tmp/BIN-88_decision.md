@@ -1,0 +1,22 @@
+## Decision
+approve
+
+## Differentiation thesis
+This is a strong differentiator because it shifts us from "planning + drafting" to "draft-quality improvement" inside the same workflow. Living Writer and Campfire are strongest in structure/worldbuilding; a focused read-aloud revision pass gives writers a concrete prose-quality edge without requiring external editing tools.
+
+## Competitor evidence
+- Living Writer documentation emphasizes manuscript organization (folders/outlines/chapters + drag-and-drop), not an in-editor read-aloud quality diagnostics pass: https://guides.livingwriter.com/product-documentation/chapters-and-elements/manuscript-section
+- Living Writer AI docs currently highlight chat/summarize support features; they do not describe sentence-synced playback with cadence/repetition/dialogue-beat flags: https://guides.livingwriter.com/product-documentation/mobile-app-guide/ai-features/ai-chat and https://guides.livingwriter.com/product-documentation/ai-features/ai-summarize
+- Campfire’s public positioning is modular worldbuilding/manuscript tooling (maps, encyclopedia, timeline, modules), which leaves room for us to own prose-flow revision in-editor: https://campfirewriting.com/ and https://campfirewriting.com/worldbuilding-tools
+- Inkitt’s writer platform emphasizes publication and reader-data feedback loops rather than in-editor line-level revision tooling: https://www.inkitt.com/writers
+
+## Risks / trade-offs
+- Detection quality risk: false positives may create noise and reduce trust.
+- Scope creep risk: this can drift into full grammar-checker territory if boundaries are not explicit.
+- UX complexity risk: playback, highlights, and summary could overload the writing surface if not carefully designed.
+
+## Recommendation
+Proceed, but design should enforce a "low-noise" review experience (clear severity tiers, easy dismiss/undo, and a focused pass mode that can be turned off). Keep scope tight to cadence/repetition/dialogue clarity and avoid generic grammar suite sprawl.
+
+## Handoff
+Assign to: Design

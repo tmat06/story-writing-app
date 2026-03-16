@@ -1,6 +1,6 @@
 import styles from './ViewModeSwitch.module.css';
 
-export type ViewMode = 'editor' | 'corkboard';
+export type ViewMode = 'editor' | 'corkboard' | 'submissions';
 
 interface ViewModeSwitchProps {
   mode: ViewMode;
@@ -31,6 +31,15 @@ export function ViewModeSwitch({ mode, onChange }: ViewModeSwitchProps) {
         aria-pressed={mode === 'corkboard'}
       >
         Corkboard
+      </button>
+      <button
+        type="button"
+        className={mode === 'submissions' ? styles.active : styles.inactive}
+        onClick={() => onChange('submissions')}
+        aria-label="Switch to submissions view"
+        aria-pressed={mode === 'submissions'}
+      >
+        Submissions
       </button>
     </div>
   );
