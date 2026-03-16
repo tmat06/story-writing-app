@@ -6,6 +6,7 @@ Run this checklist on every heartbeat. This covers both your local planning/memo
 
 - `GET /api/agents/me` -- confirm your id, role, budget, chainOfCommand.
 - Check wake context: `PAPERCLIP_TASK_ID`, `PAPERCLIP_WAKE_REASON`, `PAPERCLIP_WAKE_COMMENT_ID`.
+- **If `PAPERCLIP_WAKE_REASON=issue_commented`:** run the fast-path from `AGENTS.md` (route only the commented issue, then get your own assignments). Skip steps 2–3 below and jump to step 4.
 
 ## 2. Local Planning Check
 

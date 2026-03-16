@@ -155,6 +155,34 @@ Codex will pick up assigned tasks on the next heartbeat (or when you trigger a r
 
 ---
 
+## Board: Verify and merge the PR
+
+When a **Review and merge: BIN-XX** ticket lands in your queue, Code Reviewer has approved the implementation and already created a GitHub PR for you.
+
+**Normal flow:**
+
+1. Open the **PR URL** in the merge ticket (e.g. `https://github.com/tmat06/story-writing-app/pull/4`).
+2. Verify the diff looks right — it should contain only Code Monkey’s changes for that ticket.
+3. Click **Merge pull request** on GitHub.
+4. After merging, pull and rebuild locally: `git pull origin main` then restart the dev server.
+
+That’s it. The PR is already open and approved — you just need to merge it.
+
+**If the ticket has a compare URL instead of a PR URL** (fallback case where `gh pr create` failed):
+
+1. Open the compare URL (e.g. `https://github.com/tmat06/story-writing-app/compare/main...ticket/BIN-64`).
+2. Click **Open pull request**, review, and merge.
+
+**If merged PRs don’t seem to change the app:**
+
+1. **Push never reached GitHub** — check the implementation ticket for a "push failed" comment. If the branch isn’t on origin, the agent’s push failed and you’ll need to push manually or re-run Code Monkey.
+2. **App not rebuilt** — after merging, always run `git pull origin main` and restart the dev server.
+3. **Wrong branch** — verify the PR head branch matches the ticket identifier (e.g. `ticket/BIN-64`).
+
+**Founding Engineer** only writes the implementation plan. **Code Monkey** commits and pushes code. **Code Reviewer** creates the PR. You only merge.
+
+---
+
 ## Release a stuck checkout (board)
 
 When a run fails (e.g. rate limit, `process_lost`, timeout) and that run had **checked out** an issue, the issue stays locked. The assignee will get **409 Conflict** on their next checkout and cannot continue until the checkout is released.

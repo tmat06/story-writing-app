@@ -6,7 +6,7 @@ import { Corkboard } from '@/components/Corkboard/Corkboard';
 import { SaveStatus } from '@/components/SaveStatus/SaveStatus';
 import { RecoveryBanner } from '@/components/RecoveryBanner/RecoveryBanner';
 import { ErrorBanner } from '@/components/ErrorBanner/ErrorBanner';
-import { getScenes, updateSceneOrder, updateSceneStatus } from '@/lib/scenes';
+import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
 import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
 import { useAutosave } from '@/hooks/useAutosave';
 import type { Scene, SceneStatus } from '@/types/scene';
@@ -92,6 +92,16 @@ export default function StoryPage({ params }: StoryPageProps) {
 
   const snapshotTimestamp = loadSnapshot(id)?.timestamp ?? Date.now();
 
+  const handleAddScene = (scene: Omit<Scene, 'id' | 'order'>) => {
+    addScene(id, scene);
+    refreshScenes();
+  };
+
+  const handleFieldChange = (sceneId: string, field: 'intent' | 'pov', value: string) => {
+    updateSceneFields(id, sceneId, { [field]: value });
+    refreshScenes();
+  };
+
   return (
     <div className={styles.page} data-view-mode={viewMode}>
       {viewMode === 'editor' ? (
@@ -168,11 +178,14 @@ export default function StoryPage({ params }: StoryPageProps) {
             </span>
           </div>
           <Corkboard
+            storyId={id}
             scenes={scenes}
             loading={scenesLoading}
             onSceneClick={handleSceneClick}
             onReorder={handleSceneReorder}
             onStatusChange={handleSceneStatusChange}
+            onAddScene={handleAddScene}
+            onFieldChange={handleFieldChange}
           />
         </div>
       )}

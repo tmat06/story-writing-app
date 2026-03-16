@@ -107,3 +107,53 @@
   outline: 2px solid var(--color-carbon-600);
   outline-offset: 1px;
 }
+
+.metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+}
+
+.chip {
+  display: inline-block;
+  padding: 2px var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-elephant-500);
+  background: var(--color-polar-100);
+  border: 1px solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  background: var(--color-fog-200);
+  border-color: var(--color-fashion-300);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 1px;
+}
+
+.chipEmpty {
+  color: var(--color-cement-400);
+  border-style: dashed;
+}
+
+.chipInput {
+  width: 120px;
+  padding: 2px var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-black-700);
+  background: var(--color-white);
+  border: 1px solid var(--color-carbon-600);
+  border-radius: var(--border-radius-sm);
+  outline: none;
+}

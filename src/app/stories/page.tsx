@@ -1,9 +1,47 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { getStories, createStory } from '@/lib/stories';
+import StoryCard from '@/components/StoryCard/StoryCard';
 import styles from './page.module.css';
 
 export default function StoriesPage() {
+  const [stories, setStories] = useState<ReturnType<typeof getStories>>([]);
+  const [showArchived, setShowArchived] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setStories(getStories());
+  }, []);
+
+  const filteredStories = stories.filter(s => s.isArchived === showArchived);
+
+  const handleUpdate = () => {
+    setStories(getStories());
+  };
+
+  const handleNavigate = (id: string) => {
+    router.push(`/story/${id}`);
+  };
+
+  const handleCreateStory = () => {
+    setIsCreating(true);
+    const newStory = createStory('Untitled Story');
+    router.push(`/story/${newStory.id}`);
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.toolbar}>
+        <button
+          className={styles.newStoryButton}
+          onClick={handleCreateStory}
+          disabled={isCreating}
+        >
+          {isCreating ? 'Creating...' : 'New Story'}
+        </button>
         <div className={styles.searchWrapper}>
           <label htmlFor="story-search" className={styles.visuallyHidden}>
             Search stories
@@ -16,18 +54,46 @@ export default function StoriesPage() {
             aria-label="Search stories"
           />
         </div>
-        <div className={styles.filters}>
-          <span className={styles.filterLabel}>Filter & Sort</span>
-        </div>
+        <button
+          className={styles.archiveToggle}
+          onClick={() => setShowArchived(!showArchived)}
+        >
+          {showArchived ? 'Hide Archived' : 'Show Archived'}
+        </button>
       </div>
 
       <div className={styles.storiesList}>
-        <div className={styles.emptyState}>
-          <p className={styles.emptyTitle}>No stories yet</p>
-          <p className={styles.emptyText}>
-            Create your first story to get started
-          </p>
-        </div>
+        {filteredStories.length > 0 ? (
+          <div className={styles.storiesGrid}>
+            {filteredStories.map(story => (
+              <StoryCard
+                key={story.id}
+                story={story}
+                showActions={true}
+                onUpdate={handleUpdate}
+                onClick={() => handleNavigate(story.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className={styles.emptyState}>
+            {!showArchived ? (
+              <>
+                <p className={styles.emptyTitle}>No stories yet</p>
+                <p className={styles.emptyText}>
+                  Create your first story to get started
+                </p>
+              </>
+            ) : (
+              <>
+                <p className={styles.emptyTitle}>No archived stories</p>
+                <p className={styles.emptyText}>
+                  Archive a story to see it here
+                </p>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
