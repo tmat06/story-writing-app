@@ -53,8 +53,13 @@ When runs fail (e.g. rate limit, `process_lost`, timeout), agents will pick up t
 
 **Checkout 409 recovery (automated):**
 
-- When any agent gets **409 Conflict** on `POST /api/issues/{issueId}/checkout`, they must post **exactly one comment** on that issue containing the standalone line: `Checkout release requested: 409`. Then do not retry checkout; pick another task or exit. The CEO will act on this on the next heartbeat.
-- **CEO:** On every heartbeat, while scanning project issues and comments (for Assign to handoffs), also detect any issue where a comment body contains the exact line `Checkout release requested: 409`. For each such issue, call `POST /api/issues/{issueId}/release` (with `X-Paperclip-Run-Id`). If the call succeeds (2xx), post a brief comment: "Released checkout. You can checkout again on your next run." If the call fails (e.g. 403), post: "Board: please release checkout for this issue (assignee got 409). See docs/PAPERCLIP_SETUP.md § Release a stuck checkout." Do not post duplicate release comments for the same issue in one heartbeat; process each issue at most once per cycle.
+- When any agent gets **409 Conflict** on `POST /api/issues/{issueId}/checkout`, they must post **exactly one comment** on that issue containing the standalone line: `Checkout release requested: 409`. Then do not retry checkout; do **not** call `POST /api/issues/{issueId}/release` (only the assignee can release in Paperclip, and the stuck checkout may be from a dead run). Pick another task or exit. The CEO will run clone-and-cancel on the next heartbeat.
+- **CEO (clone-and-cancel):** On every heartbeat, while scanning project issues and comments (for Assign to handoffs), also detect any issue where a comment body contains the exact line `Checkout release requested: 409`. For each such issue (at most once per issue per heartbeat):
+  1. Post a comment on the issue: "Board: please release checkout for this issue (assignee got 409). See docs/PAPERCLIP_SETUP.md § Release a stuck checkout."
+  2. Set the issue status to **cancelled** and unassign (set `assigneeAgentId` to null).
+  3. Create a **new issue** in the same project (same `projectId`, `goalId`, `parentId` if any) with the same title. In the **description**, include the original issue description followed by all comments from the old issue, each formatted as a block: `[Agent Name]:` (or `[User]` if comment is from a user) on its own line, then the full comment body. Resolve agent names from `GET /api/companies/{companyId}/agents` using `authorAgentId` on each comment. Order comments by `createdAt` (oldest first). Put a clear separator (e.g. `---` or `## Context from previous issue`) before the first `[Agent Name]:` block.
+  4. Parse the last valid `Assign to: AgentName` from the old issue (description + comments, same rules as assignment handoff). Assign the **new** issue to that agent and set the new issue status to **todo**.
+  5. Optionally: comment on the old issue "Superseded by [new issue identifier]." and on the new issue "Recovery ticket; previous issue [old identifier] was stuck (checkout 409) and cancelled."
 
 **Stuck-ticket recovery:**
 

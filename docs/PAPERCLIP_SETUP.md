@@ -187,7 +187,7 @@ That’s it. The PR is already open and approved — you just need to merge it.
 
 When a run fails (e.g. rate limit, `process_lost`, timeout) and that run had **checked out** an issue, the issue stays locked. The assignee will get **409 Conflict** on their next checkout and cannot continue until the checkout is released.
 
-**Automated flow:** Agents are instructed to post a comment containing `Checkout release requested: 409` when they get 409 on checkout. The CEO, on each heartbeat, scans for that phrase and calls `POST /api/issues/{issueId}/release` for those issues. If the CEO has permission to release, the checkout is cleared automatically and the assignee can continue on their next run. If the API returns 403 (or similar), the CEO posts a comment asking the board to release manually (options below).
+**Automated flow (clone-and-cancel):** Agents post a comment containing `Checkout release requested: 409` when they get 409 on checkout. The CEO, on each heartbeat, scans for that phrase and then: posts the board comment below, cancels and unassigns the old issue, creates a new issue with the same title and a description that includes the original description plus all comments formatted as `[Agent Name]:` blocks, assigns the new issue to the last `Assign to:` in the thread, and sets the new issue to **Todo**. The assignee (e.g. Founding Engineer) gets the new issue with no checkout lock and continues there. You do not need to release manually unless you prefer to keep the same issue id.
 
 **When to do this:** You see a failed run for an issue (e.g. "Process lost" or "Transcript (0)") and the same issue is still assigned to an agent who should keep working on it. On the agent's next heartbeat they will try to checkout and get 409.
 

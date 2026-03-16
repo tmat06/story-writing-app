@@ -80,6 +80,16 @@
   color: var(--color-cement-400);
 }
 
+.bannerContainer {
+  padding: var(--spacing-md) var(--spacing-lg) 0;
+}
+
+.corkboardSaveStatus {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  margin-left: auto;
+}
+
 .sidebar {
   display: flex;
   flex-direction: column;
