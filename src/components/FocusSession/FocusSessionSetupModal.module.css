@@ -1,0 +1,164 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+}
+
+.dialog {
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg);
+  max-width: 480px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+}
+
+.title {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+}
+
+.field {
+  margin-bottom: var(--spacing-md);
+}
+
+.label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-elephant-500);
+  margin-bottom: var(--spacing-xs);
+}
+
+.select,
+.input {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  color: var(--color-black-700);
+  background: var(--color-white);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  outline: none;
+  transition: border-color 100ms ease;
+  box-sizing: border-box;
+}
+
+.select:focus,
+.input:focus {
+  border-color: var(--color-carbon-600);
+}
+
+.timerRow {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-xs);
+}
+
+.timerOption {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  background: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease, border-color 100ms ease;
+  user-select: none;
+}
+
+.timerOption:hover {
+  color: var(--color-elephant-500);
+}
+
+.timerOptionActive {
+  background: var(--color-black-700);
+  color: var(--color-white);
+  border-color: var(--color-black-700);
+}
+
+.radioHidden {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.customTimer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.customTimer .input {
+  width: 80px;
+}
+
+.customTimerLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: var(--spacing-lg);
+}
+
+.cancelButton,
+.startButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton {
+  background: transparent;
+  border: var(--border-width) solid var(--color-fog-200);
+  color: var(--color-cement-400);
+}
+
+.cancelButton:hover {
+  background: var(--color-polar-100);
+}
+
+.startButton {
+  background: var(--color-black-700);
+  border: none;
+  color: var(--color-white);
+}
+
+.startButton:hover:not(:disabled) {
+  background: var(--color-carbon-600);
+}
+
+.startButton:disabled {
+  background: var(--color-fog-200);
+  color: var(--color-cement-400);
+  cursor: not-allowed;
+}
+
+.cancelButton:focus,
+.startButton:focus {
+  outline: 2px solid var(--color-fashion-300);
+  outline-offset: 2px;
+}
+
+.timerOption:focus-within {
+  outline: 2px solid var(--color-fashion-300);
+  outline-offset: 2px;
+}

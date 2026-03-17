@@ -1,0 +1,199 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+}
+
+.dialog {
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg);
+  max-width: 480px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+}
+
+.title {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+}
+
+.summary {
+  background: var(--color-polar-100);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xs) 0;
+}
+
+.summaryRow + .summaryRow {
+  border-top: var(--border-width) solid var(--color-fog-200);
+}
+
+.summaryLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+}
+
+.summaryValue {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-black-700);
+  text-align: right;
+}
+
+.field {
+  margin-bottom: var(--spacing-md);
+}
+
+.fieldLabel {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-elephant-500);
+  margin-bottom: var(--spacing-xs);
+}
+
+.statusRow {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.statusOption {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  background: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease;
+  user-select: none;
+}
+
+.statusOption:hover {
+  color: var(--color-elephant-500);
+}
+
+.statusOptionActive {
+  background: var(--color-black-700);
+  color: var(--color-white);
+  border-color: var(--color-black-700);
+}
+
+.radioHidden {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.select {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  color: var(--color-black-700);
+  background: var(--color-white);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  outline: none;
+  transition: border-color 100ms ease;
+  box-sizing: border-box;
+}
+
+.select:focus {
+  border-color: var(--color-carbon-600);
+}
+
+.textarea {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+  background: var(--color-white);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  outline: none;
+  resize: vertical;
+  box-sizing: border-box;
+  font-family: inherit;
+  line-height: var(--line-height-normal);
+  transition: border-color 100ms ease;
+}
+
+.textarea:focus {
+  border-color: var(--color-carbon-600);
+}
+
+.charCount {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  text-align: right;
+  margin-top: var(--spacing-xs);
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: var(--spacing-lg);
+}
+
+.saveButton,
+.saveNextButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background 100ms ease;
+  white-space: nowrap;
+}
+
+.saveButton {
+  background: transparent;
+  border: var(--border-width) solid var(--color-fog-200);
+  color: var(--color-cement-400);
+}
+
+.saveButton:hover {
+  background: var(--color-polar-100);
+}
+
+.saveNextButton {
+  background: var(--color-black-700);
+  border: none;
+  color: var(--color-white);
+}
+
+.saveNextButton:hover {
+  background: var(--color-carbon-600);
+}
+
+.saveButton:focus,
+.saveNextButton:focus {
+  outline: 2px solid var(--color-fashion-300);
+  outline-offset: 2px;
+}
+
+.statusOption:focus-within {
+  outline: 2px solid var(--color-fashion-300);
+  outline-offset: 2px;
+}

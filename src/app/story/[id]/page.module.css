@@ -63,6 +63,7 @@
   flex: 1;
   overflow: auto;
   background: var(--color-white);
+  position: relative;
 }
 
 .editorCanvas:focus-within {
@@ -93,6 +94,29 @@
 
 .bannerContainer {
   padding: var(--spacing-md) var(--spacing-lg) 0;
+}
+
+.focusSessionButton {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-elephant-500);
+  background: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease;
+  white-space: nowrap;
+}
+
+.focusSessionButton:hover {
+  background: var(--color-fog-200);
+  color: var(--color-black-700);
+}
+
+.focusSessionButton:focus {
+  outline: 2px solid var(--color-fashion-300);
+  outline-offset: 2px;
 }
 
 .corkboardSaveStatus {

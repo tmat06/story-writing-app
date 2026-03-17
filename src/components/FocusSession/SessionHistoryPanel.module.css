@@ -1,0 +1,96 @@
+.empty {
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.emptyText {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  line-height: var(--line-height-normal);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.card {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: var(--border-width) solid var(--color-fog-200);
+}
+
+.card:last-child {
+  border-bottom: none;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.sceneName {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.timestamp {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-xs);
+}
+
+.objective {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+}
+
+.badge {
+  font-size: var(--font-size-xs);
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--border-radius-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.badgeComplete {
+  background: var(--color-fog-200);
+  color: var(--color-elephant-500);
+}
+
+.badgeIncomplete {
+  background: var(--color-polar-100);
+  color: var(--color-cement-400);
+  border: var(--border-width) solid var(--color-fog-200);
+}
+
+.words {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  margin-left: auto;
+}
+
+.handoff {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  font-style: italic;
+  line-height: var(--line-height-normal);
+}

@@ -12,11 +12,17 @@ import { PacingBoard } from '@/components/PacingBoard/PacingBoard';
 import { RevisionPassPanel } from '@/components/RevisionPassPanel/RevisionPassPanel';
 import { CollabPanel } from '@/components/CollabPanel/CollabPanel';
 import { CollabBadge } from '@/components/CollabPanel/CollabBadge';
+import { FocusSessionSetupModal } from '@/components/FocusSession/FocusSessionSetupModal';
+import { FocusSessionOverlay } from '@/components/FocusSession/FocusSessionOverlay';
+import { FocusSessionRecapModal } from '@/components/FocusSession/FocusSessionRecapModal';
+import { SessionHistoryPanel } from '@/components/FocusSession/SessionHistoryPanel';
 import { getUnresolvedCount } from '@/lib/collaboration';
 import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
 import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
 import { useAutosave } from '@/hooks/useAutosave';
+import { useFocusSession } from '@/hooks/useFocusSession';
 import type { Scene, SceneStatus } from '@/types/scene';
+import type { ObjectiveStatus } from '@/types/session';
 import styles from './page.module.css';
 
 interface StoryPageProps {
@@ -27,7 +33,7 @@ function StoryPageInner({ id }: { id: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
-  const [sidebarTab, setSidebarTab] = useState<'notes' | 'revision' | 'collab' | null>(null);
+  const [sidebarTab, setSidebarTab] = useState<'notes' | 'revision' | 'collab' | 'sessions' | null>(null);
   const [focusedSceneId, setFocusedSceneId] = useState<string | null>(null);
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);
@@ -132,6 +138,34 @@ function StoryPageInner({ id }: { id: string }) {
 
   const unresolvedCollabCount = getUnresolvedCount(id);
 
+  const {
+    setupOpen,
+    activeSession,
+    recapSession,
+    elapsedSeconds,
+    isPaused,
+    wordsAdded,
+    openSetup,
+    closeSetup,
+    startSession,
+    pauseSession,
+    resumeSession,
+    toggleObjectiveStatus,
+    endSession,
+    saveRecap,
+  } = useFocusSession({ storyId: id, currentContent: content, currentSceneId: focusedSceneId, scenes });
+
+  const handleSaveRecap = (handoffNote: string, nextSceneId: string | null, objectiveStatus: ObjectiveStatus) => {
+    saveRecap(handoffNote, nextSceneId, objectiveStatus);
+  };
+
+  const handleSaveAndOpenNext = (handoffNote: string, nextSceneId: string | null, objectiveStatus: ObjectiveStatus) => {
+    saveRecap(handoffNote, nextSceneId, objectiveStatus);
+    if (nextSceneId) {
+      router.push(`/story/${id}?view=editor&scene=${nextSceneId}`);
+    }
+  };
+
   return (
     <div className={styles.page} data-view-mode={viewMode}>
       {viewMode === 'editor' ? (
@@ -147,6 +181,9 @@ function StoryPageInner({ id }: { id: string }) {
                 onChange={(e) => setStoryTitle(e.target.value)}
               />
               <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
+              <button className={styles.focusSessionButton} onClick={openSetup}>
+                Focus Session
+              </button>
               <SaveStatus saveState={saveState} lastSaved={lastSaved} onRetry={retrySave} />
             </div>
             <div className={styles.editorCanvas}>
@@ -179,6 +216,20 @@ function StoryPageInner({ id }: { id: string }) {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
               />
+              {activeSession && (
+                <FocusSessionOverlay
+                  session={activeSession}
+                  elapsedSeconds={elapsedSeconds}
+                  isPaused={isPaused}
+                  wordsAdded={wordsAdded}
+                  onPause={pauseSession}
+                  onResume={resumeSession}
+                  onEnd={endSession}
+                  onToggleObjective={toggleObjectiveStatus}
+                  scenes={scenes}
+                  currentSceneId={focusedSceneId}
+                />
+              )}
             </div>
           </div>
           <aside className={`${styles.sidebar} ${sidebarTab ? styles.sidebarOpen : ''}`}>
@@ -214,6 +265,16 @@ function StoryPageInner({ id }: { id: string }) {
                 Collab
                 <CollabBadge count={unresolvedCollabCount} />
               </button>
+              <button
+                role="tab"
+                id="tab-sessions"
+                aria-selected={sidebarTab === 'sessions'}
+                aria-controls="panel-sessions"
+                className={`${styles.sidebarTab} ${sidebarTab === 'sessions' ? styles.sidebarTabActive : ''}`}
+                onClick={() => setSidebarTab('sessions')}
+              >
+                Sessions
+              </button>
             </div>
             {sidebarTab === 'notes' ? (
               <div role="tabpanel" id="panel-notes" aria-labelledby="tab-notes" className={styles.sidebarSection}>
@@ -232,6 +293,10 @@ function StoryPageInner({ id }: { id: string }) {
                   onSceneJump={handleSceneJump}
                 />
               </div>
+            ) : sidebarTab === 'sessions' ? (
+              <div role="tabpanel" id="panel-sessions" aria-labelledby="tab-sessions" className={styles.sidebarPanelFull}>
+                <SessionHistoryPanel storyId={id} scenes={scenes} />
+              </div>
             ) : (
               <div role="tabpanel" id="panel-collab" aria-labelledby="tab-collab" className={styles.sidebarPanelFull}>
                 <CollabPanel
@@ -242,6 +307,23 @@ function StoryPageInner({ id }: { id: string }) {
               </div>
             )}
           </aside>
+        <FocusSessionSetupModal
+          isOpen={setupOpen}
+          scenes={scenes}
+          currentSceneId={focusedSceneId}
+          currentContent={content}
+          onStart={startSession}
+          onCancel={closeSetup}
+        />
+        {recapSession && (
+          <FocusSessionRecapModal
+            session={recapSession}
+            scenes={scenes}
+            onSave={handleSaveRecap}
+            onSaveAndOpenNext={handleSaveAndOpenNext}
+            onDismiss={() => saveRecap('', null, recapSession.objectiveStatus)}
+          />
+        )}
         </div>
       ) : viewMode === 'corkboard' ? (
         <div className={styles.corkboardLayout}>
