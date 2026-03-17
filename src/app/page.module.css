@@ -5,36 +5,42 @@
 }
 
 .welcome {
-  padding-bottom: var(--spacing-lg);
-  border-bottom: var(--border-width) solid var(--color-fashion-300);
+  border: none;
+  padding: 0;
 }
 
 .welcomeTitle {
-  margin: 0 0 var(--spacing-sm);
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-black-700);
-  line-height: var(--line-height-tight);
+  display: none;
 }
 
 .welcomeText {
   margin: 0;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-sm);
   color: var(--color-elephant-500);
   line-height: var(--line-height-normal);
 }
 
 .dashboard {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 2fr 1fr;
   gap: var(--spacing-xl);
 }
 
 .card {
   padding: var(--spacing-xl);
-  background-color: var(--color-polar-100);
-  border: var(--border-width) solid var(--color-fashion-300);
+  background: var(--color-white);
+  border: 1px solid var(--color-fashion-300);
   border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.quickResumeCard {
+  padding: var(--spacing-xl);
+  background: var(--color-white);
+  border: 1px solid var(--color-fashion-300);
+  border-left: 3px solid var(--color-carbon-600);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .cardTitle {
@@ -91,18 +97,22 @@
   color: white;
   border: none;
   border-radius: var(--border-radius-md);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 100ms ease;
 }
 
 .resumeButton:hover {
-  background: var(--color-black-900);
+  background: var(--color-carbon-600);
 }
 
-.resumeButton:focus {
-  outline: 2px solid var(--color-fashion-300);
+.resumeButton:active {
+  transform: scale(0.98);
+}
+
+.resumeButton:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
   outline-offset: 2px;
 }
 
@@ -112,17 +122,33 @@
   gap: var(--spacing-sm);
 }
 
+
+.viewAllLink {
+  display: block;
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  text-decoration: none;
+}
+
+.viewAllLink:hover {
+  color: var(--color-elephant-500);
+}
+
 @media (max-width: 767px) {
   .dashboard {
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
   }
 
-  .card {
+  .card,
+  .quickResumeCard {
     padding: var(--spacing-lg);
   }
+}
 
-  .welcomeTitle {
-    font-size: var(--font-size-2xl);
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dashboard {
+    grid-template-columns: 1fr 1fr;
   }
 }

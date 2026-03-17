@@ -14,7 +14,7 @@
   row-gap: var(--spacing-sm);
   padding: var(--spacing-md) var(--spacing-lg);
   background-color: var(--color-white);
-  border-bottom: var(--border-width) solid var(--color-fashion-300);
+  border-bottom: var(--border-width) solid var(--color-fog-200);
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
@@ -40,11 +40,11 @@
 .filterBtn {
   padding: var(--spacing-xs) var(--spacing-sm);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
+  font-weight: 500;
   color: var(--color-elephant-500);
-  background: var(--color-white);
+  background: var(--color-polar-100);
   border: 1px solid var(--color-fashion-300);
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -54,9 +54,10 @@
 }
 
 .filterBtnActive {
-  background: var(--color-black-700);
-  color: var(--color-white);
-  border-color: var(--color-black-700);
+  background: var(--color-fog-200);
+  color: var(--color-black-700);
+  border-color: var(--color-cement-400);
+  font-weight: 600;
 }
 
 .filterBtn:focus-visible {
@@ -68,16 +69,17 @@
   padding: var(--spacing-xs) var(--spacing-md);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-  color: var(--color-white);
-  background: var(--color-black-700);
-  border: none;
+  color: var(--color-elephant-500);
+  background: var(--color-white);
+  border: 1px solid var(--color-fashion-300);
   border-radius: var(--border-radius-sm);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .addSceneBtn:hover {
-  background: var(--color-carbon-600);
+  border-color: var(--color-carbon-600);
+  color: var(--color-black-700);
 }
 
 .addSceneBtn:focus-visible {
@@ -210,13 +212,13 @@
 }
 
 .chapterChip {
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: 2px 8px;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-normal);
   color: var(--color-elephant-500);
-  background: var(--color-white);
-  border: 1px solid var(--color-fog-200);
-  border-radius: var(--border-radius-sm);
+  background: var(--color-polar-100);
+  border: 1px solid var(--color-fashion-300);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all 0.15s;
 }

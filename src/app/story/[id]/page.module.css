@@ -18,6 +18,7 @@
 
 .editorHeader {
   padding: var(--spacing-lg);
+  background: var(--color-white);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
 }
 
@@ -28,16 +29,18 @@
   color: var(--color-black-700);
   background: none;
   border: none;
+  border-bottom: 1px solid transparent;
   outline: none;
   padding: var(--spacing-sm);
   margin: calc(var(--spacing-sm) * -1);
   border-radius: var(--border-radius-sm);
+  transition: border-color 100ms ease;
 }
 
 .titleInput:focus {
-  background-color: var(--color-fog-200);
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
+  background: none;
+  border-bottom: 1px solid var(--color-carbon-600);
+  outline: none;
 }
 
 .titleInput::placeholder {
@@ -59,21 +62,29 @@
 .editorCanvas {
   flex: 1;
   overflow: auto;
+  background: var(--color-white);
+}
+
+.editorCanvas:focus-within {
+  box-shadow: inset 0 0 0 1px var(--color-fog-200);
 }
 
 .editor {
   width: 100%;
   height: 100%;
   min-height: 400px;
-  padding: var(--spacing-lg);
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: var(--spacing-2xl) var(--spacing-lg);
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-lg);
   line-height: var(--line-height-relaxed);
   color: var(--color-black-700);
-  background: none;
+  background: var(--color-white);
   border: none;
   resize: none;
   outline: none;
+  display: block;
 }
 
 .editor::placeholder {
@@ -99,7 +110,8 @@
 
 .sidebarTabBar {
   display: flex;
-  border-bottom: var(--border-width) solid var(--color-fashion-300);
+  background: var(--color-polar-100);
+  border-bottom: 1px solid var(--color-fog-200);
   flex-shrink: 0;
 }
 
@@ -107,22 +119,24 @@
   flex: 1;
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-weight: 400;
   color: var(--color-cement-400);
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
   text-align: center;
-  transition: color 0.1s;
+  transition: background 100ms ease, color 100ms ease;
 }
 
 .sidebarTab:hover {
-  color: var(--color-black-700);
+  color: var(--color-elephant-500);
 }
 
 .sidebarTabActive {
+  background: var(--color-white);
   color: var(--color-black-700);
+  font-weight: 600;
   border-bottom-color: var(--color-carbon-600);
 }
 
@@ -147,11 +161,11 @@
 
 .sidebarTitle {
   margin: 0 0 var(--spacing-md);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-black-700);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-elephant-500);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .sidebarPlaceholder {
@@ -166,13 +180,26 @@
   line-height: var(--line-height-normal);
 }
 
+.sidebarOpen {
+  transform: translateY(0) !important;
+}
+
 @media (max-width: 1023px) {
   .editorLayout {
     grid-template-columns: 1fr;
   }
 
   .sidebar {
-    display: none;
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60vh;
+    z-index: var(--z-modal);
+    transform: translateY(100%);
+    transition: transform 250ms ease-out;
+    box-shadow: var(--shadow-lg);
   }
 }
 

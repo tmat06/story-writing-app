@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { getStories } from '@/lib/stories';
 import StoryCard from '@/components/StoryCard/StoryCard';
 import styles from "./page.module.css";
@@ -35,7 +36,7 @@ export default function Home() {
       </section>
 
       <div className={styles.dashboard}>
-        <section className={styles.card} aria-labelledby="quick-resume-heading">
+        <section className={styles.quickResumeCard} aria-labelledby="quick-resume-heading">
           <h3 id="quick-resume-heading" className={styles.cardTitle}>
             Quick Resume
           </h3>
@@ -67,16 +68,19 @@ export default function Home() {
             Recent Stories
           </h3>
           {activeStories.length > 0 ? (
-            <div className={styles.storyList}>
-              {activeStories.slice(0, 5).map(story => (
-                <StoryCard
-                  key={story.id}
-                  story={story}
-                  showActions={true}
-                  onUpdate={handleUpdate}
-                  onClick={() => handleNavigate(story.id)}
-                />
-              ))}
+            <div>
+              <div className={styles.storyList}>
+                {activeStories.slice(0, 3).map(story => (
+                  <StoryCard
+                    key={story.id}
+                    story={story}
+                    showActions={true}
+                    onUpdate={handleUpdate}
+                    onClick={() => handleNavigate(story.id)}
+                  />
+                ))}
+              </div>
+              <Link href="/stories" className={styles.viewAllLink}>View all stories →</Link>
             </div>
           ) : (
             <div className={styles.emptyState}>

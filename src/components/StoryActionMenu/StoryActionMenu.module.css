@@ -29,7 +29,7 @@
   right: 0;
   top: 100%;
   margin-top: var(--spacing-xs);
-  background: white;
+  background: var(--color-white);
   border: 1px solid var(--color-fog-200);
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-md);
@@ -74,7 +74,7 @@
 }
 
 .renameDialog {
-  background: white;
+  background: var(--color-white);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-lg);
   max-width: 400px;
