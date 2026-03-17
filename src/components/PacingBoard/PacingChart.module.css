@@ -1,0 +1,127 @@
+/* Data visualization band colors — the only non-grayscale values in the app.
+   Defined locally here only; do not add to global tokens.css. */
+--pacing-band-ok: #c8e6c9;
+--pacing-band-warn: #fff3cd;
+--pacing-band-alert: #f8d7da;
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.chapterRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: 32px;
+}
+
+.chapterLabel {
+  flex-shrink: 0;
+  width: 120px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-cement-400);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.barContainer {
+  display: flex;
+  flex: 1;
+  height: 28px;
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  background-color: var(--color-fog-200);
+}
+
+.barContainer:empty {
+  background-color: var(--color-fog-200);
+}
+
+.sceneSegment {
+  height: 100%;
+  cursor: default;
+  transition: opacity 0.15s ease;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.sceneSegment:last-child {
+  border-right: none;
+}
+
+.sceneSegment:hover {
+  opacity: 0.8;
+}
+
+.segmentOk {
+  background-color: #c8e6c9;
+}
+
+.segmentWarn {
+  background-color: #fff3cd;
+}
+
+.segmentAlert {
+  background-color: #f8d7da;
+}
+
+.statsRow {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: var(--border-width) solid var(--color-fog-200);
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statLabel {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-elephant-500);
+}
+
+.emptyState {
+  color: var(--color-cement-400);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  padding: var(--spacing-md) 0;
+}
+
+.legendRow {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  align-items: center;
+}
+
+.legendDot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.legendOk {
+  background-color: #c8e6c9;
+}
+
+.legendWarn {
+  background-color: #fff3cd;
+}
+
+.legendAlert {
+  background-color: #f8d7da;
+}

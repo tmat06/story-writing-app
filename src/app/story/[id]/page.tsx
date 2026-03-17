@@ -8,6 +8,7 @@ import { SaveStatus } from '@/components/SaveStatus/SaveStatus';
 import { RecoveryBanner } from '@/components/RecoveryBanner/RecoveryBanner';
 import { ErrorBanner } from '@/components/ErrorBanner/ErrorBanner';
 import { SubmissionTracker } from '@/components/SubmissionTracker/SubmissionTracker';
+import { PacingBoard } from '@/components/PacingBoard/PacingBoard';
 import { RevisionPassPanel } from '@/components/RevisionPassPanel/RevisionPassPanel';
 import { CollabPanel } from '@/components/CollabPanel/CollabPanel';
 import { CollabBadge } from '@/components/CollabPanel/CollabBadge';
@@ -59,7 +60,7 @@ function StoryPageInner({ id }: { id: string }) {
   useEffect(() => {
     const view = searchParams.get('view') as ViewMode | null;
     const scene = searchParams.get('scene');
-    if (view && ['editor', 'corkboard', 'submissions'].includes(view)) {
+    if (view && ['editor', 'corkboard', 'submissions', 'pacing'].includes(view)) {
       setViewMode(view);
     }
     if (scene) {
@@ -269,6 +270,30 @@ function StoryPageInner({ id }: { id: string }) {
             onAddScene={handleAddScene}
             onFieldChange={handleFieldChange}
           />
+        </div>
+      ) : viewMode === 'pacing' ? (
+        <div className={styles.pacingLayout}>
+          <div className={styles.corkboardHeader}>
+            <input
+              type="text"
+              className={styles.titleInput}
+              placeholder="Untitled Story"
+              aria-label="Story title"
+              value={storyTitle}
+              onChange={(e) => setStoryTitle(e.target.value)}
+            />
+            <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
+          </div>
+          <div className={styles.pacingContainer}>
+            <PacingBoard
+              storyId={id}
+              scenes={scenes}
+              onJumpToScene={(sceneId) => {
+                setFocusedSceneId(sceneId);
+                setViewMode('corkboard');
+              }}
+            />
+          </div>
         </div>
       ) : (
         <div className={styles.submissionsLayout}>

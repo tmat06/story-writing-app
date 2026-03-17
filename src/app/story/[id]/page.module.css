@@ -224,6 +224,20 @@
   flex: 1;
 }
 
+/* Pacing layout */
+.pacingLayout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--color-white);
+}
+
+.pacingContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+
 /* Submissions layout */
 .submissionsLayout {
   height: 100%;
