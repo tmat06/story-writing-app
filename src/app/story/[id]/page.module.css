@@ -95,6 +95,28 @@
   padding: var(--spacing-md) var(--spacing-lg) 0;
 }
 
+.focusModeButton {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-elephant-500);
+  background: none;
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease;
+  white-space: nowrap;
+}
+
+.focusModeButton:hover {
+  background: var(--color-polar-100);
+  color: var(--color-black-700);
+}
+
+.focusModeButton:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
 .corkboardSaveStatus {
   font-size: var(--font-size-sm);
   color: var(--color-cement-400);
@@ -270,4 +292,32 @@
   .editor {
     padding: var(--spacing-md);
   }
+}
+
+/* Focus Mode overrides */
+.page[data-focus-mode='true'] .editorLayout {
+  grid-template-columns: 1fr;
+}
+
+.page[data-focus-mode='true'] .editorMain {
+  border-right: none;
+}
+
+.page[data-focus-mode='true'] .editorMain .editorHeader > *:not(.titleInput) {
+  display: none;
+}
+
+.page[data-focus-mode='true'] .sidebar {
+  display: none;
+}
+
+.page[data-focus-mode='true'] .editorCanvas {
+  display: flex;
+  justify-content: center;
+}
+
+.page[data-focus-mode='true'] .editor {
+  max-width: 720px;
+  width: 100%;
+  flex: 1;
 }
