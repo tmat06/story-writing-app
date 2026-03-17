@@ -142,6 +142,7 @@ function StoryPageInner({ id }: { id: string }) {
     setupOpen,
     activeSession,
     recapSession,
+    sessions: focusSessions,
     elapsedSeconds,
     isPaused,
     wordsAdded,
@@ -153,11 +154,7 @@ function StoryPageInner({ id }: { id: string }) {
     toggleObjectiveStatus,
     endSession,
     saveRecap,
-  } = useFocusSession({ storyId: id, currentContent: content, currentSceneId: focusedSceneId, scenes });
-
-  const handleSaveRecap = (handoffNote: string, nextSceneId: string | null, objectiveStatus: ObjectiveStatus) => {
-    saveRecap(handoffNote, nextSceneId, objectiveStatus);
-  };
+  } = useFocusSession({ storyId: id, currentContent: content });
 
   const handleSaveAndOpenNext = (handoffNote: string, nextSceneId: string | null, objectiveStatus: ObjectiveStatus) => {
     saveRecap(handoffNote, nextSceneId, objectiveStatus);
@@ -295,7 +292,7 @@ function StoryPageInner({ id }: { id: string }) {
               </div>
             ) : sidebarTab === 'sessions' ? (
               <div role="tabpanel" id="panel-sessions" aria-labelledby="tab-sessions" className={styles.sidebarPanelFull}>
-                <SessionHistoryPanel storyId={id} scenes={scenes} />
+                <SessionHistoryPanel sessions={focusSessions} />
               </div>
             ) : (
               <div role="tabpanel" id="panel-collab" aria-labelledby="tab-collab" className={styles.sidebarPanelFull}>
@@ -319,8 +316,9 @@ function StoryPageInner({ id }: { id: string }) {
           <FocusSessionRecapModal
             session={recapSession}
             scenes={scenes}
-            onSave={handleSaveRecap}
+            onSave={saveRecap}
             onSaveAndOpenNext={handleSaveAndOpenNext}
+            // Saving on dismiss (with empty handoff note) is intentional: prevents data loss after a completed session
             onDismiss={() => saveRecap('', null, recapSession.objectiveStatus)}
           />
         )}

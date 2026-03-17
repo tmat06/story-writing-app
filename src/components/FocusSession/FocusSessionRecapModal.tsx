@@ -2,17 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { FocusSession, ObjectiveStatus } from '@/types/session';
+import { OBJECTIVE_LABELS } from '@/types/session';
 import type { Scene } from '@/types/scene';
 import styles from './FocusSessionRecapModal.module.css';
-
-const OBJECTIVE_LABELS: Record<string, string> = {
-  'draft-beat': 'Draft a beat',
-  'revise-pacing': 'Revise pacing',
-  'tighten-dialogue': 'Tighten dialogue',
-  'polish-description': 'Polish description',
-  'review-continuity': 'Review continuity',
-  other: 'Other',
-};
 
 interface FocusSessionRecapModalProps {
   session: FocusSession;

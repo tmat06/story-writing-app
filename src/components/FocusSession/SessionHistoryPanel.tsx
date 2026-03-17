@@ -1,31 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import type { Scene } from '@/types/scene';
-import { getSessions } from '@/lib/sessions';
+import type { FocusSession } from '@/types/session';
+import { OBJECTIVE_LABELS } from '@/types/session';
 import { relativeTime } from '@/lib/relativeTime';
 import styles from './SessionHistoryPanel.module.css';
 
-const OBJECTIVE_LABELS: Record<string, string> = {
-  'draft-beat': 'Draft a beat',
-  'revise-pacing': 'Revise pacing',
-  'tighten-dialogue': 'Tighten dialogue',
-  'polish-description': 'Polish description',
-  'review-continuity': 'Review continuity',
-  other: 'Other',
-};
-
 interface SessionHistoryPanelProps {
-  storyId: string;
-  scenes: Scene[];
+  sessions: FocusSession[];
 }
 
-export function SessionHistoryPanel({ storyId, scenes: _scenes }: SessionHistoryPanelProps) {
-  const [sessions, setSessions] = useState(() => getSessions(storyId));
-
-  useEffect(() => {
-    setSessions(getSessions(storyId));
-  }, [storyId]);
+export function SessionHistoryPanel({ sessions }: SessionHistoryPanelProps) {
 
   if (sessions.length === 0) {
     return (

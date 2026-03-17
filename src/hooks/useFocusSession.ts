@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { FocusSession, ObjectiveType, ObjectiveStatus, ActiveSessionState } from '@/types/session';
-import type { Scene } from '@/types/scene';
+import type { FocusSession, ObjectiveType, ObjectiveStatus } from '@/types/session';
 import {
   getSessions,
   saveSession,
@@ -15,8 +14,6 @@ import {
 interface UseFocusSessionProps {
   storyId: string;
   currentContent: string;
-  currentSceneId: string | null;
-  scenes: Scene[];
 }
 
 interface StartSessionConfig {
@@ -32,6 +29,7 @@ interface UseFocusSessionReturn {
   setupOpen: boolean;
   activeSession: FocusSession | null;
   recapSession: FocusSession | null;
+  sessions: FocusSession[];
   elapsedSeconds: number;
   isPaused: boolean;
   wordsAdded: number;
@@ -48,22 +46,22 @@ interface UseFocusSessionReturn {
 export function useFocusSession({
   storyId,
   currentContent,
-  currentSceneId,
-  scenes,
 }: UseFocusSessionProps): UseFocusSessionReturn {
   const [setupOpen, setSetupOpen] = useState(false);
   const [activeSession, setActiveSession] = useState<FocusSession | null>(null);
   const [recapSession, setRecapSession] = useState<FocusSession | null>(null);
+  const [sessions, setSessions] = useState<FocusSession[]>(() => getSessions(storyId));
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // On mount: restore active session from localStorage
   useEffect(() => {
+    setSessions(getSessions(storyId));
     const state = getActiveSessionState(storyId);
     if (!state) return;
-    const sessions = getSessions(storyId);
-    const session = sessions.find((s) => s.id === state.sessionId && s.endedAt === null);
+    const stored = getSessions(storyId);
+    const session = stored.find((s) => s.id === state.sessionId && s.endedAt === null);
     if (session) {
       setActiveSession(session);
       setElapsedSeconds(state.elapsedSeconds);
@@ -195,19 +193,17 @@ export function useFocusSession({
         objectiveStatus,
       };
       saveSession(finalized);
+      setSessions(getSessions(storyId));
       setRecapSession(null);
     },
-    [recapSession]
+    [recapSession, storyId]
   );
-
-  // scenes is used for context — suppress unused warning
-  void scenes;
-  void currentSceneId;
 
   return {
     setupOpen,
     activeSession,
     recapSession,
+    sessions,
     elapsedSeconds,
     isPaused,
     wordsAdded,

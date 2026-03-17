@@ -6,6 +6,15 @@ export type ObjectiveType =
   | 'review-continuity'
   | 'other';
 
+export const OBJECTIVE_LABELS: Record<ObjectiveType, string> = {
+  'draft-beat': 'Draft a beat',
+  'revise-pacing': 'Revise pacing',
+  'tighten-dialogue': 'Tighten dialogue',
+  'polish-description': 'Polish description',
+  'review-continuity': 'Review continuity',
+  other: 'Other',
+};
+
 export type ObjectiveStatus = 'in-progress' | 'complete';
 
 export interface FocusSession {
