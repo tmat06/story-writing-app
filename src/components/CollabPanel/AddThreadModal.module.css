@@ -1,0 +1,182 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--spacing-md);
+}
+
+.modal {
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: var(--border-width) solid var(--color-fashion-300);
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+}
+
+.closeBtn {
+  font-size: var(--font-size-xl);
+  color: var(--color-cement-400);
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+  padding: var(--spacing-xs);
+}
+
+.closeBtn:hover,
+.closeBtn:focus-visible {
+  color: var(--color-black-700);
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.form {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-cement-400);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.input,
+.textarea {
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+  background: var(--color-white);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  width: 100%;
+  font-family: var(--font-sans);
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+  border-color: var(--color-carbon-600);
+}
+
+.typeGroup {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.typeBtn {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-cement-400);
+  background: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  cursor: pointer;
+  text-align: center;
+}
+
+.typeBtn:hover,
+.typeBtn:focus-visible {
+  color: var(--color-black-700);
+  border-color: var(--color-elephant-500);
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.typeBtnActive {
+  color: var(--color-white);
+  background: var(--color-carbon-600);
+  border-color: var(--color-carbon-600);
+}
+
+.typeBtnActive:hover {
+  background: var(--color-black-700);
+}
+
+.error {
+  font-size: var(--font-size-xs);
+  color: var(--color-carbon-600);
+  font-weight: var(--font-weight-medium);
+  margin: 0;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: var(--border-width) solid var(--color-fashion-300);
+}
+
+.cancelBtn {
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  background: none;
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  cursor: pointer;
+}
+
+.cancelBtn:hover,
+.cancelBtn:focus-visible {
+  color: var(--color-black-700);
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.submitBtn {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-white);
+  background: var(--color-carbon-600);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  cursor: pointer;
+}
+
+.submitBtn:hover,
+.submitBtn:focus-visible {
+  background: var(--color-black-700);
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
