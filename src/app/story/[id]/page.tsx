@@ -9,6 +9,9 @@ import { RecoveryBanner } from '@/components/RecoveryBanner/RecoveryBanner';
 import { ErrorBanner } from '@/components/ErrorBanner/ErrorBanner';
 import { SubmissionTracker } from '@/components/SubmissionTracker/SubmissionTracker';
 import { RevisionPassPanel } from '@/components/RevisionPassPanel/RevisionPassPanel';
+import { CollabPanel } from '@/components/CollabPanel/CollabPanel';
+import { CollabBadge } from '@/components/CollabPanel/CollabBadge';
+import { getUnresolvedCount } from '@/lib/collaboration';
 import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
 import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
 import { useAutosave } from '@/hooks/useAutosave';
@@ -23,7 +26,7 @@ function StoryPageInner({ id }: { id: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
-  const [sidebarTab, setSidebarTab] = useState<'notes' | 'revision'>('notes');
+  const [sidebarTab, setSidebarTab] = useState<'notes' | 'revision' | 'collab'>('notes');
   const [focusedSceneId, setFocusedSceneId] = useState<string | null>(null);
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);
@@ -126,6 +129,8 @@ function StoryPageInner({ id }: { id: string }) {
     setViewMode('corkboard');
   };
 
+  const unresolvedCollabCount = getUnresolvedCount(id);
+
   return (
     <div className={styles.page} data-view-mode={viewMode}>
       {viewMode === 'editor' ? (
@@ -176,10 +181,12 @@ function StoryPageInner({ id }: { id: string }) {
             </div>
           </div>
           <aside className={styles.sidebar}>
-            <div className={styles.sidebarTabBar} role="tablist" aria-label="Sidebar tabs">
+            <div className={styles.sidebarTabBar} role="tablist" aria-label="Sidebar panels">
               <button
                 role="tab"
+                id="tab-notes"
                 aria-selected={sidebarTab === 'notes'}
+                aria-controls="panel-notes"
                 className={`${styles.sidebarTab} ${sidebarTab === 'notes' ? styles.sidebarTabActive : ''}`}
                 onClick={() => setSidebarTab('notes')}
               >
@@ -187,28 +194,51 @@ function StoryPageInner({ id }: { id: string }) {
               </button>
               <button
                 role="tab"
+                id="tab-revision"
                 aria-selected={sidebarTab === 'revision'}
+                aria-controls="panel-revision"
                 className={`${styles.sidebarTab} ${sidebarTab === 'revision' ? styles.sidebarTabActive : ''}`}
                 onClick={() => setSidebarTab('revision')}
               >
                 Revision
               </button>
+              <button
+                role="tab"
+                id="tab-collab"
+                aria-selected={sidebarTab === 'collab'}
+                aria-controls="panel-collab"
+                className={`${styles.sidebarTab} ${sidebarTab === 'collab' ? styles.sidebarTabActive : ''} ${styles.sidebarTabWithBadge}`}
+                onClick={() => setSidebarTab('collab')}
+              >
+                Collab
+                <CollabBadge count={unresolvedCollabCount} />
+              </button>
             </div>
             {sidebarTab === 'notes' ? (
-              <div className={styles.sidebarSection}>
+              <div role="tabpanel" id="panel-notes" aria-labelledby="tab-notes" className={styles.sidebarSection}>
                 <div className={styles.sidebarPlaceholder}>
                   <p className={styles.placeholderText}>
                     Notes and outline will appear here
                   </p>
                 </div>
               </div>
+            ) : sidebarTab === 'revision' ? (
+              <div role="tabpanel" id="panel-revision" aria-labelledby="tab-revision" className={styles.sidebarPanelFull}>
+                <RevisionPassPanel
+                  storyId={id}
+                  storyTitle={storyTitle}
+                  scenes={scenes}
+                  onSceneJump={handleSceneJump}
+                />
+              </div>
             ) : (
-              <RevisionPassPanel
-                storyId={id}
-                storyTitle={storyTitle}
-                scenes={scenes}
-                onSceneJump={handleSceneJump}
-              />
+              <div role="tabpanel" id="panel-collab" aria-labelledby="tab-collab" className={styles.sidebarPanelFull}>
+                <CollabPanel
+                  storyId={id}
+                  scenes={scenes}
+                  onSceneJump={handleSceneJump}
+                />
+              </div>
             )}
           </aside>
         </div>

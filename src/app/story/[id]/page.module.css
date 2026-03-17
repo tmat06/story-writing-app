@@ -126,6 +126,20 @@
   border-bottom-color: var(--color-carbon-600);
 }
 
+.sidebarTabWithBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+.sidebarPanelFull {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .sidebarSection {
   padding: var(--spacing-lg);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
