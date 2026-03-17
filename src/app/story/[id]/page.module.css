@@ -97,6 +97,35 @@
   overflow-y: auto;
 }
 
+.sidebarTabBar {
+  display: flex;
+  border-bottom: var(--border-width) solid var(--color-fashion-300);
+  flex-shrink: 0;
+}
+
+.sidebarTab {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-cement-400);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  text-align: center;
+  transition: color 0.1s;
+}
+
+.sidebarTab:hover {
+  color: var(--color-black-700);
+}
+
+.sidebarTabActive {
+  color: var(--color-black-700);
+  border-bottom-color: var(--color-carbon-600);
+}
+
 .sidebarSection {
   padding: var(--spacing-lg);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
