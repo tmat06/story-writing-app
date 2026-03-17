@@ -1,0 +1,300 @@
+.detail {
+  background-color: var(--color-polar-100);
+  border-top: var(--border-width) solid var(--color-fashion-300);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.detailHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.detailMeta {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.typeLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-elephant-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sceneLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  color: var(--color-cement-400);
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.closeBtn:hover {
+  color: var(--color-black-700);
+}
+
+.closeBtn:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.detailTitle {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.controlRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.controlLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  width: 5rem;
+  flex-shrink: 0;
+}
+
+.controlSelect,
+.controlInput {
+  flex: 1;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+  background-color: var(--color-white);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  outline: none;
+}
+
+.controlSelect:focus,
+.controlInput:focus {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.emptyTimeline {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  text-align: center;
+  padding: var(--spacing-sm) 0;
+}
+
+.commentItem {
+  background-color: var(--color-white);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-sm);
+}
+
+.commentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xs);
+}
+
+.commentAuthor {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-carbon-600);
+}
+
+.commentTime {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+}
+
+.commentBody {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  line-height: var(--line-height-normal);
+}
+
+.decisionBlock {
+  background-color: var(--color-fog-200);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-sm);
+}
+
+.decisionLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-carbon-600);
+}
+
+.decisionTime {
+  font-weight: var(--font-weight-normal);
+  color: var(--color-cement-400);
+}
+
+.decisionNote {
+  margin: var(--spacing-xs) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+}
+
+.decisionActions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.acceptBtn,
+.rejectBtn {
+  flex: 1;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  border: var(--border-width) solid var(--color-fashion-300);
+}
+
+.acceptBtn {
+  background-color: var(--color-white);
+  color: var(--color-black-700);
+}
+
+.acceptBtn:hover {
+  background-color: var(--color-fog-200);
+}
+
+.rejectBtn {
+  background-color: var(--color-white);
+  color: var(--color-cement-400);
+}
+
+.rejectBtn:hover {
+  background-color: var(--color-fog-200);
+}
+
+.acceptBtn:focus-visible,
+.rejectBtn:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.decisionForm,
+.commentForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  background-color: var(--color-white);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-sm);
+}
+
+.formTitle,
+.decisionFormTitle {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-elephant-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.formInput,
+.formTextarea {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+  background-color: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  outline: none;
+  font-family: inherit;
+}
+
+.formInput::placeholder,
+.formTextarea::placeholder {
+  color: var(--color-cement-400);
+}
+
+.formInput:focus,
+.formTextarea:focus {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.formTextarea {
+  resize: vertical;
+}
+
+.formActions {
+  display: flex;
+  gap: var(--spacing-xs);
+  justify-content: flex-end;
+}
+
+.submitBtn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-white);
+  background-color: var(--color-carbon-600);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background-color: var(--color-black-700);
+}
+
+.submitBtn:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.cancelBtn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  background: none;
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+}
+
+.cancelBtn:hover {
+  background-color: var(--color-fog-200);
+}
+
+.cancelBtn:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}

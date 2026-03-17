@@ -7,8 +7,11 @@ import { SaveStatus } from '@/components/SaveStatus/SaveStatus';
 import { RecoveryBanner } from '@/components/RecoveryBanner/RecoveryBanner';
 import { ErrorBanner } from '@/components/ErrorBanner/ErrorBanner';
 import { SubmissionTracker } from '@/components/SubmissionTracker/SubmissionTracker';
+import { CollabPanel } from '@/components/CollabPanel/CollabPanel';
+import { CollabBadge } from '@/components/CollabPanel/CollabBadge';
 import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
 import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
+import { getUnresolvedCount } from '@/lib/collaboration';
 import { useAutosave } from '@/hooks/useAutosave';
 import type { Scene, SceneStatus } from '@/types/scene';
 import styles from './page.module.css';
@@ -25,6 +28,8 @@ export default function StoryPage({ params }: StoryPageProps) {
   const [storyTitle, setStoryTitle] = useState(`Story ${id}`);
   const [showRecovery, setShowRecovery] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [sidebarTab, setSidebarTab] = useState<'notes' | 'collab'>('notes');
+  const [unresolvedCount, setUnresolvedCount] = useState(() => getUnresolvedCount(id));
 
   const {
     content,
@@ -104,6 +109,15 @@ export default function StoryPage({ params }: StoryPageProps) {
     refreshScenes();
   };
 
+  const handleSceneJump = (sceneId: string | null) => {
+    setViewMode('corkboard');
+    console.log('Collab: jump to scene', sceneId);
+  };
+
+  const refreshUnresolved = () => {
+    setUnresolvedCount(getUnresolvedCount(id));
+  };
+
   return (
     <div className={styles.page} data-view-mode={viewMode}>
       {viewMode === 'editor' ? (
@@ -154,14 +168,41 @@ export default function StoryPage({ params }: StoryPageProps) {
             </div>
           </div>
           <aside className={styles.sidebar}>
-            <div className={styles.sidebarSection}>
-              <h3 className={styles.sidebarTitle}>Notes</h3>
-              <div className={styles.sidebarPlaceholder}>
-                <p className={styles.placeholderText}>
-                  Notes and outline will appear here
-                </p>
-              </div>
+            <div className={styles.sidebarTabs}>
+              <button
+                className={`${styles.sidebarTab} ${sidebarTab === 'notes' ? styles.sidebarTabActive : ''}`}
+                onClick={() => setSidebarTab('notes')}
+                aria-pressed={sidebarTab === 'notes'}
+              >
+                Notes
+              </button>
+              <button
+                className={`${styles.sidebarTab} ${sidebarTab === 'collab' ? styles.sidebarTabActive : ''}`}
+                onClick={() => { setSidebarTab('collab'); refreshUnresolved(); }}
+                aria-pressed={sidebarTab === 'collab'}
+                aria-label={`Collaboration${unresolvedCount > 0 ? `, ${unresolvedCount} unresolved` : ''}`}
+              >
+                Collab
+                <CollabBadge count={unresolvedCount} />
+              </button>
             </div>
+            {sidebarTab === 'notes' ? (
+              <div className={styles.sidebarSection}>
+                <div className={styles.sidebarPlaceholder}>
+                  <p className={styles.placeholderText}>
+                    Notes and outline will appear here
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className={styles.collabPanelContainer}>
+                <CollabPanel
+                  storyId={id}
+                  scenes={scenes}
+                  onSceneJump={handleSceneJump}
+                />
+              </div>
+            )}
           </aside>
         </div>
       ) : viewMode === 'corkboard' ? (
