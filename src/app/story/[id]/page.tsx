@@ -1,15 +1,17 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useRef, use } from 'react';
 import { ViewModeSwitch, type ViewMode } from '@/components/ViewModeSwitch/ViewModeSwitch';
 import { Corkboard } from '@/components/Corkboard/Corkboard';
 import { SaveStatus } from '@/components/SaveStatus/SaveStatus';
 import { RecoveryBanner } from '@/components/RecoveryBanner/RecoveryBanner';
 import { ErrorBanner } from '@/components/ErrorBanner/ErrorBanner';
 import { SubmissionTracker } from '@/components/SubmissionTracker/SubmissionTracker';
+import { VersionHistory } from '@/components/VersionHistory/VersionHistory';
 import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
-import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
+import { clearSnapshot, loadSnapshot, formatRelativeTime } from '@/lib/autosave';
 import { useAutosave } from '@/hooks/useAutosave';
+import { useVersionHistory } from '@/hooks/useVersionHistory';
 import type { Scene, SceneStatus } from '@/types/scene';
 import styles from './page.module.css';
 
@@ -25,6 +27,9 @@ export default function StoryPage({ params }: StoryPageProps) {
   const [storyTitle, setStoryTitle] = useState(`Story ${id}`);
   const [showRecovery, setShowRecovery] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [restoreConfirmation, setRestoreConfirmation] = useState<string | null>(null);
+  const historyButtonRef = useRef<HTMLButtonElement>(null);
 
   const {
     content,
@@ -36,6 +41,24 @@ export default function StoryPage({ params }: StoryPageProps) {
     restoreSnapshot,
     hasRecovery,
   } = useAutosave(id);
+
+  const {
+    versions,
+    hasVersions,
+    saveNamedDraft,
+    restoreToVersion,
+    refreshVersions,
+  } = useVersionHistory({
+    storyId: id,
+    content,
+    onRestore: (restoredContent, entry) => {
+      setContent(restoredContent);
+      setIsHistoryOpen(false);
+      setRestoreConfirmation(`Restored to version from ${formatRelativeTime(entry.timestamp)}`);
+      setTimeout(() => setRestoreConfirmation(null), 4000);
+      historyButtonRef.current?.focus();
+    },
+  });
 
   // Show recovery banner if there's an unsaved snapshot
   useEffect(() => {
@@ -118,10 +141,29 @@ export default function StoryPage({ params }: StoryPageProps) {
                 value={storyTitle}
                 onChange={(e) => setStoryTitle(e.target.value)}
               />
-              <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
-              <SaveStatus saveState={saveState} lastSaved={lastSaved} onRetry={retrySave} />
+              <div className={styles.editorHeaderControls}>
+                <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
+                <SaveStatus saveState={saveState} lastSaved={lastSaved} onRetry={retrySave} />
+                {hasVersions && (
+                  <button
+                    ref={historyButtonRef}
+                    type="button"
+                    className={isHistoryOpen ? styles.historyButtonActive : styles.historyButton}
+                    onClick={() => { setIsHistoryOpen(true); refreshVersions(); }}
+                    aria-label="Open draft history"
+                    aria-expanded={isHistoryOpen}
+                  >
+                    History
+                  </button>
+                )}
+              </div>
             </div>
             <div className={styles.editorCanvas}>
+              {restoreConfirmation && (
+                <div className={styles.bannerContainer} role="status" aria-live="polite">
+                  <p className={styles.restoreConfirmationToast}>{restoreConfirmation}</p>
+                </div>
+              )}
               {showRecovery && (
                 <div className={styles.bannerContainer}>
                   <RecoveryBanner
@@ -163,6 +205,16 @@ export default function StoryPage({ params }: StoryPageProps) {
               </div>
             </div>
           </aside>
+          {isHistoryOpen && (
+            <div className={styles.historyOverlay} onClick={() => setIsHistoryOpen(false)}>
+              <VersionHistory
+                versions={versions}
+                onRestore={restoreToVersion}
+                onSaveNamedDraft={saveNamedDraft}
+                onClose={() => { setIsHistoryOpen(false); historyButtonRef.current?.focus(); }}
+              />
+            </div>
+          )}
         </div>
       ) : viewMode === 'corkboard' ? (
         <div className={styles.corkboardLayout}>
