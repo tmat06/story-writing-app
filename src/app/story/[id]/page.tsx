@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, use, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { ViewModeSwitch, type ViewMode } from '@/components/ViewModeSwitch/ViewModeSwitch';
 import { Corkboard } from '@/components/Corkboard/Corkboard';
 import { SaveStatus } from '@/components/SaveStatus/SaveStatus';
@@ -17,9 +18,11 @@ interface StoryPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default function StoryPage({ params }: StoryPageProps) {
-  const { id } = use(params);
+function StoryPageInner({ id }: { id: string }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
+  const [focusedSceneId, setFocusedSceneId] = useState<string | null>(null);
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);
   const [storyTitle, setStoryTitle] = useState(`Story ${id}`);
@@ -47,6 +50,19 @@ export default function StoryPage({ params }: StoryPageProps) {
     if (saveState === 'failed') setShowError(true);
   }, [saveState]);
 
+  // Read query params on mount to set initial view and focused scene
+  useEffect(() => {
+    const view = searchParams.get('view') as ViewMode | null;
+    const scene = searchParams.get('scene');
+    if (view && ['editor', 'corkboard', 'submissions'].includes(view)) {
+      setViewMode(view);
+    }
+    if (scene) {
+      setFocusedSceneId(scene);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentionally run once on mount
+
   // Load scenes for corkboard view
   useEffect(() => {
     setLoading(true);
@@ -61,7 +77,7 @@ export default function StoryPage({ params }: StoryPageProps) {
   };
 
   const handleSceneClick = (sceneId: string) => {
-    console.log('Navigate to scene:', sceneId);
+    router.push(`/story/${id}?view=editor&scene=${sceneId}`);
   };
 
   const handleSceneReorder = (sceneId: string, newOrder: number) => {
@@ -204,5 +220,14 @@ export default function StoryPage({ params }: StoryPageProps) {
         </div>
       )}
     </div>
+  );
+}
+
+export default function StoryPage({ params }: StoryPageProps) {
+  const { id } = use(params);
+  return (
+    <Suspense>
+      <StoryPageInner id={id} />
+    </Suspense>
   );
 }
