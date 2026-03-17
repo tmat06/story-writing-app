@@ -51,10 +51,10 @@ export function TensionTagRow({ storyId, stats, onTagChange }: TensionTagRowProp
             </div>
             {chapter.scenes.map((scene) => (
               <div key={scene.sceneId} className={styles.sceneRow}>
-                <span className={styles.sceneTitle} title={scene.sceneId}>
-                  {scene.sceneId}
+                <span className={styles.sceneTitle} title={scene.sceneTitle}>
+                  {scene.sceneTitle}
                 </span>
-                <div className={styles.tagPills} role="group" aria-label={`Tension tag for ${scene.sceneId}`}>
+                <div className={styles.tagPills} role="group" aria-label={`Tension tag for ${scene.sceneTitle}`}>
                   {TAG_OPTIONS.map(({ value, label }) => {
                     const isActive = scene.tensionTag === value;
                     return (

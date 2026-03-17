@@ -55,6 +55,7 @@ export function computeChapterStats(storyId: string, scenes: Scene[]): ChapterPa
     const tensionTag = tags[scene.id] ?? null;
     const entry: ScenePacingData = {
       sceneId: scene.id,
+      sceneTitle: scene.title,
       chapter: scene.chapter,
       wordCount,
       tensionTag,

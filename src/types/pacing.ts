@@ -14,6 +14,7 @@ export interface PacingAlert {
 
 export interface ScenePacingData {
   sceneId: string;
+  sceneTitle: string;
   chapter: string;
   wordCount: number;
   tensionTag: TensionTag | null;

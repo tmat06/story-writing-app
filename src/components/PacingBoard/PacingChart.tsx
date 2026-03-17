@@ -68,8 +68,8 @@ export function PacingChart({ stats, sensitivity }: PacingChartProps) {
                     key={scene.sceneId}
                     className={`${styles.sceneSegment} ${bandClass}`}
                     style={{ flex }}
-                    title={`${scene.sceneId} — ${scene.wordCount} words`}
-                    aria-label={`${scene.sceneId}, ${scene.wordCount} words, ${bandLabel} range`}
+                    title={`${scene.sceneTitle} — ${scene.wordCount} words`}
+                    aria-label={`${scene.sceneTitle}, ${scene.wordCount} words, ${bandLabel} range`}
                   />
                 );
               })}
