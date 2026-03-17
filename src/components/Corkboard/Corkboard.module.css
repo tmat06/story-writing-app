@@ -10,6 +10,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: var(--spacing-sm);
   padding: var(--spacing-md) var(--spacing-lg);
   background-color: var(--color-white);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
@@ -186,6 +188,77 @@
 .starterBeatIntent {
   font-size: var(--font-size-xs);
   color: var(--color-cement-400);
+}
+
+.chapterFilterRow {
+  flex: 0 0 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+  padding-top: var(--spacing-xs);
+  border-top: 1px solid var(--color-fog-200);
+  margin-top: var(--spacing-xs);
+}
+
+.filterLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: var(--spacing-xs);
+}
+
+.chapterChip {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-elephant-500);
+  background: var(--color-white);
+  border: 1px solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chapterChip:hover {
+  border-color: var(--color-elephant-500);
+}
+
+.chapterChipActive {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-carbon-600);
+  border-color: var(--color-carbon-600);
+}
+
+.chapterChip:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 1px;
+}
+
+.filteredEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  color: var(--color-cement-400);
+  font-size: var(--font-size-sm);
+}
+
+.clearFiltersBtn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  background: var(--color-white);
+  border: 1px solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.clearFiltersBtn:hover {
+  background: var(--color-fog-200);
 }
 
 .skeleton {

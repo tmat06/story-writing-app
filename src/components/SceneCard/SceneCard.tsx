@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import type { Scene, SceneStatus } from '@/types/scene';
 import styles from './SceneCard.module.css';
 
@@ -9,18 +10,38 @@ interface SceneCardProps {
   onStatusChange: (status: SceneStatus) => void;
   onFieldChange: (field: 'intent' | 'pov', value: string) => void;
   isDragging?: boolean;
+  isSynced?: boolean;
+  isDropTarget?: boolean;
 }
 
 export function SceneCard({
   scene,
+  storyId,
   onClick,
   onStatusChange,
   onFieldChange,
   isDragging = false,
+  isSynced,
+  isDropTarget,
 }: SceneCardProps) {
+  const router = useRouter();
   const [editingField, setEditingField] = useState<'intent' | 'pov' | null>(null);
   const [intentDraft, setIntentDraft] = useState(scene.intent ?? '');
   const [povDraft, setPovDraft] = useState(scene.pov ?? '');
+
+  const rawContent =
+    typeof window !== 'undefined'
+      ? (localStorage.getItem(`story_${storyId}_scene_${scene.id}_content`) ?? '')
+      : '';
+  const wordCount =
+    rawContent.trim().length > 0
+      ? `~${rawContent.trim().split(/\s+/).length} wds`
+      : '--';
+
+  const handleJump = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    router.push(`/story/${storyId}?view=editor&scene=${scene.id}`);
+  };
 
   useEffect(() => {
     setIntentDraft(scene.intent ?? '');
@@ -37,7 +58,8 @@ export function SceneCard({
 
   return (
     <div
-      className={`${styles.card} ${isDragging ? styles.dragging : ''}`}
+      className={`${styles.card} ${isDragging ? styles.dragging : ''} ${isDropTarget ? styles.dropTarget : ''}`}
+      data-synced={isSynced || undefined}
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -49,6 +71,15 @@ export function SceneCard({
       }}
       aria-label={`Open scene: ${scene.title}`}
     >
+      <button
+        className={styles.jumpBtn}
+        onClick={handleJump}
+        aria-label={`Open scene ${scene.title} in editor`}
+        tabIndex={0}
+      >
+        Open in editor
+      </button>
+
       <div className={styles.dragHandle} aria-label="Drag to reorder">
         ⋮⋮
       </div>
@@ -143,6 +174,7 @@ export function SceneCard({
             <option value="drafting">Drafting</option>
             <option value="done">Done</option>
           </select>
+          <span className={styles.wordCount}>{wordCount}</span>
         </div>
       </div>
     </div>
