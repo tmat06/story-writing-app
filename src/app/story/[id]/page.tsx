@@ -8,6 +8,7 @@ import { SaveStatus } from '@/components/SaveStatus/SaveStatus';
 import { RecoveryBanner } from '@/components/RecoveryBanner/RecoveryBanner';
 import { ErrorBanner } from '@/components/ErrorBanner/ErrorBanner';
 import { SubmissionTracker } from '@/components/SubmissionTracker/SubmissionTracker';
+import { RevisionPassPanel } from '@/components/RevisionPassPanel/RevisionPassPanel';
 import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
 import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
 import { useAutosave } from '@/hooks/useAutosave';
@@ -22,6 +23,7 @@ function StoryPageInner({ id }: { id: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
+  const [sidebarTab, setSidebarTab] = useState<'notes' | 'revision'>('notes');
   const [focusedSceneId, setFocusedSceneId] = useState<string | null>(null);
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);
@@ -120,6 +122,10 @@ function StoryPageInner({ id }: { id: string }) {
     refreshScenes();
   };
 
+  const handleSceneJump = (_sceneId: string) => {
+    setViewMode('corkboard');
+  };
+
   return (
     <div className={styles.page} data-view-mode={viewMode}>
       {viewMode === 'editor' ? (
@@ -170,14 +176,40 @@ function StoryPageInner({ id }: { id: string }) {
             </div>
           </div>
           <aside className={styles.sidebar}>
-            <div className={styles.sidebarSection}>
-              <h3 className={styles.sidebarTitle}>Notes</h3>
-              <div className={styles.sidebarPlaceholder}>
-                <p className={styles.placeholderText}>
-                  Notes and outline will appear here
-                </p>
-              </div>
+            <div className={styles.sidebarTabBar} role="tablist" aria-label="Sidebar tabs">
+              <button
+                role="tab"
+                aria-selected={sidebarTab === 'notes'}
+                className={`${styles.sidebarTab} ${sidebarTab === 'notes' ? styles.sidebarTabActive : ''}`}
+                onClick={() => setSidebarTab('notes')}
+              >
+                Notes
+              </button>
+              <button
+                role="tab"
+                aria-selected={sidebarTab === 'revision'}
+                className={`${styles.sidebarTab} ${sidebarTab === 'revision' ? styles.sidebarTabActive : ''}`}
+                onClick={() => setSidebarTab('revision')}
+              >
+                Revision
+              </button>
             </div>
+            {sidebarTab === 'notes' ? (
+              <div className={styles.sidebarSection}>
+                <div className={styles.sidebarPlaceholder}>
+                  <p className={styles.placeholderText}>
+                    Notes and outline will appear here
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <RevisionPassPanel
+                storyId={id}
+                storyTitle={storyTitle}
+                scenes={scenes}
+                onSceneJump={handleSceneJump}
+              />
+            )}
           </aside>
         </div>
       ) : viewMode === 'corkboard' ? (
