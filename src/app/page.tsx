@@ -70,7 +70,7 @@ export default function Home() {
           {activeStories.length > 0 ? (
             <div>
               <div className={styles.storyList}>
-                {activeStories.slice(0, 5).map(story => (
+                {activeStories.slice(0, 3).map(story => (
                   <StoryCard
                     key={story.id}
                     story={story}

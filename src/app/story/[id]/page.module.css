@@ -18,7 +18,7 @@
 
 .editorHeader {
   padding: var(--spacing-lg);
-  background: white;
+  background: var(--color-white);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
 }
 
@@ -62,7 +62,7 @@
 .editorCanvas {
   flex: 1;
   overflow: auto;
-  background: white;
+  background: var(--color-white);
 }
 
 .editorCanvas:focus-within {
@@ -80,7 +80,7 @@
   font-size: var(--font-size-lg);
   line-height: var(--line-height-relaxed);
   color: var(--color-black-700);
-  background: white;
+  background: var(--color-white);
   border: none;
   resize: none;
   outline: none;
@@ -134,7 +134,7 @@
 }
 
 .sidebarTabActive {
-  background: white;
+  background: var(--color-white);
   color: var(--color-black-700);
   font-weight: 600;
   border-bottom-color: var(--color-carbon-600);

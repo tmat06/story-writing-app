@@ -28,7 +28,7 @@
 
 .card {
   padding: var(--spacing-xl);
-  background: white;
+  background: var(--color-white);
   border: 1px solid var(--color-fashion-300);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
@@ -36,7 +36,7 @@
 
 .quickResumeCard {
   padding: var(--spacing-xl);
-  background: white;
+  background: var(--color-white);
   border: 1px solid var(--color-fashion-300);
   border-left: 3px solid var(--color-carbon-600);
   border-radius: var(--border-radius-lg);
@@ -122,9 +122,6 @@
   gap: var(--spacing-sm);
 }
 
-.storyList > :nth-child(n+4) {
-  display: none;
-}
 
 .viewAllLink {
   display: block;

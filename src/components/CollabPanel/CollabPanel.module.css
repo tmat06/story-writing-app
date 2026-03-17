@@ -34,7 +34,7 @@
 }
 
 .viewTabActive {
-  background: white;
+  background: var(--color-white);
   color: var(--color-black-700);
   font-weight: 600;
   border-bottom-color: var(--color-carbon-600);
@@ -168,7 +168,7 @@
 .threadItem {
   display: flex;
   flex-direction: column;
-  background: white;
+  background: var(--color-white);
   border-bottom: 1px solid var(--color-fog-200);
 }
 

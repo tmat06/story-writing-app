@@ -3,7 +3,7 @@
   align-items: center;
   gap: var(--spacing-md);
   padding: var(--spacing-md) var(--spacing-lg);
-  background: white;
+  background: var(--color-white);
   border-bottom: var(--border-width) solid var(--color-fog-200);
   position: sticky;
   top: 0;

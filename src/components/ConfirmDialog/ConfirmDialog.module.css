@@ -12,7 +12,7 @@
 }
 
 .dialog {
-  background: white;
+  background: var(--color-white);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-lg);
   max-width: 400px;

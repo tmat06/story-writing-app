@@ -26,7 +26,7 @@ function StoryPageInner({ id }: { id: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
-  const [sidebarTab, setSidebarTab] = useState<'notes' | 'revision' | 'collab'>('notes');
+  const [sidebarTab, setSidebarTab] = useState<'notes' | 'revision' | 'collab' | null>(null);
   const [focusedSceneId, setFocusedSceneId] = useState<string | null>(null);
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);

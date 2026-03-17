@@ -5,7 +5,7 @@
   padding: var(--spacing-md);
   border: 1px solid var(--color-fog-200);
   border-radius: var(--border-radius-md);
-  background: white;
+  background: var(--color-white);
   transition: box-shadow 150ms ease;
   text-align: left;
   width: 100%;
