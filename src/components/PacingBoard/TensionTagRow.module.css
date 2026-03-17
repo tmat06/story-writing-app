@@ -1,0 +1,105 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.chapterSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.chapterHeading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-elephant-500);
+  margin-bottom: var(--spacing-xs);
+}
+
+.distributionPill {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  background-color: var(--color-fog-200);
+  border-radius: 100px;
+  padding: 2px var(--spacing-sm);
+}
+
+.noTensionWarning {
+  font-size: var(--font-size-xs);
+  color: var(--color-elephant-500);
+}
+
+.sceneRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+  border-bottom: var(--border-width) solid var(--color-fog-200);
+}
+
+.sceneRow:last-child {
+  border-bottom: none;
+}
+
+.sceneTitle {
+  flex-shrink: 0;
+  width: 120px;
+  font-size: var(--font-size-sm);
+  color: var(--color-carbon-600);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tagPills {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.tagPill {
+  padding: 2px var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: 100px;
+  background-color: var(--color-white);
+  color: var(--color-cement-400);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.tagPill:hover {
+  background-color: var(--color-polar-100);
+  color: var(--color-elephant-500);
+  border-color: var(--color-elephant-500);
+}
+
+.tagPill:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.tagPillActive {
+  background-color: var(--color-carbon-600);
+  color: var(--color-white);
+  border-color: var(--color-carbon-600);
+}
+
+.tagPillActive:hover {
+  background-color: var(--color-black-700);
+  color: var(--color-white);
+  border-color: var(--color-black-700);
+}
+
+.emptyState {
+  color: var(--color-cement-400);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+}

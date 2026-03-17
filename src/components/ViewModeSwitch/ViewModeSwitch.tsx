@@ -1,6 +1,6 @@
 import styles from './ViewModeSwitch.module.css';
 
-export type ViewMode = 'editor' | 'corkboard' | 'submissions';
+export type ViewMode = 'editor' | 'corkboard' | 'submissions' | 'pacing';
 
 interface ViewModeSwitchProps {
   mode: ViewMode;
@@ -40,6 +40,15 @@ export function ViewModeSwitch({ mode, onChange }: ViewModeSwitchProps) {
         aria-pressed={mode === 'submissions'}
       >
         Submissions
+      </button>
+      <button
+        type="button"
+        className={mode === 'pacing' ? styles.active : styles.inactive}
+        onClick={() => onChange('pacing')}
+        aria-label="Switch to pacing view"
+        aria-pressed={mode === 'pacing'}
+      >
+        Pacing
       </button>
     </div>
   );

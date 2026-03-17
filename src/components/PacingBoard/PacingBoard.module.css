@@ -1,0 +1,113 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.sensitivityLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  font-weight: var(--font-weight-medium);
+}
+
+.sensitivitySwitch {
+  display: inline-flex;
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.sensitivitySwitch button {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.sensitivitySwitch button:not(:last-child) {
+  border-right: var(--border-width) solid var(--color-fashion-300);
+}
+
+.sensitivitySwitch button:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.sensitivityActive {
+  color: var(--color-black-700);
+  background-color: var(--color-fog-200);
+  font-weight: 600;
+}
+
+.sensitivityInactive {
+  color: var(--color-cement-400);
+  background-color: var(--color-white);
+}
+
+.sensitivityInactive:hover {
+  color: var(--color-elephant-500);
+  background-color: var(--color-polar-100);
+}
+
+.snapshotButton {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-carbon-600);
+  background-color: var(--color-white);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.snapshotButton:hover {
+  background-color: var(--color-fog-200);
+}
+
+.snapshotButton:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.sectionHeading {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-elephant-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.emptyState {
+  color: var(--color-cement-400);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  padding: var(--spacing-xl) 0;
+  text-align: center;
+}
