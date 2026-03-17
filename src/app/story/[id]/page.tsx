@@ -180,7 +180,7 @@ function StoryPageInner({ id }: { id: string }) {
               />
             </div>
           </div>
-          <aside className={styles.sidebar}>
+          <aside className={`${styles.sidebar} ${sidebarTab ? styles.sidebarOpen : ''}`}>
             <div className={styles.sidebarTabBar} role="tablist" aria-label="Sidebar panels">
               <button
                 role="tab"

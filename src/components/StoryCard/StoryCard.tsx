@@ -31,13 +31,14 @@ export default function StoryCard({
   onClick,
 }: StoryCardProps) {
   const CardWrapper = onClick ? 'button' : 'div';
+  const archivedClass = story.isArchived ? ` ${styles.archived}` : '';
   const wrapperProps = onClick
     ? {
         onClick,
-        className: `${styles.card} ${styles.clickable}`,
+        className: `${styles.card} ${styles.clickable}${archivedClass}`,
         type: 'button' as const,
       }
-    : { className: styles.card };
+    : { className: `${styles.card}${archivedClass}` };
 
   return (
     <CardWrapper {...wrapperProps}>

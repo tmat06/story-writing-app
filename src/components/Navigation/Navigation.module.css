@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: var(--color-polar-100);
-  border-right: var(--border-width) solid var(--color-fashion-300);
-  width: 240px;
+  background-color: var(--color-white);
+  box-shadow: 1px 0 0 var(--color-fog-200);
+  width: 220px;
   position: fixed;
   left: 0;
   top: 0;
@@ -13,12 +13,14 @@
 
 .identity {
   padding: var(--spacing-lg) var(--spacing-md);
-  border-bottom: var(--border-width) solid var(--color-fashion-300);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-fog-200);
 }
 
 .logo {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
   color: var(--color-black-700);
   text-decoration: none;
   display: block;
@@ -47,27 +49,26 @@
   padding: var(--spacing-sm) var(--spacing-md);
   color: var(--color-elephant-500);
   text-decoration: none;
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-normal);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: background-color 100ms ease;
   border-left: 3px solid transparent;
 }
 
 .navLink:hover {
-  background-color: var(--color-fog-200);
-  color: var(--color-black-700);
+  background-color: var(--color-polar-100);
+  color: var(--color-elephant-500);
 }
 
-.navLink:focus {
+.navLink:focus-visible {
   outline: 2px solid var(--color-carbon-600);
   outline-offset: -2px;
-  background-color: var(--color-fog-200);
 }
 
 .navLink.active {
   background-color: var(--color-fog-200);
   color: var(--color-black-700);
-  font-weight: var(--font-weight-medium);
+  font-weight: 600;
   border-left-color: var(--color-carbon-600);
 }
 
@@ -81,7 +82,7 @@
 @media (max-width: 767px) {
   .nav {
     position: fixed;
-    left: -240px;
+    left: -220px;
     transition: left 0.3s ease;
     box-shadow: var(--shadow-lg);
   }

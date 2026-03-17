@@ -8,10 +8,8 @@
   display: flex;
   gap: var(--spacing-md);
   align-items: center;
-  padding: var(--spacing-md);
-  background-color: var(--color-polar-100);
-  border: var(--border-width) solid var(--color-fashion-300);
-  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--color-fog-200);
 }
 
 .searchWrapper {
@@ -35,10 +33,10 @@
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--font-size-base);
   color: var(--color-black-700);
-  background-color: var(--color-white);
+  background: white;
   border: var(--border-width) solid var(--color-fashion-300);
-  border-radius: var(--border-radius-sm);
-  transition: border-color 0.2s ease, outline 0.2s ease;
+  border-radius: var(--border-radius-md);
+  transition: border-color 100ms ease, box-shadow 100ms ease;
 }
 
 .searchInput::placeholder {
@@ -46,9 +44,10 @@
 }
 
 .searchInput:focus {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 0;
+  outline: none;
   border-color: var(--color-carbon-600);
+  box-shadow: 0 0 0 2px var(--color-fog-200);
+  background: var(--color-polar-100);
 }
 
 .filters {
@@ -91,12 +90,12 @@
 .archiveToggle {
   background: transparent;
   color: var(--color-cement-400);
-  border: 1px solid var(--color-fog-200);
+  border: none;
 }
 
 .archiveToggle:hover {
-  background: var(--color-fog-100);
-  color: var(--color-black-700);
+  color: var(--color-elephant-500);
+  background: transparent;
 }
 
 .newStoryButton:focus,
@@ -137,10 +136,18 @@
   line-height: var(--line-height-normal);
 }
 
+.sectionLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 @media (max-width: 767px) {
   .toolbar {
     flex-direction: column;
     align-items: stretch;
+    padding: var(--spacing-md) 0;
   }
 
   .filters {

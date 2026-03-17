@@ -4,17 +4,16 @@
   flex-direction: column;
   background-color: var(--color-white);
   border: var(--border-width) solid var(--color-fashion-300);
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-lg);
   padding: var(--spacing-md);
-  box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
   user-select: none;
 }
 
 .card:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--color-elephant-500);
+  border-color: var(--color-cement-400);
 }
 
 .card:focus-visible {
@@ -23,7 +22,7 @@
 }
 
 .dragging {
-  opacity: 0.5;
+  opacity: 0.6;
   box-shadow: var(--shadow-lg);
   cursor: grabbing;
 }
@@ -32,11 +31,16 @@
   position: absolute;
   top: var(--spacing-sm);
   right: var(--spacing-sm);
-  color: var(--color-cement-400);
+  color: var(--color-fog-200);
   font-size: var(--font-size-sm);
   cursor: grab;
   user-select: none;
   line-height: 1;
+  transition: color 150ms ease;
+}
+
+.card:hover .dragHandle {
+  color: var(--color-cement-400);
 }
 
 .card:active .dragHandle {
@@ -57,17 +61,20 @@
 
 .title {
   margin: 0;
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  font-weight: 600;
   color: var(--color-black-700);
   line-height: var(--line-height-tight);
 }
 
 .chapter {
   font-size: var(--font-size-xs);
-  color: var(--color-cement-400);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  background: var(--color-polar-100);
+  color: var(--color-cement-400);
+  border-radius: var(--border-radius-sm);
+  padding: 2px 6px;
+  display: inline-block;
 }
 
 .summary {
@@ -103,7 +110,7 @@
   font-weight: var(--font-weight-medium);
   color: var(--color-elephant-500);
   background: var(--color-white);
-  border: 1px solid var(--color-fog-200);
+  border: 1px solid var(--color-fashion-300);
   border-radius: var(--border-radius-sm);
   cursor: pointer;
   opacity: 0;
@@ -144,7 +151,7 @@
 }
 
 .dropTarget {
-  border: 2px dashed var(--color-fashion-300);
+  border: 2px dashed var(--color-cement-400);
 }
 
 .statusSelect {

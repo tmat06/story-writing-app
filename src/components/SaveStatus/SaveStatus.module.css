@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
 }
 
 .idle,
@@ -21,7 +21,7 @@
 }
 
 .saving {
-  color: var(--color-cement-400);
+  color: var(--color-elephant-500);
   animation: pulse 1.2s ease-in-out infinite;
 }
 

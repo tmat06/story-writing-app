@@ -20,16 +20,19 @@
 .active {
   color: var(--color-black-700);
   background-color: var(--color-fog-200);
+  font-weight: 600;
 }
 
 .inactive {
   color: var(--color-cement-400);
   background-color: var(--color-white);
+  font-weight: 400;
 }
 
 .inactive:hover {
   color: var(--color-elephant-500);
   background-color: var(--color-polar-100);
+  transition: background 100ms ease, color 100ms ease;
 }
 
 .container button:focus-visible {

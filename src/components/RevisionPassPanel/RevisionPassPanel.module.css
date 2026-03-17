@@ -51,7 +51,7 @@
   flex-direction: column;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  border: var(--border-width) solid var(--color-fashion-300);
+  border: var(--border-width) solid var(--color-fog-200);
   border-radius: var(--border-radius-md);
   background-color: var(--color-white);
 }
@@ -63,8 +63,8 @@
 }
 
 .passName {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  font-weight: 600;
   color: var(--color-black-700);
 }
 
@@ -113,7 +113,7 @@
   border: var(--border-width) solid var(--color-fashion-300);
   border-radius: var(--border-radius-sm);
   cursor: pointer;
-  transition: background-color 0.1s;
+  transition: background-color 100ms ease;
 }
 
 .passButton:hover {
@@ -206,7 +206,7 @@
 .checklistPrompt {
   margin: 0;
   font-size: var(--font-size-xs);
-  color: var(--color-elephant-500);
+  color: var(--color-cement-400);
   line-height: var(--line-height-normal);
 }
 
@@ -237,7 +237,8 @@
 }
 
 .statusBtnActive {
-  color: var(--color-black-700);
+  background: var(--color-carbon-600);
+  color: white;
   border-color: var(--color-carbon-600);
   font-weight: var(--font-weight-medium);
 }
@@ -318,7 +319,7 @@
   flex-shrink: 0;
   padding: var(--spacing-md);
   background-color: var(--color-polar-100);
-  border-top: var(--border-width) solid var(--color-fashion-300);
+  border-top: var(--border-width) solid var(--color-fog-200);
 }
 
 .summaryStats {
