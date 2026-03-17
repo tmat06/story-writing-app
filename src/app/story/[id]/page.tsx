@@ -13,6 +13,9 @@ import { RevisionPassPanel } from '@/components/RevisionPassPanel/RevisionPassPa
 import { CollabPanel } from '@/components/CollabPanel/CollabPanel';
 import { CollabBadge } from '@/components/CollabPanel/CollabBadge';
 import { getUnresolvedCount } from '@/lib/collaboration';
+import { SharePreviewDialog } from '@/components/SharePreviewDialog/SharePreviewDialog';
+import { PreviewFeedbackPanel } from '@/components/PreviewFeedbackPanel/PreviewFeedbackPanel';
+import { getUnreadFeedbackCount } from '@/lib/previewLinks';
 import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
 import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
 import { useAutosave } from '@/hooks/useAutosave';
@@ -27,7 +30,8 @@ function StoryPageInner({ id }: { id: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
-  const [sidebarTab, setSidebarTab] = useState<'notes' | 'revision' | 'collab' | null>(null);
+  const [sidebarTab, setSidebarTab] = useState<'notes' | 'revision' | 'collab' | 'feedback' | null>(null);
+  const [showShareDialog, setShowShareDialog] = useState(false);
   const [focusedSceneId, setFocusedSceneId] = useState<string | null>(null);
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);
@@ -131,6 +135,7 @@ function StoryPageInner({ id }: { id: string }) {
   };
 
   const unresolvedCollabCount = getUnresolvedCount(id);
+  const unreadFeedbackCount = getUnreadFeedbackCount(id);
 
   return (
     <div className={styles.page} data-view-mode={viewMode}>
@@ -148,6 +153,13 @@ function StoryPageInner({ id }: { id: string }) {
               />
               <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
               <SaveStatus saveState={saveState} lastSaved={lastSaved} onRetry={retrySave} />
+              <button
+                className={styles.sharePreviewBtn}
+                onClick={() => setShowShareDialog(true)}
+                aria-label="Share preview link"
+              >
+                Share Preview
+              </button>
             </div>
             <div className={styles.editorCanvas}>
               {showRecovery && (
@@ -214,6 +226,17 @@ function StoryPageInner({ id }: { id: string }) {
                 Collab
                 <CollabBadge count={unresolvedCollabCount} />
               </button>
+              <button
+                role="tab"
+                id="tab-feedback"
+                aria-selected={sidebarTab === 'feedback'}
+                aria-controls="panel-feedback"
+                className={`${styles.sidebarTab} ${sidebarTab === 'feedback' ? styles.sidebarTabActive : ''} ${styles.sidebarTabWithBadge}`}
+                onClick={() => setSidebarTab('feedback')}
+              >
+                Feedback
+                <CollabBadge count={unreadFeedbackCount} />
+              </button>
             </div>
             {sidebarTab === 'notes' ? (
               <div role="tabpanel" id="panel-notes" aria-labelledby="tab-notes" className={styles.sidebarSection}>
@@ -232,6 +255,10 @@ function StoryPageInner({ id }: { id: string }) {
                   onSceneJump={handleSceneJump}
                 />
               </div>
+            ) : sidebarTab === 'feedback' ? (
+              <div role="tabpanel" id="panel-feedback" aria-labelledby="tab-feedback" className={styles.sidebarPanelFull}>
+                <PreviewFeedbackPanel storyId={id} />
+              </div>
             ) : (
               <div role="tabpanel" id="panel-collab" aria-labelledby="tab-collab" className={styles.sidebarPanelFull}>
                 <CollabPanel
@@ -242,6 +269,14 @@ function StoryPageInner({ id }: { id: string }) {
               </div>
             )}
           </aside>
+        {showShareDialog && (
+          <SharePreviewDialog
+            storyId={id}
+            storyTitle={storyTitle}
+            content={content}
+            onClose={() => setShowShareDialog(false)}
+          />
+        )}
         </div>
       ) : viewMode === 'corkboard' ? (
         <div className={styles.corkboardLayout}>

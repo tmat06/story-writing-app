@@ -247,6 +247,26 @@
   flex-direction: column;
 }
 
+.sharePreviewBtn {
+  border: 1px solid var(--color-fashion-300);
+  background: transparent;
+  color: var(--color-elephant-500);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 4px;
+}
+
+.sharePreviewBtn:hover {
+  background: var(--color-fog-200);
+}
+
+.sharePreviewBtn:focus-visible {
+  outline: 2px solid var(--color-elephant-500);
+  outline-offset: 2px;
+}
+
 @media (max-width: 767px) {
   .page {
     margin: calc(var(--spacing-lg) * -1) calc(var(--spacing-md) * -1);
