@@ -19,6 +19,9 @@ import { getUnreadFeedbackCount } from '@/lib/previewLinks';
 import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
 import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
 import { useAutosave } from '@/hooks/useAutosave';
+import { useFocusMode } from '@/hooks/useFocusMode';
+import { useSessionTimer } from '@/hooks/useSessionTimer';
+import { FocusControls } from '@/components/FocusControls/FocusControls';
 import type { Scene, SceneStatus } from '@/types/scene';
 import styles from './page.module.css';
 
@@ -137,8 +140,12 @@ function StoryPageInner({ id }: { id: string }) {
   const unresolvedCollabCount = getUnresolvedCount(id);
   const unreadFeedbackCount = getUnreadFeedbackCount(id);
 
+  const { isFocusMode, typewriterScroll, enterFocus, exitFocus, toggleTypewriter, textareaRef } = useFocusMode();
+  const { timerState, elapsedMs, targetMs, startTimer, stopTimer, dismissSummary, wordsWritten } = useSessionTimer();
+  const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
+
   return (
-    <div className={styles.page} data-view-mode={viewMode}>
+    <div className={styles.page} data-view-mode={viewMode} data-focus-mode={isFocusMode ? 'true' : undefined}>
       {viewMode === 'editor' ? (
         <div className={styles.editorLayout}>
           <div className={styles.editorMain}>
@@ -152,6 +159,11 @@ function StoryPageInner({ id }: { id: string }) {
                 onChange={(e) => setStoryTitle(e.target.value)}
               />
               <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
+              {!isFocusMode && (
+                <button type="button" className={styles.focusModeButton} onClick={enterFocus} aria-label="Enter focus mode">
+                  Focus
+                </button>
+              )}
               <SaveStatus saveState={saveState} lastSaved={lastSaved} onRetry={retrySave} />
               <button
                 className={styles.sharePreviewBtn}
@@ -185,12 +197,30 @@ function StoryPageInner({ id }: { id: string }) {
               </label>
               <textarea
                 id="story-editor"
+                ref={textareaRef}
                 className={styles.editor}
                 placeholder="Start writing your story..."
                 aria-label="Story content editor"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
+                data-typewriter-scroll={typewriterScroll && isFocusMode ? 'true' : undefined}
               />
+              {isFocusMode && (
+                <FocusControls
+                  typewriterScroll={typewriterScroll}
+                  onToggleTypewriter={toggleTypewriter}
+                  timerState={timerState}
+                  elapsedMs={elapsedMs}
+                  targetMs={targetMs}
+                  onStartTimer={(ms) => startTimer(ms, wordCount)}
+                  onStopTimer={stopTimer}
+                  onDismissSummary={dismissSummary}
+                  wordsWritten={wordsWritten(wordCount)}
+                  onExitFocus={exitFocus}
+                  saveState={saveState}
+                  lastSaved={lastSaved}
+                />
+              )}
             </div>
           </div>
           <aside className={`${styles.sidebar} ${sidebarTab ? styles.sidebarOpen : ''}`}>
