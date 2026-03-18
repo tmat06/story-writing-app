@@ -12,7 +12,6 @@ export interface UseSessionTimerReturn {
   stopTimer: () => void;
   dismissSummary: () => void;
   wordsWritten: (currentWordCount: number) => number;
-  formatDuration: (ms: number) => string;
 }
 
 export function formatDuration(ms: number): string {
@@ -61,25 +60,28 @@ export function useSessionTimer(): UseSessionTimerReturn {
     return Math.max(0, currentWordCount - startWordCountRef.current);
   }, []);
 
-  // Tick interval while running
+  // Tick: pure increment only
   useEffect(() => {
     if (timerState !== 'running') return;
 
     intervalRef.current = setInterval(() => {
       setElapsedMs((prev) => {
         const next = prev + 1000;
-        if (targetMs !== null && next >= targetMs) {
-          clearTimerInterval();
-          setTimerState('complete');
-          console.log('SessionTimer: completed', { duration: formatDuration(targetMs) });
-          return targetMs;
-        }
-        return next;
+        return targetMs !== null && next >= targetMs ? targetMs : next;
       });
     }, 1000);
 
     return () => clearTimerInterval();
   }, [timerState, targetMs]);
+
+  // Completion: side effects isolated in their own effect
+  useEffect(() => {
+    if (timerState === 'running' && targetMs !== null && elapsedMs >= targetMs) {
+      clearTimerInterval();
+      setTimerState('complete');
+      console.log('SessionTimer: completed', { duration: formatDuration(targetMs) });
+    }
+  }, [elapsedMs, timerState, targetMs]);
 
   return {
     timerState,
@@ -89,6 +91,5 @@ export function useSessionTimer(): UseSessionTimerReturn {
     stopTimer,
     dismissSummary,
     wordsWritten,
-    formatDuration,
   };
 }
