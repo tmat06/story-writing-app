@@ -21,18 +21,26 @@
   color: var(--color-black-700);
   background-color: var(--color-fog-200);
   font-weight: 600;
+  border-color: var(--color-cement-400);
+  transition: background 120ms ease-out, color 120ms ease-out;
 }
 
 .inactive {
-  color: var(--color-cement-400);
+  color: var(--color-elephant-500);
   background-color: var(--color-white);
-  font-weight: 400;
+  font-weight: 500;
+  transition: background 120ms ease-out, color 120ms ease-out;
 }
 
 .inactive:hover {
-  color: var(--color-elephant-500);
+  color: var(--color-black-700);
   background-color: var(--color-polar-100);
-  transition: background 100ms ease, color 100ms ease;
+}
+
+.inactive:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: -2px;
+  z-index: 1;
 }
 
 .container button:focus-visible {

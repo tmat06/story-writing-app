@@ -1,29 +1,57 @@
 .page {
   margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-lg) * -1);
   height: calc(100vh - 64px);
-}
-
-.editorLayout {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  height: 100%;
-  background-color: var(--color-white);
-}
-
-.editorMain {
   display: flex;
   flex-direction: column;
-  border-right: var(--border-width) solid var(--color-fashion-300);
 }
 
-.editorHeader {
-  padding: var(--spacing-lg);
+/* =====================
+   SHELL REGIONS
+   ===================== */
+
+.shellHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   background: var(--color-white);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
+  flex-shrink: 0;
 }
 
+.shellHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.shellToolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: 44px;
+  padding: 0 var(--spacing-lg);
+  background: var(--color-white);
+  border-bottom: var(--border-width) solid var(--color-fashion-300);
+  flex-shrink: 0;
+}
+
+.shellBody {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =====================
+   TITLE INPUT
+   ===================== */
+
 .titleInput {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-semibold);
   color: var(--color-black-700);
@@ -57,6 +85,163 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* =====================
+   SAVE STATUS / SHARE
+   ===================== */
+
+.saveStatusText {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+}
+
+.sharePreviewBtn {
+  border: 1px solid var(--color-fashion-300);
+  background: transparent;
+  color: var(--color-elephant-500);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 4px;
+}
+
+.sharePreviewBtn:hover {
+  background: var(--color-fog-200);
+}
+
+.sharePreviewBtn:focus-visible {
+  outline: 2px solid var(--color-elephant-500);
+  outline-offset: 2px;
+}
+
+/* =====================
+   TOOLBAR CONTROLS
+   ===================== */
+
+.focusModeButton {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-elephant-500);
+  background: none;
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease;
+  white-space: nowrap;
+}
+
+.focusModeButton:hover {
+  background: var(--color-polar-100);
+  color: var(--color-black-700);
+}
+
+.focusModeButton:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.toolbarSceneCount {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  white-space: nowrap;
+}
+
+.toolbarFilterGroup {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-left: var(--spacing-sm);
+}
+
+.filterBtn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-elephant-500);
+  background: var(--color-white);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background 120ms ease-out, color 120ms ease-out;
+}
+
+.filterBtn:hover {
+  background: var(--color-polar-100);
+  color: var(--color-black-700);
+}
+
+.filterBtnActive {
+  background: var(--color-fog-200);
+  color: var(--color-black-700);
+  font-weight: 600;
+  border-color: var(--color-cement-400);
+}
+
+.filterBtn:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.addBeatBtn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-elephant-500);
+  background: none;
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background 120ms ease-out, color 120ms ease-out;
+  white-space: nowrap;
+}
+
+.addBeatBtn:hover {
+  background: var(--color-polar-100);
+  color: var(--color-black-700);
+}
+
+.addBeatBtn:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.addSubmissionBtn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-white);
+  background: var(--color-carbon-600);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+}
+
+.addSubmissionBtn:hover {
+  background: var(--color-black-700);
+}
+
+.addSubmissionBtn:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+/* =====================
+   EDITOR LAYOUT (inside shellBody)
+   ===================== */
+
+.editorLayout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  height: 100%;
+  background-color: var(--color-white);
+}
+
+.editorMain {
+  display: flex;
+  flex-direction: column;
+  border-right: var(--border-width) solid var(--color-fashion-300);
 }
 
 .editorCanvas {
@@ -96,33 +281,9 @@
   padding: var(--spacing-md) var(--spacing-lg) 0;
 }
 
-.focusModeButton {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-elephant-500);
-  background: none;
-  border: var(--border-width) solid var(--color-fog-200);
-  border-radius: var(--border-radius-sm);
-  cursor: pointer;
-  transition: background 100ms ease, color 100ms ease;
-  white-space: nowrap;
-}
-
-.focusModeButton:hover {
-  background: var(--color-polar-100);
-  color: var(--color-black-700);
-}
-
-.focusModeButton:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
-}
-.corkboardSaveStatus {
-  font-size: var(--font-size-sm);
-  color: var(--color-cement-400);
-  margin-left: auto;
-}
+/* =====================
+   SIDEBAR
+   ===================== */
 
 .sidebar {
   display: flex;
@@ -207,6 +368,20 @@
   transform: translateY(0) !important;
 }
 
+/* =====================
+   PACING LAYOUT (inside shellBody)
+   ===================== */
+
+.pacingContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+
+/* =====================
+   RESPONSIVE
+   ===================== */
+
 @media (max-width: 1023px) {
   .editorLayout {
     grid-template-columns: 1fr;
@@ -226,88 +401,20 @@
   }
 }
 
-/* Corkboard layout */
-.corkboardLayout {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background-color: var(--color-white);
-}
-
-.corkboardHeader {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  border-bottom: var(--border-width) solid var(--color-fashion-300);
-  background-color: var(--color-white);
-}
-
-.corkboardHeader .titleInput {
-  flex: 1;
-}
-
-/* Pacing layout */
-.pacingLayout {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background-color: var(--color-white);
-}
-
-.pacingContainer {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--spacing-lg);
-}
-
-/* Submissions layout */
-.submissionsLayout {
-  height: 100%;
-  background-color: var(--color-white);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.sharePreviewBtn {
-  border: 1px solid var(--color-fashion-300);
-  background: transparent;
-  color: var(--color-elephant-500);
-  padding: var(--spacing-xs) var(--spacing-md);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  white-space: nowrap;
-  border-radius: 4px;
-}
-
-.sharePreviewBtn:hover {
-  background: var(--color-fog-200);
-}
-
-.sharePreviewBtn:focus-visible {
-  outline: 2px solid var(--color-elephant-500);
-  outline-offset: 2px;
-}
-
 @media (max-width: 767px) {
   .page {
     margin: calc(var(--spacing-lg) * -1) calc(var(--spacing-md) * -1);
   }
 
-  .editorHeader {
+  .shellHeader {
     padding: var(--spacing-md);
-  }
-
-  .corkboardHeader {
-    padding: var(--spacing-md);
-    flex-direction: column;
-    align-items: stretch;
+    flex-wrap: wrap;
     gap: var(--spacing-sm);
   }
 
   .titleInput {
     font-size: var(--font-size-xl);
+    flex-basis: 100%;
   }
 
   .editor {
@@ -315,7 +422,10 @@
   }
 }
 
-/* Focus Mode overrides */
+/* =====================
+   FOCUS MODE OVERRIDES
+   ===================== */
+
 .page[data-focus-mode='true'] .editorLayout {
   grid-template-columns: 1fr;
 }
@@ -324,7 +434,11 @@
   border-right: none;
 }
 
-.page[data-focus-mode='true'] .editorMain .editorHeader > *:not(.titleInput) {
+.page[data-focus-mode='true'] .shellHeader > *:not(.titleInput) {
+  display: none;
+}
+
+.page[data-focus-mode='true'] .shellToolbar {
   display: none;
 }
 
