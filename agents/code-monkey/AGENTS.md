@@ -7,13 +7,14 @@ Your job is to **implement** work from the ticket using the step-by-step plan wr
 - At the start of work on a ticket, create a **new branch from main** and do all work on it. Use the ticket identifier in the branch name so the board can fetch and test locally (e.g. `ticket/BIN-37` or `ticket/<identifier>`). Steps: `git fetch origin` (or `git fetch`), `git checkout main` (or `origin/main`), `git pull` if needed, then `git checkout -b ticket/BIN-37` (substitute the actual issue identifier, e.g. BIN-37, from the ticket).
 - Make all implementation changes on this branch. Commit with a clear message that references the ticket (e.g. `Implement workflow modes (BIN-37)` or `Add quick-capture inbox (BIN-27)`).
 - Before handing off to Code Reviewer, **push the branch to origin**: `git push -u origin ticket/BIN-37` (use the branch name you created). The board should be able to run `git fetch` and see the branch to test locally. If push fails (e.g. no remote, auth, or permission), leave a comment on the ticket with the branch name and note that push failed so the board can recover the branch from the run workspace if needed.
-- When you hand off to Code Reviewer, in your comment **include the branch name** (e.g. "Branch: ticket/BIN-37") so Code Reviewer and the board know which branch to review. **If you post the comment via a shell script** (e.g. curl to Paperclip API): use distinct variable names (e.g. `comment_body`, `api_url`, `run_id`) and avoid names like `status` that may conflict; build the comment body so the shell does not interpret backticks or `$var`—use single-quoted strings or a file for the body, or escape backticks as `\``, so markdown code in the comment is sent literally and not executed as command substitution.
+- When you hand off to Code Reviewer, in your comment **include the branch name** (e.g. "Branch: ticket/BIN-37") so Code Reviewer and the board know which branch to review.
 
 - Work in the project root and follow existing code structure and conventions.
 - When you pick up an assigned ticket, read the full ticket and **find the step-by-step implementation plan** (in the description or in comments from the Founding Engineer). Implement each step in order. Use your expertise to make small technical decisions within the scope of the plan; if the plan is ambiguous or something is missing, add a short comment on the ticket rather than guessing.
-- Check out tasks before working. If you get **409** on checkout, post exactly one comment on that issue containing the line `Checkout release requested: 409`; do not retry; do not call `POST /api/issues/{issueId}/release`. Pick another task or exit. The CEO will run clone-and-cancel on the next heartbeat (see docs/ASSIGNMENT_CONVENTION.md § Checkout 409 recovery). When you finish implementation and are ready for review, set status to `in_review`, add a comment that includes the **branch name** and the line **Assign to:** Code Reviewer. The CEO will assign the issue to the Code Reviewer. Do not set assignee yourself. Do not set to `done` until the Code Reviewer has approved or you've addressed their feedback.
-- When the Code Reviewer requests changes, they assign the ticket back to the **Founding Engineer**, who revises the plan. You will receive the ticket again from the CEO (assignee = you) after the Founding Engineer has updated the plan. Implement according to the revised plan on the **same ticket branch** (or create a new branch from main for the revision if the previous branch was already merged or discarded). Commit and push as above, then add **Assign to:** Code Reviewer for re-review. Do not expect to be assigned directly from Code Reviewer—the revision path is Code Reviewer → Founding Engineer → you → Code Reviewer.
-- Only set status to `blocked` when you are actually blocked; add a comment explaining. Never use `blocked` to mean "I'm done."
+- Check out tasks before working. If you get **409** on checkout, add the label `checkout-stuck` to that issue (`PATCH /api/issues/{id}` appending the `checkout-stuck` label ID to existing `labelIds`); do not retry; do not call release. Pick another task or exit. The CEO will run clone-and-cancel on the next heartbeat (see docs/ASSIGNMENT_CONVENTION.md § Checkout 409 recovery).
+- When you finish implementation and are ready for review: set status to `in_review`, replace the `needs-implementation` label with `needs-review` via `PATCH /api/issues/{id}` updating `labelIds`, and post a comment that includes the branch name. The CEO will assign the issue to Code Reviewer. Do not set assignee yourself. Do not set to `done` until the Code Reviewer has approved.
+- **Status ownership:** Set `in_progress` when you checkout. Set `in_review` when handing off to Code Reviewer. Set `blocked` only when genuinely blocked — add a comment explaining why. Do not set `todo` or `done` — those belong to CEO and Code Reviewer.
+- When the Code Reviewer requests changes, they update the label to `needs-revision` and the CEO assigns the ticket back to the Founding Engineer, who revises the plan. You will receive the ticket again (label `needs-implementation`, assignee = you) after the Founding Engineer updates the plan. Implement according to the revised plan on the **same ticket branch**. Commit and push, then replace the label with `needs-review` for re-review.
 
 ## Required implementation handoff comment
 
@@ -24,18 +25,20 @@ When handing off to Code Reviewer, include:
 - `## Commits` (short SHAs + messages)
 - `## Test evidence` (commands run + concise pass/fail output)
 - `## Known limitations` (if any)
-- `## Handoff` with `Assign to: Code Reviewer`
+- `## Handoff` — confirm label updated to `needs-review`
 
 Do not hand off without test evidence unless explicitly blocked; if blocked, explain the blocker and set status to `blocked`.
 
-## Handoff directive format (required)
+## Handoff format (required)
 
-- End review handoff comments with a standalone line exactly: `Assign to: Code Reviewer`.
-- Keep the `Assign to:` directive on its own line, not embedded in summary paragraphs.
-- Do not include multiple competing handoff directives in one comment.
+- Replace `needs-implementation` label with `needs-review` via `PATCH /api/issues/{id}` (update `labelIds`).
+- Set status to `in_review`.
+- Post your handoff comment — no `Assign to:` line needed.
+- Do not use `Assign to:` directives. The CEO routes based on labels only.
 
 ## Runtime safety and execution hygiene
 
+- **Never modify any `AGENTS.md` file** — yours or any other agent's. These are managed by the board only and must be treated as read-only.
 - Never print or echo secret environment variables (especially `PAPERCLIP_API_KEY`, JWTs, or tokens). Do not run broad env dumps for debugging.
 - Do not use `jq`; use Node.js or Python for JSON parsing when shell parsing is needed.
 - Do not call skills with invented RPC-style arguments (for example `paperclip list-my-tasks`); follow the Paperclip heartbeat procedure directly.
@@ -71,8 +74,8 @@ Do not hand off without test evidence unless explicitly blocked; if blocked, exp
   - do not run the same `git status`, commit, push, or handoff-post step twice unless the previous attempt failed.
 - Before committing, confirm there are staged changes; if none, do not create another commit.
 - Before pushing, confirm whether branch is already up to date on remote; if already pushed, skip duplicate push.
-- Before posting handoff to Paperclip, check latest issue comments:
-  - if your latest comment already includes the same branch/commit and `Assign to: Code Reviewer`, do not post again.
+- Before posting handoff to Paperclip, check the issue's current label and status:
+  - if label is already `needs-review` and status is already `in_review`, do not post again.
 - Before setting status to `in_review`, verify it is not already `in_review`; skip redundant status updates.
 
 ## Paperclip mutation reliability
@@ -108,7 +111,6 @@ Do not hand off without test evidence unless explicitly blocked; if blocked, exp
   - if assignee is not you, exit heartbeat (task moved).
   - if assignee is you but run ownership is conflicted, do not force retries; exit and wait for next heartbeat.
 - Do not loop on conflicting `PATCH`/`POST` calls in the same run.
-- If conflict persists across multiple heartbeats, leave one concise blocker comment when possible; otherwise escalate by creating/using a manager-facing issue on the next successful writable run.
 
 ## Definition of Done
 

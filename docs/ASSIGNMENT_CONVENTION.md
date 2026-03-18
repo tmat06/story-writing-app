@@ -1,67 +1,95 @@
 # Assignment convention
 
-Agents cannot all assign tickets. The **CEO** has assign permission and performs all handoffs.
+Agents signal handoffs by applying a **pipeline stage label** to the issue. The CEO reads labels and assigns accordingly — no comment parsing, no `Assign to:` directives.
 
-**Rule:** When you create a ticket or add a comment that means "this should go to another agent," you **must** specify the next assignee using this line:
+## Pipeline stage labels
 
-**Assign to:** AgentName
+| Label | Set by | Means |
+|-------|--------|-------|
+| `needs-market-research` | Marketing Product (at creation) | Ready for Market Research approval |
+| `needs-design` | Market Research (on approval) | Ready for Design brief |
+| `needs-plan` | Design (after brief) or Logs/Ops (at creation) | Ready for Founding Engineer plan |
+| `needs-implementation` | Founding Engineer (after plan) | Ready for Code Monkey to implement |
+| `needs-review` | Code Monkey (after push) | Ready for Code Reviewer |
+| `needs-revision` | Code Reviewer (changes requested) | Ready for Founding Engineer to revise plan |
+| `needs-merge` | Code Reviewer (on approval) | PR open, ready for board to merge |
+| `checkout-stuck` | Any agent (on 409 checkout) | CEO will clone-and-cancel this issue |
 
-Use the exact agent name as shown in the org (e.g. Market Research, Design, Founding Engineer, Code Monkey, Marketing Product, Code Reviewer, Logs/Ops). You can write either `Assign to: Market Research` or `Assign to: [Market Research]`; the CEO accepts both. The CEO matches by name (case-insensitive) and assigns the issue to that agent.
+## How to set a label
 
-**Comment-first convention (required):**
+All label changes use `PATCH /api/issues/{issueId}` with `X-Paperclip-Run-Id`:
 
-- Use `Assign to:` in comments for handoffs.
-- At ticket creation, description-level `Assign to:` is allowed for the first handoff only.
-- After creation, do not add new `Assign to:` lines in the description. All subsequent handoffs must be comments.
-- Keep handoff comments minimal and unambiguous (prefer a single `Assign to:` line).
+```
+PATCH /api/issues/{issueId}
+{ "labelIds": ["<next-label-id>"] }
+```
 
-**Directive parsing contract (required):**
+To find label IDs: `GET /api/companies/{companyId}/labels` — match by name.
 
-- Valid handoff directive is a standalone line only: `^Assign to:\s*(?:\[)?([^\]\n]+?)(?:\])?\s*$`
-- Ignore `Assign to:` text embedded in paragraphs, bullet prose, or code blocks.
-- After ticket creation, comment directives take precedence over description directives.
-- If multiple valid directives exist, deterministic winner is the last by `(createdAt, id)`.
-- Extracted target must match a real active agent name exactly after trim/bracket-strip.
+**Replace** the current stage label with the next one. Do not accumulate multiple stage labels on one issue.
 
-**Who specifies Assign to:**
+**Exception:** `checkout-stuck` is **appended** to existing `labelIds` — do not remove the current stage label when adding it.
 
-| Agent | When | Assign to |
-|-------|------|-----------|
-| Marketing Product | When creating a feature ticket | Market Research |
-| Market Research | When approving a feature ticket | Design (required—do not leave an approved ticket without it) |
-| Design | When design brief is added to the ticket | Founding Engineer (required) |
-| Logs/Ops | When creating a bug/ops ticket | Founding Engineer |
-| Founding Engineer | When step-by-step plan is written (or revised) in the ticket | Code Monkey (required—do not leave a planned ticket without it) |
-| Code Monkey | When implementation is ready for review | Code Reviewer |
-| Code Reviewer | When requesting changes (revision path) | Founding Engineer (Founding Engineer revises the plan, then assigns back to Code Monkey) |
+## CEO routing
 
-The CEO runs on a heartbeat and assigns any issue with a valid handoff directive that is not yet assigned to that target.
+On every `heartbeat_timer` wake, the CEO:
+1. Fetches labels, agents, and project ID once at the start
+2. Lists all active issues (status: backlog, todo, in_progress, in_review, blocked)
+3. Builds a concurrency map — counts `todo`/`in_progress` tickets per agent
+4. For each issue: reads its `labelIds` → determines target assignee from the table above → checks concurrency limit (max 1 active ticket per agent) → PATCHes assignee + sets `status: todo` if not already assigned → posts a brief comment
+5. Handles `checkout-stuck` issues via clone-and-cancel (see below)
 
-**No cycle:** Feature tickets flow one way: Marketing Product → Market Research → Design (design brief) → Founding Engineer (writes plan) → Code Monkey (implements) → Code Reviewer. Market Research must not send approved tickets back to Marketing Product. When Market Research approves, add **Assign to:** Design. When Design has added the design brief, add **Assign to:** Founding Engineer. When Founding Engineer has written the step-by-step plan in the ticket, add **Assign to:** Code Monkey so they implement. When Code Reviewer requests changes, add **Assign to:** Founding Engineer so they can revise the plan; then Founding Engineer assigns to Code Monkey again → Code Reviewer. When Code Reviewer approves, they create a **merge ticket** (title "Review and merge: [issue id]", description with PR link) and assign it to the **board user** (assigneeUserId = original issue's createdByUserId). The board reviews the PR and merges to main; Code Reviewer does not merge. When they reject a feature, Market Research closes the ticket or adds **Assign to:** Marketing Product for revision; Marketing Product then adds **Assign to:** Market Research again for re-review.
+On non-timer wakes: routes only `PAPERCLIP_TASK_ID` by label, then handles own assignments.
 
-**Status: do not use `done` until the ticket is fully complete.** The CEO only considers tickets in status backlog, todo, or in_progress for assignment. If an agent sets a ticket to `done` after their part (e.g. Marketing Product after creating it), the ticket drops out of the CEO's list and never gets assigned to the next agent. Rule: **Only set status to `done` when the ticket is fully complete** (e.g. Code Reviewer has approved and work is merged to GitHub). When you finish your part and hand off (add "Assign to: Next Agent"), leave status as `todo` or `in_progress`—do not set `done`. Only the final step in the pipeline (Code Reviewer when approving/merged) sets `done`. Use `blocked` only when you are actually blocked; add a comment explaining. Do not use `blocked` to mean "I'm done."
+## Concurrency limits
 
-**Backlog vs inbox:** Assignees fetch their work with `status=todo,in_progress,blocked` only. **Backlog is excluded from every agent's inbox.** A ticket in backlog can be assigned to an agent, but that agent will never see it until the ticket is moved to `todo` or `in_progress`. When a ticket is ready for the first assignee (or when the CEO assigns it), set status to `todo` so the assignee sees it. Use backlog for unassigned or not-yet-ready work.
+The CEO enforces a **maximum of 1 active ticket per agent** at a time. Before assigning, the CEO checks how many issues that agent already has in `todo` or `in_progress`. If ≥ 1, the CEO skips assignment and tries again next heartbeat. Board user (`needs-merge`) is exempt.
 
-**After rate limit or process loss:**
+## Pipeline flow
 
-When runs fail (e.g. rate limit, `process_lost`, timeout), agents will pick up their assigned work again on their next heartbeat—no CEO reminder needed. To avoid stuck issues:
+```
+Marketing Product → Market Research → Design → Founding Engineer → Code Monkey → Code Reviewer
+(needs-market-research) (needs-design) (needs-plan) (needs-implementation) (needs-review)
+                                                          ↑                        ↓
+                                                   needs-revision ←──── (changes requested)
+                                                                               ↓
+                                                                         needs-merge → board merges
+```
 
-1. **Status:** Ensure any ticket that should be worked on is in `todo` or `in_progress` (not backlog), so it appears in the assignee's inbox.
-2. **Checkout:** If an issue was checked out by a run that then failed, the assignee may get 409 on their next checkout. Release that issue's checkout so the assignee can checkout again on their next run. See **docs/PAPERCLIP_SETUP.md** (§ Release a stuck checkout) for manual release. Automated flow below.
-3. Let normal heartbeats run; each agent will fetch their inbox and continue.
+## Status ownership
 
-**Checkout 409 recovery (automated):**
+| Status | Owner | When |
+|--------|-------|------|
+| `todo` | CEO | When routing/assigning an issue to an agent |
+| `in_progress` | Each agent | When they checkout the issue (`POST /api/issues/{id}/checkout`) |
+| `in_review` | Code Monkey | When handing off to Code Reviewer |
+| `blocked` | Any agent | When genuinely stuck — must include a comment explaining why |
+| `cancelled` | CEO | During clone-and-cancel recovery; Market Research on rejection |
+| `done` | Code Reviewer | After board merges the PR |
 
-- When any agent gets **409 Conflict** on `POST /api/issues/{issueId}/checkout`, they must post **exactly one comment** on that issue containing the standalone line: `Checkout release requested: 409`. Then do not retry checkout; do **not** call `POST /api/issues/{issueId}/release` (only the assignee can release in Paperclip, and the stuck checkout may be from a dead run). Pick another task or exit. The CEO will run clone-and-cancel on the next heartbeat.
-- **CEO:** Do **not** assign any issue that has a comment containing `Checkout release requested: 409` (skip it in the normal Assign to handoff); otherwise the CEO would reassign the agent to the same stuck issue after the board unassigns.
-- **CEO (clone-and-cancel):** On every heartbeat, while scanning project issues and comments (for Assign to handoffs), also detect any issue where a comment body contains the exact line `Checkout release requested: 409`. For each such issue (at most once per issue per heartbeat):
-  1. Post a comment on the issue: "Board: please release checkout for this issue (assignee got 409). See docs/PAPERCLIP_SETUP.md § Release a stuck checkout."
-  2. Set the issue status to **cancelled** and unassign (set `assigneeAgentId` to null).
-  3. Create a **new issue** in the same project (same `projectId`, `goalId`, `parentId` if any) with the same title. In the **description**, include the original issue description followed by all comments from the old issue, each formatted as a block: `[Agent Name]:` (or `[User]` if comment is from a user) on its own line, then the full comment body. Resolve agent names from `GET /api/companies/{companyId}/agents` using `authorAgentId` on each comment. Order comments by `createdAt` (oldest first). Put a clear separator (e.g. `---` or `## Context from previous issue`) before the first `[Agent Name]:` block.
-  4. Parse the last valid `Assign to: AgentName` from the old issue (description + comments, same rules as assignment handoff). Assign the **new** issue to that agent and set the new issue status to **todo**.
-  5. Optionally: comment on the old issue "Superseded by [new issue identifier]." and on the new issue "Recovery ticket; previous issue [old identifier] was stuck (checkout 409) and cancelled."
+- Only CEO sets `todo`. Agents do not set `todo` themselves unless resetting from `blocked`.
+- Only Code Reviewer sets `done`.
+- `backlog` is excluded from every agent's inbox — CEO sets `todo` when assigning.
 
-**Stuck-ticket recovery:**
+## Checkout 409 recovery (automated)
 
-If assignment does not move after a heartbeat cycle, add a fresh comment containing only the intended handoff (for example `Assign to: Code Reviewer`), ensure status is not `done`/`cancelled`, and rerun CEO.
+When any agent gets **409 Conflict** on `POST /api/issues/{issueId}/checkout`:
+
+1. Add label `checkout-stuck` to the issue (`PATCH /api/issues/{id}` appending `checkout-stuck` label ID to existing `labelIds`)
+2. Do not retry checkout; do not call release
+3. Pick another task or exit
+
+The CEO detects `checkout-stuck` on the next heartbeat and runs clone-and-cancel:
+1. Posts a comment: "Checkout was stuck (409). Cloning issue and cancelling — recovery ticket created."
+2. PATCHes the issue: `status: cancelled`, `assigneeAgentId: null`, `assigneeUserId: null`
+3. Creates a new issue: same title, `goalId`, `parentId`; description = original description + separator + all comments as `[Agent Name]: <body>` blocks (chronological order, resolve names via agents list)
+4. Determines new assignee from the last valid pipeline stage label on the old issue; sets new issue assignee and `status: todo`; copies the pipeline label (without `checkout-stuck`) to the new issue
+5. Comments on old: "Superseded by [new issue id]." Comments on new: "Recovery ticket; [old id] was stuck (checkout 409) and cancelled."
+
+## After rate limit or process loss
+
+When runs fail (rate limit, `process_lost`, timeout), agents pick up assigned work on the next heartbeat automatically. If a checkout was held by the failed run, the next checkout attempt will get 409 — the agent adds the `checkout-stuck` label and the CEO handles recovery.
+
+## No `Assign to:` comments
+
+The `Assign to: AgentName` comment convention is **retired**. All routing is label-based. Do not include `Assign to:` lines in comments or descriptions. If a ticket seems stuck, check that it has the correct pipeline label and status is not `done`/`cancelled`.

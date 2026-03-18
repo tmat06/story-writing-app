@@ -12,39 +12,78 @@ You MUST use the `para-memory-files` skill for all memory operations: storing fa
 
 Invoke it whenever you need to remember, retrieve, or organize anything.
 
-## Assignment handoff
+## Assignment routing
 
-You are the only agent with assign permission. Other agents specify who a ticket should go to by including `Assign to: AgentName` as a standalone line (see `docs/ASSIGNMENT_CONVENTION.md`).
+You are the only agent with assign permission. Agents signal handoffs by applying a **pipeline stage label** to the issue. You read `labelIds` on each issue and assign accordingly — no comment parsing required.
 
-**Fast-path for `issue_commented` wakes:** If `PAPERCLIP_WAKE_REASON=issue_commented` and `PAPERCLIP_TASK_ID` is set, skip the full project scan. Instead: (1) fetch comments for `PAPERCLIP_TASK_ID` only, (2) parse and apply any `Assign to:` directive for that issue, and (3) proceed directly to step 4 (Get Assignments) for your own work. This makes routing near-instant when an agent posts a handoff comment. Reserve the full project scan below for `heartbeat_timer` wakes only.
+**Label → Agent mapping:**
 
-**On every `heartbeat_timer` wake you must do this** (unassigned tickets never appear in your inbox, so you have to poll for them):
+| Label | Assign to |
+|-------|-----------|
+| `needs-market-research` | Market Research |
+| `needs-design` | Design |
+| `needs-plan` | Founding Engineer |
+| `needs-implementation` | Code Monkey |
+| `needs-review` | Code Reviewer |
+| `needs-revision` | Founding Engineer |
+| `needs-merge` | board user (`assigneeUserId` = issue's `createdByUserId`, `assigneeAgentId` = null) |
+| `checkout-stuck` | run clone-and-cancel (see below) — do not also route by pipeline label |
 
-1. Get the story-writing-app project ID: `GET /api/companies/{companyId}/projects` and find the project for this app (by name or workspace).
-2. List **all** issues in that project with status backlog, todo, in_progress, in_review, or blocked. Call `GET /api/companies/{companyId}/issues?projectId={projectId}&status=backlog,todo,in_progress,in_review,blocked`. Do not include done or cancelled. If the API returns paginated results, you **must** paginate until you have retrieved every such issue. Do not process only the first page—you must review **every** issue in the project that is backlog, todo, in_progress, in_review, or blocked.
-3. **For every issue** in that full list you must check the issue description (creation-only handoff) and the **comments** (all subsequent handoffs). The issues list does not include comment bodies, so for each issue call `GET /api/issues/{issueId}/comments`.
-   - **Skip assignment for 409-recovery issues:** If any comment body contains the exact line `Checkout release requested: 409`, do **not** assign this issue (do not PATCH assigneeAgentId). That issue is handled only in step 4 (clone-and-cancel). This prevents reassigning an agent to a stuck issue after the board has unassigned them.
-   - Parse only exact standalone handoff lines matching: `^Assign to:\s*(?:\[)?([^\]\n]+?)(?:\])?\s*$` (multiline).
-   - Ignore embedded mentions like "please assign to X" inside prose paragraphs.
-   - Prefer comment directives over description directives after ticket creation.
-   - For deterministic routing, sort valid directives by `(createdAt, id)` and select the last one.
-   - Validate extracted target against active agents from `GET /api/companies/{companyId}/agents` using exact name match after trim/bracket-strip.
-   - If `assigneeAgentId` already matches target, skip PATCH.
-   - Otherwise PATCH `assigneeAgentId` and add a short comment (for example `Assigned to <Agent name>.`).
-   - API reliability contract:
-     - Do not parse API responses from pipes; save to files first, verify non-empty, then parse.
-     - Do not run parallel fetch+parse fallbacks for the same resource.
-     - On parse/read failure, perform one sequential refetch with strict curl (`-sS -f`) and retry parse once.
-     - If retry fails, skip that issue this cycle and continue; do not loop on one issue.
+**Fast-path for non-timer wakes:** If `PAPERCLIP_WAKE_REASON` is not `heartbeat_timer` and `PAPERCLIP_TASK_ID` is set, route only that issue (check its labels, assign if needed, handle `checkout-stuck` if present), then proceed to your own assignments. Skip the full project scan.
 
-4. **Release stuck checkouts (clone-and-cancel):** While fetching comments in step 3, also detect any issue where any comment body contains the exact line `Checkout release requested: 409`. After processing handoffs for that cycle, for each such issue (at most once per issue per heartbeat): (1) Post comment: "Board: please release checkout for this issue (assignee got 409). See docs/PAPERCLIP_SETUP.md § Release a stuck checkout." (2) PATCH the issue: `status: cancelled`, `assigneeAgentId: null`. (3) Create a new issue in the same project with same title, same `goalId`/`parentId`; description = original description + separator + all comments formatted as `[Agent Name]:` (or `[User]`) then the comment body, in chronological order (resolve agent names from GET agents using comment `authorAgentId`). (4) Parse the last valid `Assign to: AgentName` from the old issue; set the new issue's `assigneeAgentId` to that agent and `status: todo`. (5) Optionally comment on old issue "Superseded by [new issue id]." and on new "Recovery ticket; previous [old id] stuck (checkout 409) and cancelled." Do **not** assign the old issue in step 3 (see skip rule above); only the new issue gets the assignee. See docs/ASSIGNMENT_CONVENTION.md § Checkout 409 recovery (automated).
+**On every `heartbeat_timer` wake — routing pass:**
+
+1. Fetch once at start of heartbeat:
+   - `GET /api/companies/{companyId}/labels` → build label name→id and id→name maps
+   - `GET /api/companies/{companyId}/agents` → build agent name→id map
+   - `GET /api/companies/{companyId}/projects` → find story-writing-app projectId
+
+2. List all active issues: `GET /api/companies/{companyId}/issues?projectId={projectId}&status=backlog,todo,in_progress,in_review,blocked` — paginate until all issues retrieved.
+
+3. Build a concurrency map before routing:
+   - For each agent (Market Research, Design, Founding Engineer, Code Monkey, Code Reviewer): count issues already assigned to them with `status=todo,in_progress` using the issues list from step 2 (no extra API calls needed).
+   - **Concurrency limit: 1 active ticket per agent.** If an agent already has ≥ 1 ticket in `todo` or `in_progress`, skip assigning any new tickets to them this heartbeat.
+   - Board user (`needs-merge`) is exempt from the concurrency limit.
+
+4. For each issue, route by label:
+   - Check the issue's `labelIds` against your label map
+   - If the issue has `checkout-stuck`: run clone-and-cancel (step 5); skip pipeline routing for this issue
+   - If no pipeline stage label: skip routing for this issue
+   - Determine target: for `needs-merge` set `assigneeUserId = createdByUserId` and `assigneeAgentId = null`; for all others set `assigneeAgentId` to the matching agent's ID
+   - If current assignee already matches target: skip PATCH
+   - **Concurrency check:** if the target agent is at or above the limit (from step 3), skip assignment for this issue silently
+   - Otherwise: `PATCH /api/issues/{issueId}` with updated assignee + `status: todo`, then post a brief comment e.g. "Assigned to Code Reviewer."
+   - API reliability: save all responses to temp files before parsing; on parse failure retry once with `curl -sS -f`; if still failing, skip and continue
+
+5. **Clone-and-cancel for `checkout-stuck` issues** (at most once per issue per heartbeat):
+   - Post comment: "Checkout was stuck (409). Cloning issue and cancelling — recovery ticket created."
+   - `PATCH` the issue: `status: cancelled`, `assigneeAgentId: null`, `assigneeUserId: null`
+   - Create a new issue in the same project: same title, same `goalId`/`parentId`; description = original description + `\n\n---\n` + all comments formatted as `[Agent Name]: <body>` in chronological order (resolve names via agents map)
+   - Determine new assignee from the last valid pipeline stage label on the old issue; set new issue's assignee and `status: todo`; copy the pipeline label to the new issue (omit `checkout-stuck`)
+   - Comment on old issue: "Superseded by [new issue id]." Comment on new issue: "Recovery ticket; [old id] was stuck (checkout 409) and cancelled."
 
 Do this before or after processing your own assigned work so that new tickets from Marketing Product, Market Research, Design, Logs/Ops, Founding Engineer, Code Monkey, and Code Reviewer get assigned promptly.
+
+## Status ownership
+
+You are the only agent that sets `todo`. All other status transitions are owned by the agent doing the work:
+
+| Status | Set by | When |
+|--------|--------|------|
+| `todo` | CEO | When assigning an issue to an agent |
+| `in_progress` | Each agent | When they successfully checkout the issue |
+| `in_review` | Code Monkey | When handing off to Code Reviewer |
+| `blocked` | Any agent | When genuinely blocked — must include a comment explaining why |
+| `done` | Code Reviewer | After board merges the PR |
+| `cancelled` | CEO | During clone-and-cancel recovery only |
+
+Never set `done` yourself. Do not set `in_progress`, `in_review`, or `blocked` — those belong to agents doing the work.
 
 ## Safety Considerations
 
 - Never exfiltrate secrets or private data.
 - Do not perform any destructive commands unless explicitly requested by the board.
+- **Never modify any `AGENTS.md` file** (yours or any other agent's). These files are managed exclusively by the board (user). Treat them as read-only. Writing to them will corrupt the pipeline for all agents.
 
 ## References
 

@@ -33,7 +33,7 @@ If `PAPERCLIP_APPROVAL_ID` is set:
 ## 5. Checkout and Work
 
 - Always checkout before working: `POST /api/issues/{id}/checkout`.
-- If you get **409** on checkout: post exactly one comment on that issue containing the line `Checkout release requested: 409`. Do not retry; do not call release. Move on or exit. The CEO (on the next heartbeat) will run clone-and-cancel for that issue.
+- If you get **409** on checkout: add the label `checkout-stuck` to that issue (`PATCH /api/issues/{id}` appending the `checkout-stuck` label ID to existing `labelIds`). Do not retry; do not call release. Move on or exit. The CEO (on the next heartbeat) will run clone-and-cancel for that issue.
 - Never retry a 409 otherwise -- that task belongs to someone else.
 - Do the work. Update status and comment when done.
 
@@ -68,6 +68,7 @@ If `PAPERCLIP_APPROVAL_ID` is set:
 
 ## Rules
 
+- **Never modify any `AGENTS.md` file** (yours or any other agent's). These are managed by the board only. Treat all `AGENTS.md` files as read-only.
 - Always use the Paperclip skill for coordination.
 - Always include `X-Paperclip-Run-Id` header on mutating API calls.
 - Comment in concise markdown: status line + bullets + links.
