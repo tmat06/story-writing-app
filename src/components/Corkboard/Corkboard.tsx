@@ -30,6 +30,7 @@ interface CorkboardProps {
   onStatusChange: (sceneId: string, status: SceneStatus) => void;
   onAddScene: (scene: Omit<Scene, 'id' | 'order'>) => void;
   onFieldChange: (sceneId: string, field: 'intent' | 'pov', value: string) => void;
+  statusFilter?: SceneStatus | 'all';
   loading?: boolean;
 }
 
@@ -113,8 +114,7 @@ const STARTER_BEATS: Omit<Scene, 'id' | 'order'>[] = [
   },
 ];
 
-interface BoardFilters {
-  status: SceneStatus | 'all';
+interface ChapterFilter {
   chapter: string | null;
 }
 
@@ -126,19 +126,20 @@ export function Corkboard({
   onStatusChange,
   onAddScene,
   onFieldChange,
+  statusFilter = 'all',
   loading = false,
 }: CorkboardProps) {
   const [scenes, setScenes] = useState(initialScenes);
-  const [filters, setFilters] = useState<BoardFilters>(() => {
-    if (typeof window === 'undefined') return { status: 'all', chapter: null };
-    const key = `story-${storyId}-board-filters`;
+  const [chapterFilter, setChapterFilter] = useState<ChapterFilter>(() => {
+    if (typeof window === 'undefined') return { chapter: null };
+    const key = `story-${storyId}-board-chapter-filter`;
     try {
       const stored = localStorage.getItem(key);
-      if (stored) return JSON.parse(stored) as BoardFilters;
+      if (stored) return JSON.parse(stored) as ChapterFilter;
     } catch (e) {
-      console.warn(`Failed to parse board filters for story ${storyId}`, e);
+      console.warn(`Failed to parse chapter filter for story ${storyId}`, e);
     }
-    return { status: 'all', chapter: null };
+    return { chapter: null };
   });
   const [syncedIds, setSyncedIds] = useState<Set<string>>(new Set());
   const syncTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
@@ -182,8 +183,8 @@ export function Corkboard({
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(`story-${storyId}-board-filters`, JSON.stringify(filters));
-  }, [storyId, filters]);
+    localStorage.setItem(`story-${storyId}-board-chapter-filter`, JSON.stringify(chapterFilter));
+  }, [storyId, chapterFilter]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -222,72 +223,10 @@ export function Corkboard({
   const availableChapters = Array.from(new Set(scenes.map((s) => s.chapter))).sort();
 
   const displayScenes = scenes.filter((s) => {
-    const statusMatch = filters.status === 'all' || s.status === filters.status;
-    const chapterMatch = filters.chapter === null || s.chapter === filters.chapter;
+    const statusMatch = statusFilter === 'all' || s.status === statusFilter;
+    const chapterMatch = chapterFilter.chapter === null || s.chapter === chapterFilter.chapter;
     return statusMatch && chapterMatch;
   });
-
-  const toolbar = (
-    <div className={styles.toolbar} role="toolbar" aria-label="Scene planning controls">
-      <span className={styles.sceneCount}>
-        {filters.status === 'all' && filters.chapter === null
-          ? `${scenes.length} ${scenes.length === 1 ? 'scene' : 'scenes'}`
-          : `${displayScenes.length} of ${scenes.length} scenes`}
-      </span>
-      <div className={styles.toolbarRight}>
-        <div className={styles.filterGroup} role="group" aria-label="Filter by status">
-          {(['all', 'planned', 'drafting', 'done'] as const).map((s) => (
-            <button
-              key={s}
-              className={`${styles.filterBtn} ${filters.status === s ? styles.filterBtnActive : ''}`}
-              onClick={() => setFilters((prev) => ({ ...prev, status: s }))}
-              aria-pressed={filters.status === s}
-            >
-              {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
-            </button>
-          ))}
-        </div>
-        <button
-          className={styles.addSceneBtn}
-          onClick={() =>
-            onAddScene({
-              title: 'New Scene',
-              chapter: scenes.length > 0 ? scenes[scenes.length - 1].chapter : 'Chapter 1',
-              summary: '',
-              status: 'planned',
-              intent: '',
-              pov: '',
-            })
-          }
-          aria-label="Add new scene"
-        >
-          + Add beat
-        </button>
-      </div>
-      {availableChapters.length > 0 && (
-        <div className={styles.chapterFilterRow} role="group" aria-label="Filter by chapter">
-          <span className={styles.filterLabel}>Chapter</span>
-          <button
-            className={`${styles.chapterChip} ${filters.chapter === null ? styles.chapterChipActive : ''}`}
-            onClick={() => setFilters((prev) => ({ ...prev, chapter: null }))}
-            aria-pressed={filters.chapter === null}
-          >
-            All
-          </button>
-          {availableChapters.map((ch) => (
-            <button
-              key={ch}
-              className={`${styles.chapterChip} ${filters.chapter === ch ? styles.chapterChipActive : ''}`}
-              onClick={() => setFilters((prev) => ({ ...prev, chapter: ch }))}
-              aria-pressed={filters.chapter === ch}
-            >
-              {ch}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
 
   if (loading) {
     return (
@@ -308,7 +247,6 @@ export function Corkboard({
   if (scenes.length === 0) {
     return (
       <div className={styles.container}>
-        {toolbar}
         <div className={styles.emptyState}>
           <h2 className={styles.emptyTitle}>Start planning your story</h2>
           <p className={styles.emptyBody}>
@@ -348,7 +286,28 @@ export function Corkboard({
 
   return (
     <div className={styles.container}>
-      {toolbar}
+      {availableChapters.length > 0 && (
+        <div className={styles.chapterFilterRow} role="group" aria-label="Filter by chapter">
+          <span className={styles.filterLabel}>Chapter</span>
+          <button
+            className={`${styles.chapterChip} ${chapterFilter.chapter === null ? styles.chapterChipActive : ''}`}
+            onClick={() => setChapterFilter({ chapter: null })}
+            aria-pressed={chapterFilter.chapter === null}
+          >
+            All
+          </button>
+          {availableChapters.map((ch) => (
+            <button
+              key={ch}
+              className={`${styles.chapterChip} ${chapterFilter.chapter === ch ? styles.chapterChipActive : ''}`}
+              onClick={() => setChapterFilter({ chapter: ch })}
+              aria-pressed={chapterFilter.chapter === ch}
+            >
+              {ch}
+            </button>
+          ))}
+        </div>
+      )}
 
       <DndContext
         sensors={sensors}
@@ -380,7 +339,7 @@ export function Corkboard({
               <p>No scenes match this filter.</p>
               <button
                 className={styles.clearFiltersBtn}
-                onClick={() => setFilters({ status: 'all', chapter: null })}
+                onClick={() => setChapterFilter({ chapter: null })}
               >
                 Clear filters
               </button>
