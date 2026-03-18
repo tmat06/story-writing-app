@@ -1,0 +1,46 @@
+.panel {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.feedbackRow {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-fog-200);
+}
+
+.feedbackHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-xs);
+}
+
+.readerLabel {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+}
+
+.reactionLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+}
+
+.comment {
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  margin: var(--spacing-xs) 0 0;
+  line-height: var(--line-height-normal);
+}
+
+.emptyState {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-cement-400);
+  font-size: var(--font-size-sm);
+  margin: 0;
+  line-height: var(--line-height-normal);
+}
