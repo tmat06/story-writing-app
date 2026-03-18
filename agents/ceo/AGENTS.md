@@ -14,9 +14,25 @@ Invoke it whenever you need to remember, retrieve, or organize anything.
 
 ## Assignment routing
 
-You are the only agent with assign permission. Agents signal handoffs by applying a **pipeline stage label** to the issue. You read `labelIds` on each issue and assign accordingly — no comment parsing required.
+You are the only agent with assign permission. Agents signal handoffs by applying a **pipeline stage label** to the issue.
 
-**Label → Agent mapping:**
+**Do NOT write your own routing code.** A stable, version-controlled routing script handles all label-based assignment. On every heartbeat (timer or task-triggered), run it:
+
+```
+node agents/ceo/heartbeat-route.mjs
+```
+
+This script:
+- Reads `PAPERCLIP_API_URL`, `PAPERCLIP_API_KEY`, `PAPERCLIP_COMPANY_ID`, `PAPERCLIP_RUN_ID`, `PAPERCLIP_WAKE_REASON`, `PAPERCLIP_TASK_ID` from the environment
+- Fetches labels, agents, and projects once
+- On non-timer wakes with `PAPERCLIP_TASK_ID` set: routes only that issue (fast path)
+- On timer wakes: scans all active issues, builds concurrency map (max 1 todo/in_progress per agent), routes by label
+- Handles `needs-merge` (assigns to board user), `checkout-stuck` (clone-and-cancel)
+- Prints a JSON summary to stdout; exits 0 on success, 1 on fatal error
+
+Read the JSON output to understand what was routed, skipped, or errored. Do not duplicate the routing logic yourself.
+
+**Label → Agent reference** (for your situational awareness — the script handles this):
 
 | Label | Assign to |
 |-------|-----------|
@@ -26,41 +42,8 @@ You are the only agent with assign permission. Agents signal handoffs by applyin
 | `needs-implementation` | Code Monkey |
 | `needs-review` | Code Reviewer |
 | `needs-revision` | Founding Engineer |
-| `needs-merge` | board user (`assigneeUserId` = issue's `createdByUserId`, `assigneeAgentId` = null) |
-| `checkout-stuck` | run clone-and-cancel (see below) — do not also route by pipeline label |
-
-**Fast-path for non-timer wakes:** If `PAPERCLIP_WAKE_REASON` is not `heartbeat_timer` and `PAPERCLIP_TASK_ID` is set, route only that issue (check its labels, assign if needed, handle `checkout-stuck` if present), then proceed to your own assignments. Skip the full project scan.
-
-**On every `heartbeat_timer` wake — routing pass:**
-
-1. Fetch once at start of heartbeat:
-   - `GET /api/companies/{companyId}/labels` → build label name→id and id→name maps
-   - `GET /api/companies/{companyId}/agents` → build agent name→id map
-   - `GET /api/companies/{companyId}/projects` → find story-writing-app projectId
-
-2. List all active issues: `GET /api/companies/{companyId}/issues?projectId={projectId}&status=backlog,todo,in_progress,in_review,blocked` — paginate until all issues retrieved.
-
-3. Build a concurrency map before routing:
-   - For each agent (Market Research, Design, Founding Engineer, Code Monkey, Code Reviewer): count issues already assigned to them with `status=todo,in_progress` using the issues list from step 2 (no extra API calls needed).
-   - **Concurrency limit: 1 active ticket per agent.** If an agent already has ≥ 1 ticket in `todo` or `in_progress`, skip assigning any new tickets to them this heartbeat.
-   - Board user (`needs-merge`) is exempt from the concurrency limit.
-
-4. For each issue, route by label:
-   - Check the issue's `labelIds` against your label map
-   - If the issue has `checkout-stuck`: run clone-and-cancel (step 5); skip pipeline routing for this issue
-   - If no pipeline stage label: skip routing for this issue
-   - Determine target: for `needs-merge` set `assigneeUserId = createdByUserId` and `assigneeAgentId = null`; for all others set `assigneeAgentId` to the matching agent's ID
-   - If current assignee already matches target: skip PATCH
-   - **Concurrency check:** if the target agent is at or above the limit (from step 3), skip assignment for this issue silently
-   - Otherwise: `PATCH /api/issues/{issueId}` with updated assignee + `status: todo`, then post a brief comment e.g. "Assigned to Code Reviewer."
-   - API reliability: save all responses to temp files before parsing; on parse failure retry once with `curl -sS -f`; if still failing, skip and continue
-
-5. **Clone-and-cancel for `checkout-stuck` issues** (at most once per issue per heartbeat):
-   - Post comment: "Checkout was stuck (409). Cloning issue and cancelling — recovery ticket created."
-   - `PATCH` the issue: `status: cancelled`, `assigneeAgentId: null`, `assigneeUserId: null`
-   - Create a new issue in the same project: same title, same `goalId`/`parentId`; description = original description + `\n\n---\n` + all comments formatted as `[Agent Name]: <body>` in chronological order (resolve names via agents map)
-   - Determine new assignee from the last valid pipeline stage label on the old issue; set new issue's assignee and `status: todo`; copy the pipeline label to the new issue (omit `checkout-stuck`)
-   - Comment on old issue: "Superseded by [new issue id]." Comment on new issue: "Recovery ticket; [old id] was stuck (checkout 409) and cancelled."
+| `needs-merge` | board user |
+| `checkout-stuck` | clone-and-cancel (handled by script) |
 
 Do this before or after processing your own assigned work so that new tickets from Marketing Product, Market Research, Design, Logs/Ops, Founding Engineer, Code Monkey, and Code Reviewer get assigned promptly.
 
