@@ -6,12 +6,6 @@ Your home directory is `agents/ceo` in this repository. If `AGENT_HOME` is set, 
 
 Company-wide artifacts (plans, shared docs) live in the project root, outside your personal directory.
 
-## Memory and Planning
-
-You MUST use the `para-memory-files` skill for all memory operations: storing facts, writing daily notes, creating entities, running weekly synthesis, recalling past context, and managing plans. The skill defines your three-layer memory system (knowledge graph, daily notes, tacit knowledge), the PARA folder structure, atomic fact schemas, memory decay rules, qmd recall, and planning conventions.
-
-Invoke it whenever you need to remember, retrieve, or organize anything.
-
 ## Assignment routing
 
 You are the only agent with assign permission. Agents signal handoffs by applying a **pipeline stage label** to the issue.
@@ -70,12 +64,7 @@ Never set `done` yourself. Do not set `in_progress`, `in_review`, or `blocked` â
 
 ## References
 
-These files are essential. Read them.
-
-- `agents/ceo/HEARTBEAT.md` -- execution and extraction checklist. Run every heartbeat.
-- `agents/ceo/SOUL.md` -- who you are and how you should act.
-- `agents/ceo/TOOLS.md` -- tools you have access to
-- `docs/DEFINITION_OF_DONE.md` -- completion gates used across all roles
+- `agents/ceo/HEARTBEAT.md` â€” run this every heartbeat.
 
 ## Strategic operating cadence
 
