@@ -238,13 +238,15 @@ function StoryPageInner({ id }: { id: string }) {
   } = useSessionTimer();
   const { prefs } = useWriterPrefs();
 
-  // Apply focusByDefault pref on mount only
+  const hasFocusedOnOpen = useRef(false);
+
+  // Apply focusByDefault pref after prefs hydrate from localStorage
   useEffect(() => {
-    if (prefs.focusByDefault) {
+    if (!hasFocusedOnOpen.current && prefs.focusByDefault) {
+      hasFocusedOnOpen.current = true;
       enterFocus();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // intentionally runs once on mount only
+  }, [prefs.focusByDefault, enterFocus]);
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
 
   const filteredSceneCount =
