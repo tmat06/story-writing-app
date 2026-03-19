@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { updateStory, deleteStory } from '@/lib/stories';
+import { Series } from '@/types/series';
 import ConfirmDialog from '@/components/ConfirmDialog/ConfirmDialog';
 import styles from './StoryActionMenu.module.css';
 
@@ -9,18 +10,27 @@ interface StoryActionMenuProps {
   storyId: string;
   storyTitle: string;
   isArchived: boolean;
+  seriesId?: string;
+  availableSeries: Series[];
   onUpdate: () => void;
+  onAssignToSeries?: (seriesId: string) => void;
+  onRemoveFromSeries?: () => void;
 }
 
 export default function StoryActionMenu({
   storyId,
   storyTitle,
   isArchived,
+  seriesId,
+  availableSeries,
   onUpdate,
+  onAssignToSeries,
+  onRemoveFromSeries,
 }: StoryActionMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [showSeriesPicker, setShowSeriesPicker] = useState(false);
   const [newTitle, setNewTitle] = useState(storyTitle);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -28,6 +38,7 @@ export default function StoryActionMenu({
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
+        setShowSeriesPicker(false);
       }
     };
 
@@ -59,6 +70,21 @@ export default function StoryActionMenu({
     setMenuOpen(false);
   };
 
+  const handleAssignToSeries = (sid: string) => {
+    updateStory(storyId, { seriesId: sid });
+    onAssignToSeries?.(sid);
+    onUpdate();
+    setShowSeriesPicker(false);
+    setMenuOpen(false);
+  };
+
+  const handleRemoveFromSeries = () => {
+    updateStory(storyId, { seriesId: undefined });
+    onRemoveFromSeries?.();
+    onUpdate();
+    setMenuOpen(false);
+  };
+
   return (
     <div className={styles.container} ref={menuRef}>
       <button
@@ -66,6 +92,7 @@ export default function StoryActionMenu({
         onClick={(e) => {
           e.stopPropagation();
           setMenuOpen(!menuOpen);
+          setShowSeriesPicker(false);
         }}
         aria-label={`Actions for ${storyTitle}`}
       >
@@ -94,6 +121,54 @@ export default function StoryActionMenu({
           >
             {isArchived ? 'Unarchive' : 'Archive'}
           </button>
+
+          {seriesId ? (
+            <button
+              className={styles.menuItem}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRemoveFromSeries();
+              }}
+            >
+              Remove from series
+            </button>
+          ) : (
+            <>
+              {showSeriesPicker ? (
+                <div className={styles.seriesPickerInline} onClick={e => e.stopPropagation()}>
+                  {availableSeries.length === 0 ? (
+                    <span className={styles.seriesPickerDisabled}>Create a series first</span>
+                  ) : (
+                    availableSeries.map(s => (
+                      <button
+                        key={s.id}
+                        className={styles.seriesPickerItem}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAssignToSeries(s.id);
+                        }}
+                      >
+                        {s.title}
+                      </button>
+                    ))
+                  )}
+                </div>
+              ) : (
+                <button
+                  className={styles.menuItem}
+                  disabled={availableSeries.length === 0}
+                  title={availableSeries.length === 0 ? 'Create a series first' : undefined}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowSeriesPicker(true);
+                  }}
+                >
+                  Add to series
+                </button>
+              )}
+            </>
+          )}
+
           <button
             className={styles.menuItem}
             onClick={(e) => {

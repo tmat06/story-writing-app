@@ -96,13 +96,38 @@
   margin-top: var(--spacing-lg);
 }
 
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
 .sectionTitle {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-elephant-500);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin: 0 0 var(--spacing-sm);
+  margin: 0;
+}
+
+.linkSceneButton {
+  background: none;
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  cursor: pointer;
+  padding: 2px 8px;
+  white-space: nowrap;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+
+.linkSceneButton:hover {
+  border-color: var(--color-cement-400);
+  color: var(--color-black-700);
 }
 
 .noLinks {
@@ -297,4 +322,32 @@
 
 .cancelEditButton:hover {
   background: var(--color-fog-200);
+}
+
+.editTagsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.editTagsLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-cement-400);
+}
+
+.editTagsInput {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  color: var(--color-elephant-500);
+}
+
+.editTagsInput:focus {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
 }

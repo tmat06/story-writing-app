@@ -15,6 +15,7 @@ interface EntityReferenceListProps {
     id: string,
     updates: Partial<Pick<CanonEntity, 'name' | 'summary' | 'tags'>>
   ) => void;
+  onOpenSceneLinkDialog?: () => void;
 }
 
 const TYPE_LABEL: Record<string, string> = {
@@ -37,16 +38,19 @@ export default function EntityReferenceList({
   stories,
   onClose,
   onUpdateEntity,
+  onOpenSceneLinkDialog,
 }: EntityReferenceListProps) {
   const [expandedStories, setExpandedStories] = useState<Set<string>>(new Set());
   const [editName, setEditName] = useState('');
   const [editSummary, setEditSummary] = useState('');
+  const [editTags, setEditTags] = useState('');
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     if (entity) {
       setEditName(entity.name);
       setEditSummary(entity.summary);
+      setEditTags(entity.tags.join(', '));
       setEditing(false);
     }
   }, [entity]);
@@ -80,7 +84,12 @@ export default function EntityReferenceList({
 
   const handleSaveEdit = () => {
     if (!onUpdateEntity) return;
-    onUpdateEntity(entity.id, { name: editName.trim(), summary: editSummary.trim() });
+    const parsedTags = editTags.split(',').map(t => t.trim()).filter(Boolean);
+    onUpdateEntity(entity.id, {
+      name: editName.trim(),
+      summary: editSummary.trim(),
+      tags: parsedTags,
+    });
     setEditing(false);
   };
 
@@ -124,12 +133,28 @@ export default function EntityReferenceList({
         entity.summary && <p className={styles.summary}>{entity.summary}</p>
       )}
 
-      {entity.tags.length > 0 && (
-        <div className={styles.tags}>
-          {entity.tags.map(tag => (
-            <span key={tag} className={styles.tag}>{tag}</span>
-          ))}
+      {editing ? (
+        <div className={styles.editTagsRow}>
+          <label htmlFor="entity-tags-input" className={styles.editTagsLabel}>
+            Tags (comma-separated)
+          </label>
+          <input
+            id="entity-tags-input"
+            type="text"
+            className={styles.editTagsInput}
+            value={editTags}
+            onChange={e => setEditTags(e.target.value)}
+            placeholder="e.g. protagonist, magic, chapter-1"
+          />
         </div>
+      ) : (
+        entity.tags.length > 0 && (
+          <div className={styles.tags}>
+            {entity.tags.map(tag => (
+              <span key={tag} className={styles.tag}>{tag}</span>
+            ))}
+          </div>
+        )
       )}
 
       {onUpdateEntity && (
@@ -150,6 +175,7 @@ export default function EntityReferenceList({
                 onClick={() => {
                   setEditName(entity.name);
                   setEditSummary(entity.summary);
+                  setEditTags(entity.tags.join(', '));
                   setEditing(false);
                 }}
               >
@@ -169,9 +195,21 @@ export default function EntityReferenceList({
       )}
 
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>
-          Appears in ({links.length} scene{links.length !== 1 ? 's' : ''})
-        </h2>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>
+            Appears in ({links.length} scene{links.length !== 1 ? 's' : ''})
+          </h2>
+          {onOpenSceneLinkDialog && (
+            <button
+              type="button"
+              className={styles.linkSceneButton}
+              onClick={onOpenSceneLinkDialog}
+              aria-label="Link to a scene"
+            >
+              + Link to scene
+            </button>
+          )}
+        </div>
         {linkedStoryIds.length === 0 ? (
           <p className={styles.noLinks}>Not linked to any scenes yet.</p>
         ) : (

@@ -144,3 +144,45 @@
   outline: 2px solid var(--color-fashion-300);
   outline-offset: 2px;
 }
+
+.menuItem:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.menuItem:disabled:hover {
+  background: transparent;
+  color: var(--color-cement-400);
+}
+
+.seriesPickerInline {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border-width) solid var(--color-fog-200);
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.seriesPickerItem {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+  transition: background 0.2s;
+}
+
+.seriesPickerItem:hover {
+  background: var(--color-fog-200);
+}
+
+.seriesPickerDisabled {
+  display: block;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+}

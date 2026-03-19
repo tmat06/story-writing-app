@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Story } from '@/types/story';
+import { Series } from '@/types/series';
 import { getSeriesById } from '@/lib/series';
 import StoryActionMenu from '@/components/StoryActionMenu/StoryActionMenu';
 import styles from './StoryCard.module.css';
@@ -9,6 +10,7 @@ import styles from './StoryCard.module.css';
 interface StoryCardProps {
   story: Story;
   showActions?: boolean;
+  availableSeries?: Series[];
   onUpdate?: () => void;
   onClick?: () => void;
 }
@@ -29,6 +31,7 @@ function formatRelativeTime(timestamp: number): string {
 export default function StoryCard({
   story,
   showActions = false,
+  availableSeries = [],
   onUpdate,
   onClick,
 }: StoryCardProps) {
@@ -67,6 +70,8 @@ export default function StoryCard({
             storyId={story.id}
             storyTitle={story.title}
             isArchived={story.isArchived}
+            seriesId={story.seriesId}
+            availableSeries={availableSeries}
             onUpdate={onUpdate}
           />
         </div>
