@@ -150,7 +150,10 @@ async function main() {
 
   for (const issue of issues) {
     const id  = issue.identifier ?? issue.id;
-    const labelNames = (issue.labelIds ?? []).map(lid => labelById.get(lid)).filter(Boolean);
+    // Prefer inline labels array (already resolved); fall back to id→name map
+    const labelNames = issue.labels
+      ? issue.labels.map(l => l.name).filter(Boolean)
+      : (issue.labelIds ?? []).map(lid => labelById.get(lid)).filter(Boolean);
 
     try {
       // checkout-stuck: collect for clone-and-cancel pass
