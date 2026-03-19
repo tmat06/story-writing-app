@@ -442,6 +442,8 @@ function StoryPageInner({ id }: { id: string }) {
             onStatusChange={handleSceneStatusChange}
             onAddScene={handleAddScene}
             onFieldChange={handleFieldChange}
+            focusedSceneId={focusedSceneId}
+            onFocusClear={() => setFocusedSceneId(null)}
           />
         )}
 

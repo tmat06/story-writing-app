@@ -32,6 +32,8 @@ interface CorkboardProps {
   onFieldChange: (sceneId: string, field: 'intent' | 'pov', value: string) => void;
   statusFilter?: SceneStatus | 'all';
   loading?: boolean;
+  focusedSceneId?: string | null;
+  onFocusClear?: () => void;
 }
 
 interface SortableSceneCardProps {
@@ -42,6 +44,7 @@ interface SortableSceneCardProps {
   onFieldChange: (field: 'intent' | 'pov', value: string) => void;
   isSynced?: boolean;
   isDropTarget?: boolean;
+  isFocused?: boolean;
 }
 
 function SortableSceneCard({
@@ -52,6 +55,7 @@ function SortableSceneCard({
   onFieldChange,
   isSynced,
   isDropTarget,
+  isFocused,
 }: SortableSceneCardProps) {
   const {
     attributes,
@@ -68,7 +72,7 @@ function SortableSceneCard({
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div id={`scene-card-${scene.id}`} ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <SceneCard
         storyId={storyId}
         scene={scene}
@@ -78,6 +82,7 @@ function SortableSceneCard({
         isDragging={isDragging}
         isSynced={isSynced}
         isDropTarget={isDropTarget}
+        isFocused={isFocused}
       />
     </div>
   );
@@ -128,6 +133,8 @@ export function Corkboard({
   onFieldChange,
   statusFilter = 'all',
   loading = false,
+  focusedSceneId,
+  onFocusClear,
 }: CorkboardProps) {
   const [scenes, setScenes] = useState(initialScenes);
   const [chapterFilter, setChapterFilter] = useState<ChapterFilter>(() => {
@@ -185,6 +192,14 @@ export function Corkboard({
     if (typeof window === 'undefined') return;
     localStorage.setItem(`story-${storyId}-board-chapter-filter`, JSON.stringify(chapterFilter));
   }, [storyId, chapterFilter]);
+
+  useEffect(() => {
+    if (!focusedSceneId) return;
+    const el = document.getElementById(`scene-card-${focusedSceneId}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const timer = setTimeout(() => onFocusClear?.(), 2000);
+    return () => clearTimeout(timer);
+  }, [focusedSceneId, onFocusClear]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -331,6 +346,7 @@ export function Corkboard({
                 onFieldChange={(field, value) => onFieldChange(scene.id, field, value)}
                 isSynced={syncedIds.has(scene.id)}
                 isDropTarget={overId === scene.id && activeId !== scene.id}
+                isFocused={focusedSceneId === scene.id}
               />
             ))}
           </div>
