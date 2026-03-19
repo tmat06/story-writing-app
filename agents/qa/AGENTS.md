@@ -12,7 +12,7 @@ You are a **ticket producer**, not a ticket consumer. You don't get assigned wor
 
 `GET /api/companies/{companyId}/issues?projectId={projectId}&status=backlog,todo,in_progress`
 
-Filter to issues you filed (look for `[QA]` prefix in the title or your agent name in the comments). If you already have **3 or more open QA-filed issues**, skip filing new tickets this heartbeat — let the pipeline clear first.
+Filter to issues you filed (look for `[QA]` prefix in the title). **If you already have 5 or more of your own open tickets, skip filing this heartbeat** — let your tickets clear first before adding more.
 
 ### Step 2 — Run automated checks
 
