@@ -1,57 +1,74 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef, use, Suspense, useCallback } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { ViewModeSwitch, type ViewMode } from '@/components/ViewModeSwitch/ViewModeSwitch';
-import { Corkboard } from '@/components/Corkboard/Corkboard';
-import { SaveStatus } from '@/components/SaveStatus/SaveStatus';
-import { RecoveryBanner } from '@/components/RecoveryBanner/RecoveryBanner';
-import { ErrorBanner } from '@/components/ErrorBanner/ErrorBanner';
-import { SubmissionTracker, type SubmissionTrackerHandle } from '@/components/SubmissionTracker/SubmissionTracker';
-import { PacingBoard } from '@/components/PacingBoard/PacingBoard';
-import { RevisionPassPanel } from '@/components/RevisionPassPanel/RevisionPassPanel';
-import { CollabPanel } from '@/components/CollabPanel/CollabPanel';
-import { CollabBadge } from '@/components/CollabPanel/CollabBadge';
-import { getUnresolvedCount } from '@/lib/collaboration';
-import { SharePreviewDialog } from '@/components/SharePreviewDialog/SharePreviewDialog';
-import { PreviewFeedbackPanel } from '@/components/PreviewFeedbackPanel/PreviewFeedbackPanel';
-import { getUnreadFeedbackCount } from '@/lib/previewLinks';
-import { getScenes, updateSceneOrder, updateSceneStatus, addScene, updateSceneFields } from '@/lib/scenes';
-import { getStory, updateStory } from '@/lib/stories';
-import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
-import { useAutosave } from '@/hooks/useAutosave';
-import { useFocusMode } from '@/hooks/useFocusMode';
-import { useSessionTimer } from '@/hooks/useSessionTimer';
-import { useWriterPrefs } from '@/hooks/useWriterPrefs';
-import { FocusControls } from '@/components/FocusControls/FocusControls';
-import { Tooltip } from '@/components/Tooltip/Tooltip';
-import type { Scene, SceneStatus } from '@/types/scene';
-import styles from './page.module.css';
+import { useState, useEffect, useRef, useCallback, use, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import {
+  ViewModeSwitch,
+  type ViewMode,
+} from "@/components/ViewModeSwitch/ViewModeSwitch";
+import { Corkboard } from "@/components/Corkboard/Corkboard";
+import { SaveStatus } from "@/components/SaveStatus/SaveStatus";
+import { RecoveryBanner } from "@/components/RecoveryBanner/RecoveryBanner";
+import { ErrorBanner } from "@/components/ErrorBanner/ErrorBanner";
+import {
+  SubmissionTracker,
+  type SubmissionTrackerHandle,
+} from "@/components/SubmissionTracker/SubmissionTracker";
+import { PacingBoard } from "@/components/PacingBoard/PacingBoard";
+import { RevisionPassPanel } from "@/components/RevisionPassPanel/RevisionPassPanel";
+import { CollabPanel } from "@/components/CollabPanel/CollabPanel";
+import { NotesPanel } from "@/components/NotesPanel/NotesPanel";
+import { CollabBadge } from "@/components/CollabPanel/CollabBadge";
+import { getUnresolvedCount } from "@/lib/collaboration";
+import { SharePreviewDialog } from "@/components/SharePreviewDialog/SharePreviewDialog";
+import { PreviewFeedbackPanel } from "@/components/PreviewFeedbackPanel/PreviewFeedbackPanel";
+import { getUnreadFeedbackCount } from "@/lib/previewLinks";
+import {
+  getScenes,
+  updateSceneOrder,
+  updateSceneStatus,
+  addScene,
+  updateSceneFields,
+} from "@/lib/scenes";
+import { getStory, updateStory } from "@/lib/stories";
+import { clearSnapshot, loadSnapshot } from "@/lib/autosave";
+import { useAutosave } from "@/hooks/useAutosave";
+import { useFocusMode } from "@/hooks/useFocusMode";
+import { useSessionTimer } from "@/hooks/useSessionTimer";
+import { useWriterPrefs } from "@/hooks/useWriterPrefs";
+import { FocusControls } from "@/components/FocusControls/FocusControls";
+import { Tooltip } from "@/components/Tooltip/Tooltip";
+import type { Scene, SceneStatus } from "@/types/scene";
+import styles from "./page.module.css";
 
 interface StoryPageProps {
   params: Promise<{ id: string }>;
 }
 
 const CORKBOARD_FILTER_TOOLTIPS = {
-  all: 'Show all scenes regardless of status.',
-  planned: 'Show only scenes that are planned but not yet drafted.',
-  drafting: 'Show only scenes currently being drafted.',
-  done: 'Show only completed scenes.',
+  all: "Show all scenes regardless of status.",
+  planned: "Show only scenes that are planned but not yet drafted.",
+  drafting: "Show only scenes currently being drafted.",
+  done: "Show only completed scenes.",
 } as const;
 
 function StoryPageInner({ id }: { id: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [viewMode, setViewMode] = useState<ViewMode>('editor');
-  const [sidebarTab, setSidebarTab] = useState<'notes' | 'revision' | 'collab' | 'feedback' | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("editor");
+  const [sidebarTab, setSidebarTab] = useState<
+    "notes" | "revision" | "collab" | "feedback" | null
+  >(null);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [focusedSceneId, setFocusedSceneId] = useState<string | null>(null);
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);
-  const [storyTitle, setStoryTitle] = useState('');
+  const [storyTitle, setStoryTitle] = useState("");
   const [showRecovery, setShowRecovery] = useState(false);
   const [showError, setShowError] = useState(false);
-  const [corkboardStatusFilter, setCorkboardStatusFilter] = useState<SceneStatus | 'all'>('all');
+  const [corkboardStatusFilter, setCorkboardStatusFilter] = useState<
+    SceneStatus | "all"
+  >("all");
 
   const trackerRef = useRef<SubmissionTrackerHandle>(null);
 
@@ -68,7 +85,7 @@ function StoryPageInner({ id }: { id: string }) {
 
   // Load story title from localStorage
   useEffect(() => {
-    setStoryTitle(getStory(id)?.title ?? '');
+    setStoryTitle(getStory(id)?.title ?? "");
   }, [id]);
 
   const handleTitleChange = (val: string) => {
@@ -83,14 +100,17 @@ function StoryPageInner({ id }: { id: string }) {
 
   // Show error banner when save fails
   useEffect(() => {
-    if (saveState === 'failed') setShowError(true);
+    if (saveState === "failed") setShowError(true);
   }, [saveState]);
 
   // Read query params on mount to set initial view and focused scene
   useEffect(() => {
-    const view = searchParams.get('view') as ViewMode | null;
-    const scene = searchParams.get('scene');
-    if (view && ['editor', 'corkboard', 'submissions', 'pacing'].includes(view)) {
+    const view = searchParams.get("view") as ViewMode | null;
+    const scene = searchParams.get("scene");
+    if (
+      view &&
+      ["editor", "corkboard", "submissions", "pacing"].includes(view)
+    ) {
       setViewMode(view);
     }
     if (scene) {
@@ -146,37 +166,76 @@ function StoryPageInner({ id }: { id: string }) {
 
   const snapshotTimestamp = loadSnapshot(id)?.timestamp ?? Date.now();
 
-  const handleAddScene = (scene: Omit<Scene, 'id' | 'order'>) => {
+  const handleAddScene = (scene: Omit<Scene, "id" | "order">) => {
     addScene(id, scene);
     refreshScenes();
   };
 
   const handleAddSceneDefault = () => {
     handleAddScene({
-      title: 'New Scene',
-      chapter: scenes.length > 0 ? scenes[scenes.length - 1].chapter : 'Chapter 1',
-      summary: '',
-      status: 'planned',
-      intent: '',
-      pov: '',
+      title: "New Scene",
+      chapter:
+        scenes.length > 0 ? scenes[scenes.length - 1].chapter : "Chapter 1",
+      summary: "",
+      status: "planned",
+      intent: "",
+      pov: "",
     });
   };
 
-  const handleFieldChange = (sceneId: string, field: 'intent' | 'pov', value: string) => {
+  const handleFieldChange = (
+    sceneId: string,
+    field: "intent" | "pov",
+    value: string,
+  ) => {
     updateSceneFields(id, sceneId, { [field]: value });
     refreshScenes();
   };
 
   const handleSceneJump = (_sceneId: string) => {
-    setViewMode('corkboard');
+    setViewMode("corkboard");
   };
 
+  const handleNoteInsert = useCallback(
+    (text: string) => {
+      const el = textareaRef.current;
+      if (!el) return;
+      const start = el.selectionStart ?? content.length;
+      const end = el.selectionEnd ?? content.length;
+      const next = content.slice(0, start) + text + content.slice(end);
+      setContent(next);
+      requestAnimationFrame(() => {
+        el.focus();
+        el.selectionStart = start + text.length;
+        el.selectionEnd = start + text.length;
+      });
+    },
+    [content, setContent],
+  );
+
   const unresolvedCollabCount = getUnresolvedCount(id);
-  const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(() => getUnreadFeedbackCount(id));
+  const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(() =>
+    getUnreadFeedbackCount(id),
+  );
   const handleFeedbackRead = useCallback(() => setUnreadFeedbackCount(0), []);
 
-  const { isFocusMode, typewriterScroll, enterFocus, exitFocus, toggleTypewriter, textareaRef } = useFocusMode();
-  const { timerState, elapsedMs, targetMs, startTimer, stopTimer, dismissSummary, wordsWritten } = useSessionTimer();
+  const {
+    isFocusMode,
+    typewriterScroll,
+    enterFocus,
+    exitFocus,
+    toggleTypewriter,
+    textareaRef,
+  } = useFocusMode();
+  const {
+    timerState,
+    elapsedMs,
+    targetMs,
+    startTimer,
+    stopTimer,
+    dismissSummary,
+    wordsWritten,
+  } = useSessionTimer();
   const { prefs } = useWriterPrefs();
 
   // Apply focusByDefault pref on mount only
@@ -188,23 +247,23 @@ function StoryPageInner({ id }: { id: string }) {
   }, []); // intentionally runs once on mount only
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
 
-  const filteredSceneCount = corkboardStatusFilter === 'all'
-    ? scenes.length
-    : scenes.filter((s) => s.status === corkboardStatusFilter).length;
+  const filteredSceneCount =
+    corkboardStatusFilter === "all"
+      ? scenes.length
+      : scenes.filter((s) => s.status === corkboardStatusFilter).length;
   const sceneCountLabel =
-    corkboardStatusFilter === 'all'
-      ? `${scenes.length} ${scenes.length === 1 ? 'scene' : 'scenes'}`
+    corkboardStatusFilter === "all"
+      ? `${scenes.length} ${scenes.length === 1 ? "scene" : "scenes"}`
       : `${filteredSceneCount} of ${scenes.length} scenes`;
 
   return (
     <div
       className={styles.page}
       data-view-mode={viewMode}
-      data-focus-mode={isFocusMode ? 'true' : undefined}
-      data-high-contrast={prefs.highContrast ? 'true' : undefined}
-      data-reduced-motion={prefs.reducedMotion ? 'true' : undefined}
+      data-focus-mode={isFocusMode ? "true" : undefined}
+      data-high-contrast={prefs.highContrast ? "true" : undefined}
+      data-reduced-motion={prefs.reducedMotion ? "true" : undefined}
     >
-
       {/* SHELL HEADER — persistent across all views */}
       <div className={styles.shellHeader}>
         <input
@@ -217,16 +276,22 @@ function StoryPageInner({ id }: { id: string }) {
         />
         <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
         <div className={styles.shellHeaderRight}>
-          {viewMode === 'editor' && (
-            <SaveStatus saveState={saveState} lastSaved={lastSaved} onRetry={retrySave} />
+          {viewMode === "editor" && (
+            <SaveStatus
+              saveState={saveState}
+              lastSaved={lastSaved}
+              onRetry={retrySave}
+            />
           )}
-          {viewMode === 'corkboard' && (
+          {viewMode === "corkboard" && (
             <span className={styles.saveStatusText}>
-              {saveState === 'saving' && 'Saving…'}
-              {(saveState === 'saved' || (saveState === 'idle' && lastSaved)) && lastSaved && 'Saved'}
+              {saveState === "saving" && "Saving…"}
+              {(saveState === "saved" || (saveState === "idle" && lastSaved)) &&
+                lastSaved &&
+                "Saved"}
             </span>
           )}
-          {viewMode === 'editor' && (
+          {viewMode === "editor" && (
             <button
               className={styles.sharePreviewBtn}
               onClick={() => setShowShareDialog(true)}
@@ -240,7 +305,7 @@ function StoryPageInner({ id }: { id: string }) {
 
       {/* SHELL TOOLBAR — view-specific actions, fixed min-height */}
       <div className={styles.shellToolbar}>
-        {viewMode === 'editor' && !isFocusMode && (
+        {viewMode === "editor" && !isFocusMode && (
           <Tooltip content="Enter distraction-free writing mode.">
             <button
               type="button"
@@ -252,30 +317,40 @@ function StoryPageInner({ id }: { id: string }) {
             </button>
           </Tooltip>
         )}
-        {viewMode === 'corkboard' && (
+        {viewMode === "corkboard" && (
           <>
             <span className={styles.toolbarSceneCount}>{sceneCountLabel}</span>
-            <div className={styles.toolbarFilterGroup} role="group" aria-label="Filter by status">
-              {(['all', 'planned', 'drafting', 'done'] as const).map((s) => (
+            <div
+              className={styles.toolbarFilterGroup}
+              role="group"
+              aria-label="Filter by status"
+            >
+              {(["all", "planned", "drafting", "done"] as const).map((s) => (
                 <Tooltip key={s} content={CORKBOARD_FILTER_TOOLTIPS[s]}>
                   <button
-                    className={`${styles.filterBtn} ${corkboardStatusFilter === s ? styles.filterBtnActive : ''}`}
+                    className={`${styles.filterBtn} ${corkboardStatusFilter === s ? styles.filterBtnActive : ""}`}
                     onClick={() => setCorkboardStatusFilter(s)}
                     aria-pressed={corkboardStatusFilter === s}
                   >
-                    {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
+                    {s === "all"
+                      ? "All"
+                      : s.charAt(0).toUpperCase() + s.slice(1)}
                   </button>
                 </Tooltip>
               ))}
             </div>
             <Tooltip content="Add a new scene or story beat to your corkboard.">
-              <button className={styles.addBeatBtn} onClick={handleAddSceneDefault} aria-label="Add new scene">
+              <button
+                className={styles.addBeatBtn}
+                onClick={handleAddSceneDefault}
+                aria-label="Add new scene"
+              >
                 + Add beat
               </button>
             </Tooltip>
           </>
         )}
-        {viewMode === 'submissions' && (
+        {viewMode === "submissions" && (
           <button
             className={styles.addSubmissionBtn}
             onClick={() => trackerRef.current?.openAddPanel()}
@@ -287,7 +362,7 @@ function StoryPageInner({ id }: { id: string }) {
 
       {/* SHELL BODY — view canvas */}
       <div className={styles.shellBody}>
-        {viewMode === 'editor' && (
+        {viewMode === "editor" && (
           <div className={styles.editorLayout}>
             <div className={styles.editorMain}>
               <div className={styles.editorCanvas}>
@@ -303,7 +378,7 @@ function StoryPageInner({ id }: { id: string }) {
                 {showError && (
                   <div className={styles.bannerContainer}>
                     <ErrorBanner
-                      error={error ?? 'Unknown error'}
+                      error={error ?? "Unknown error"}
                       onRetry={handleRetry}
                       onDismiss={handleDismissError}
                     />
@@ -320,7 +395,9 @@ function StoryPageInner({ id }: { id: string }) {
                   aria-label="Story content editor"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  data-typewriter-scroll={typewriterScroll && isFocusMode ? 'true' : undefined}
+                  data-typewriter-scroll={
+                    typewriterScroll && isFocusMode ? "true" : undefined
+                  }
                   style={{
                     fontSize: prefs.fontSize,
                     lineHeight: prefs.lineHeight,
@@ -345,35 +422,41 @@ function StoryPageInner({ id }: { id: string }) {
                 )}
               </div>
             </div>
-            <aside className={`${styles.sidebar} ${sidebarTab ? styles.sidebarOpen : ''}`}>
-              <div className={styles.sidebarTabBar} role="tablist" aria-label="Sidebar panels">
+            <aside
+              className={`${styles.sidebar} ${sidebarTab ? styles.sidebarOpen : ""}`}
+            >
+              <div
+                className={styles.sidebarTabBar}
+                role="tablist"
+                aria-label="Sidebar panels"
+              >
                 <button
                   role="tab"
                   id="tab-notes"
-                  aria-selected={sidebarTab === 'notes'}
+                  aria-selected={sidebarTab === "notes"}
                   aria-controls="panel-notes"
-                  className={`${styles.sidebarTab} ${sidebarTab === 'notes' ? styles.sidebarTabActive : ''}`}
-                  onClick={() => setSidebarTab('notes')}
+                  className={`${styles.sidebarTab} ${sidebarTab === "notes" ? styles.sidebarTabActive : ""}`}
+                  onClick={() => setSidebarTab("notes")}
                 >
                   Notes
                 </button>
                 <button
                   role="tab"
                   id="tab-revision"
-                  aria-selected={sidebarTab === 'revision'}
+                  aria-selected={sidebarTab === "revision"}
                   aria-controls="panel-revision"
-                  className={`${styles.sidebarTab} ${sidebarTab === 'revision' ? styles.sidebarTabActive : ''}`}
-                  onClick={() => setSidebarTab('revision')}
+                  className={`${styles.sidebarTab} ${sidebarTab === "revision" ? styles.sidebarTabActive : ""}`}
+                  onClick={() => setSidebarTab("revision")}
                 >
                   Revision
                 </button>
                 <button
                   role="tab"
                   id="tab-collab"
-                  aria-selected={sidebarTab === 'collab'}
+                  aria-selected={sidebarTab === "collab"}
                   aria-controls="panel-collab"
-                  className={`${styles.sidebarTab} ${sidebarTab === 'collab' ? styles.sidebarTabActive : ''} ${styles.sidebarTabWithBadge}`}
-                  onClick={() => setSidebarTab('collab')}
+                  className={`${styles.sidebarTab} ${sidebarTab === "collab" ? styles.sidebarTabActive : ""} ${styles.sidebarTabWithBadge}`}
+                  onClick={() => setSidebarTab("collab")}
                 >
                   Collab
                   <CollabBadge count={unresolvedCollabCount} />
@@ -381,25 +464,36 @@ function StoryPageInner({ id }: { id: string }) {
                 <button
                   role="tab"
                   id="tab-feedback"
-                  aria-selected={sidebarTab === 'feedback'}
+                  aria-selected={sidebarTab === "feedback"}
                   aria-controls="panel-feedback"
-                  className={`${styles.sidebarTab} ${sidebarTab === 'feedback' ? styles.sidebarTabActive : ''} ${styles.sidebarTabWithBadge}`}
-                  onClick={() => setSidebarTab('feedback')}
+                  className={`${styles.sidebarTab} ${sidebarTab === "feedback" ? styles.sidebarTabActive : ""} ${styles.sidebarTabWithBadge}`}
+                  onClick={() => setSidebarTab("feedback")}
                 >
                   Feedback
                   <CollabBadge count={unreadFeedbackCount} />
                 </button>
               </div>
-              {sidebarTab === 'notes' ? (
-                <div role="tabpanel" id="panel-notes" aria-labelledby="tab-notes" className={styles.sidebarSection}>
-                  <div className={styles.sidebarPlaceholder}>
-                    <p className={styles.placeholderText}>
-                      Notes and outline will appear here
-                    </p>
-                  </div>
+              {sidebarTab === "notes" ? (
+                <div
+                  role="tabpanel"
+                  id="panel-notes"
+                  aria-labelledby="tab-notes"
+                  className={styles.sidebarPanelFull}
+                >
+                  <NotesPanel
+                    storyId={id}
+                    scenes={scenes}
+                    focusedSceneId={focusedSceneId}
+                    onInsert={handleNoteInsert}
+                  />
                 </div>
-              ) : sidebarTab === 'revision' ? (
-                <div role="tabpanel" id="panel-revision" aria-labelledby="tab-revision" className={styles.sidebarPanelFull}>
+              ) : sidebarTab === "revision" ? (
+                <div
+                  role="tabpanel"
+                  id="panel-revision"
+                  aria-labelledby="tab-revision"
+                  className={styles.sidebarPanelFull}
+                >
                   <RevisionPassPanel
                     storyId={id}
                     storyTitle={storyTitle}
@@ -407,12 +501,25 @@ function StoryPageInner({ id }: { id: string }) {
                     onSceneJump={handleSceneJump}
                   />
                 </div>
-              ) : sidebarTab === 'feedback' ? (
-                <div role="tabpanel" id="panel-feedback" aria-labelledby="tab-feedback" className={styles.sidebarPanelFull}>
-                  <PreviewFeedbackPanel storyId={id} onRead={handleFeedbackRead} />
+              ) : sidebarTab === "feedback" ? (
+                <div
+                  role="tabpanel"
+                  id="panel-feedback"
+                  aria-labelledby="tab-feedback"
+                  className={styles.sidebarPanelFull}
+                >
+                  <PreviewFeedbackPanel
+                    storyId={id}
+                    onRead={handleFeedbackRead}
+                  />
                 </div>
               ) : (
-                <div role="tabpanel" id="panel-collab" aria-labelledby="tab-collab" className={styles.sidebarPanelFull}>
+                <div
+                  role="tabpanel"
+                  id="panel-collab"
+                  aria-labelledby="tab-collab"
+                  className={styles.sidebarPanelFull}
+                >
                   <CollabPanel
                     storyId={id}
                     scenes={scenes}
@@ -432,7 +539,7 @@ function StoryPageInner({ id }: { id: string }) {
           </div>
         )}
 
-        {viewMode === 'corkboard' && (
+        {viewMode === "corkboard" && (
           <Corkboard
             storyId={id}
             scenes={scenes}
@@ -446,20 +553,20 @@ function StoryPageInner({ id }: { id: string }) {
           />
         )}
 
-        {viewMode === 'pacing' && (
+        {viewMode === "pacing" && (
           <div className={styles.pacingContainer}>
             <PacingBoard
               storyId={id}
               scenes={scenes}
               onJumpToScene={(sceneId) => {
                 setFocusedSceneId(sceneId);
-                setViewMode('corkboard');
+                setViewMode("corkboard");
               }}
             />
           </div>
         )}
 
-        {viewMode === 'submissions' && (
+        {viewMode === "submissions" && (
           <SubmissionTracker ref={trackerRef} storyId={id} />
         )}
       </div>
