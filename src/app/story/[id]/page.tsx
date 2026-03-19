@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, use, Suspense } from 'react';
+import { useState, useEffect, useRef, useCallback, use, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ViewModeSwitch, type ViewMode } from '@/components/ViewModeSwitch/ViewModeSwitch';
 import { Corkboard } from '@/components/Corkboard/Corkboard';
@@ -11,6 +11,7 @@ import { SubmissionTracker, type SubmissionTrackerHandle } from '@/components/Su
 import { PacingBoard } from '@/components/PacingBoard/PacingBoard';
 import { RevisionPassPanel } from '@/components/RevisionPassPanel/RevisionPassPanel';
 import { CollabPanel } from '@/components/CollabPanel/CollabPanel';
+import { NotesPanel } from '@/components/NotesPanel/NotesPanel';
 import { CollabBadge } from '@/components/CollabPanel/CollabBadge';
 import { getUnresolvedCount } from '@/lib/collaboration';
 import { SharePreviewDialog } from '@/components/SharePreviewDialog/SharePreviewDialog';
@@ -170,6 +171,20 @@ function StoryPageInner({ id }: { id: string }) {
   const handleSceneJump = (_sceneId: string) => {
     setViewMode('corkboard');
   };
+
+  const handleNoteInsert = useCallback((text: string) => {
+    const el = textareaRef.current;
+    if (!el) return;
+    const start = el.selectionStart ?? content.length;
+    const end = el.selectionEnd ?? content.length;
+    const next = content.slice(0, start) + text + content.slice(end);
+    setContent(next);
+    requestAnimationFrame(() => {
+      el.focus();
+      el.selectionStart = start + text.length;
+      el.selectionEnd = start + text.length;
+    });
+  }, [content, setContent]);
 
   const unresolvedCollabCount = getUnresolvedCount(id);
   const unreadFeedbackCount = getUnreadFeedbackCount(id);
@@ -390,12 +405,13 @@ function StoryPageInner({ id }: { id: string }) {
                 </button>
               </div>
               {sidebarTab === 'notes' ? (
-                <div role="tabpanel" id="panel-notes" aria-labelledby="tab-notes" className={styles.sidebarSection}>
-                  <div className={styles.sidebarPlaceholder}>
-                    <p className={styles.placeholderText}>
-                      Notes and outline will appear here
-                    </p>
-                  </div>
+                <div role="tabpanel" id="panel-notes" aria-labelledby="tab-notes" className={styles.sidebarPanelFull}>
+                  <NotesPanel
+                    storyId={id}
+                    scenes={scenes}
+                    focusedSceneId={focusedSceneId}
+                    onInsert={handleNoteInsert}
+                  />
                 </div>
               ) : sidebarTab === 'revision' ? (
                 <div role="tabpanel" id="panel-revision" aria-labelledby="tab-revision" className={styles.sidebarPanelFull}>
