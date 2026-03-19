@@ -1,59 +1,37 @@
 # HEARTBEAT.md -- CEO Heartbeat Checklist
 
-Run this checklist on every heartbeat. This covers both your local planning/memory work and your organizational coordination via the Paperclip skill.
+Run this checklist on every heartbeat. Be fast — the goal is to route tickets and exit. Do not over-think or over-research. If there is nothing to do, exit immediately.
 
-## 1. Identity and Context
+## 1. Route
 
-- `GET /api/agents/me` -- confirm your id, role, budget, chainOfCommand.
-- Check wake context: `PAPERCLIP_TASK_ID`, `PAPERCLIP_WAKE_REASON`, `PAPERCLIP_WAKE_COMMENT_ID`.
-- **If `PAPERCLIP_WAKE_REASON=issue_commented`:** run the fast-path from `AGENTS.md` (route only the commented issue, then get your own assignments). Skip steps 2–3 below and jump to step 4.
+Run the routing script — this is always the first and most important step:
 
-## 2. Local Planning Check
+```
+node agents/ceo/heartbeat-route.mjs
+```
 
-1. Read today's plan from `agents/ceo/memory/YYYY-MM-DD.md` under "## Today's Plan". If `AGENT_HOME` exists, that path is also acceptable.
-2. Review each planned item: what's completed, what's blocked, and what up next.
-3. For any blockers, resolve them yourself or escalate to the board.
-4. If you're ahead, start on the next highest priority.
-5. **Record progress updates** in the daily notes.
+Read the JSON output. Done.
 
-## 3. Approval Follow-Up
+## 2. Get your own assignments (if any)
 
-If `PAPERCLIP_APPROVAL_ID` is set:
+```
+GET /api/companies/{companyId}/issues?assigneeAgentId={your-id}&status=todo,in_progress,blocked
+```
 
-- Review the approval and its linked issues.
-- Close resolved issues or comment on what remains open.
-
-## 4. Get Assignments
-
-- `GET /api/companies/{companyId}/issues?assigneeAgentId={your-id}&status=todo,in_progress,blocked`
-- Prioritize: `in_progress` first, then `todo`. Skip `blocked` unless you can unblock it.
-- If there is already an active run on an `in_progress` task, just move on to the next thing.
+- If no assigned issues: **exit immediately**. Do not write memory, do not do fact extraction, do not read plans.
 - If `PAPERCLIP_TASK_ID` is set and assigned to you, prioritize that task.
+- Prioritize: `in_progress` first, then `todo`. Skip `blocked` unless you can unblock it.
 
-## 5. Checkout and Work
+## 3. Checkout and work (only if you have assigned issues)
 
-- Always checkout before working: `POST /api/issues/{id}/checkout`.
-- If you get **409** on checkout: add the label `checkout-stuck` to that issue (`PATCH /api/issues/{id}` appending the `checkout-stuck` label ID to existing `labelIds`). Do not retry; do not call release. Move on or exit. The CEO (on the next heartbeat) will run clone-and-cancel for that issue.
-- Never retry a 409 otherwise -- that task belongs to someone else.
-- Do the work. Update status and comment when done.
+- Checkout before working: `POST /api/issues/{id}/checkout`
+- If **409**: add `checkout-stuck` label to the issue and exit. Do not retry.
+- Do the work. Post a concise comment when done.
 
-## 6. Delegation
+## 4. Exit
 
-- Create subtasks with `POST /api/companies/{companyId}/issues`. Always set `parentId` and `goalId`.
-- Use `paperclip-create-agent` skill when hiring new agents.
-- Assign work to the right agent for the job.
-
-## 7. Fact Extraction
-
-1. Check for new conversations since last extraction.
-2. Extract durable facts to the relevant entity in `agents/ceo/life/` (PARA).
-3. Update `agents/ceo/memory/YYYY-MM-DD.md` with timeline entries.
-4. Update access metadata (timestamp, access_count) for any referenced facts.
-
-## 8. Exit
-
-- Comment on any in_progress work before exiting.
-- If no assignments and no valid mention-handoff, exit cleanly.
+- If no assignments and nothing routed: exit cleanly with no extra comments or memory writes.
+- Do not write daily notes unless you completed meaningful strategic work this heartbeat.
 
 ---
 
