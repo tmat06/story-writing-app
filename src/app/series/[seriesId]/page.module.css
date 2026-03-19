@@ -1,0 +1,98 @@
+.layout {
+  display: grid;
+  grid-template-columns: 240px minmax(480px, 1fr) 360px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.leftRail {
+  border-right: var(--border-width) solid var(--color-fog-200);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding-top: var(--spacing-sm);
+}
+
+.center {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-right: var(--border-width) solid var(--color-fog-200);
+}
+
+.rightPanel {
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-cement-400);
+  font-size: var(--font-size-sm);
+}
+
+/* Tablet: collapse right panel */
+@media (max-width: 1023px) {
+  .layout {
+    grid-template-columns: 240px minmax(360px, 1fr);
+    position: relative;
+  }
+
+  .rightPanel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 360px;
+    background: var(--color-white);
+    border-left: var(--border-width) solid var(--color-fog-200);
+    transform: translateX(100%);
+    transition: transform 220ms ease;
+    z-index: var(--z-dropdown);
+  }
+
+  .rightPanel:has(.panel) {
+    transform: translateX(0);
+  }
+}
+
+/* Mobile: stacked */
+@media (max-width: 767px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .leftRail {
+    border-right: none;
+    border-bottom: var(--border-width) solid var(--color-fog-200);
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: var(--spacing-xs);
+  }
+
+  .center {
+    border-right: none;
+  }
+
+  .rightPanel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80vh;
+    background: var(--color-white);
+    border-top: var(--border-width) solid var(--color-fog-200);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(100%);
+    transition: transform 220ms ease;
+    z-index: var(--z-modal);
+    overflow-y: auto;
+  }
+}

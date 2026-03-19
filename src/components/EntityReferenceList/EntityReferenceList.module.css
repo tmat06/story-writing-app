@@ -1,0 +1,300 @@
+.panel {
+  padding: var(--spacing-lg) var(--spacing-md);
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-cement-400);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  padding: var(--spacing-md);
+}
+
+.closeButton {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  color: var(--color-cement-400);
+  line-height: 1;
+  padding: var(--spacing-xs);
+  border-radius: var(--border-radius-sm);
+}
+
+.closeButton:hover {
+  background: var(--color-fog-200);
+  color: var(--color-black-700);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.entityName {
+  font-size: 2rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+  line-height: var(--line-height-tight);
+  margin: 0;
+  flex: 1;
+}
+
+.typeBadge {
+  margin-top: 6px;
+  display: inline-block;
+  padding: 2px var(--spacing-sm);
+  background: var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-elephant-500);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.summary {
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  line-height: var(--line-height-relaxed);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+}
+
+.tag {
+  padding: 2px var(--spacing-sm);
+  background: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+}
+
+.section {
+  margin-top: var(--spacing-lg);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-elephant-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--spacing-sm);
+}
+
+.noLinks {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  margin: 0;
+}
+
+.storyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.storyGroup {
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.storyToggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-polar-100);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  gap: var(--spacing-sm);
+}
+
+.storyToggle:hover {
+  background: var(--color-fog-200);
+}
+
+.storyToggle:focus-visible {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: -2px;
+}
+
+.storyTitle {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-black-700);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sceneCount {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  white-space: nowrap;
+}
+
+.chevron {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+}
+
+.sceneList {
+  list-style: none;
+  padding: var(--spacing-xs) var(--spacing-md);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--color-white);
+}
+
+.sceneLink {
+  display: block;
+  padding: 4px var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-elephant-500);
+  text-decoration: none;
+  border-radius: var(--border-radius-sm);
+}
+
+.sceneLink:hover {
+  background: var(--color-polar-100);
+  color: var(--color-black-700);
+}
+
+.sceneLink:focus-visible {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+.lastUpdated {
+  margin-top: var(--spacing-xl);
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+}
+
+.editNameInput {
+  flex: 1;
+  font-size: 2rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  padding: 2px var(--spacing-sm);
+  width: 100%;
+}
+
+.editNameInput:focus {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+.editSummaryTextarea {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  line-height: var(--line-height-relaxed);
+  color: var(--color-elephant-500);
+  resize: vertical;
+  margin-bottom: var(--spacing-sm);
+}
+
+.editSummaryTextarea:focus {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+.editActions {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.editButton {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  background: var(--color-polar-100);
+  font-size: var(--font-size-xs);
+  color: var(--color-elephant-500);
+  cursor: pointer;
+}
+
+.editButton:hover {
+  background: var(--color-fog-200);
+  color: var(--color-black-700);
+}
+
+.editButton:focus-visible {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+.saveEditButton {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: none;
+  border-radius: var(--border-radius-md);
+  background: var(--color-black-700);
+  color: var(--color-white);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.saveEditButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.saveEditButton:focus-visible {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+.cancelEditButton {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  background: transparent;
+  color: var(--color-elephant-500);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+}
+
+.cancelEditButton:hover {
+  background: var(--color-fog-200);
+}

@@ -51,6 +51,22 @@
   color: var(--color-cement-400);
 }
 
+.seriesBadge {
+  display: inline-block;
+  margin-bottom: var(--spacing-xs);
+  padding: 2px var(--spacing-sm);
+  background: var(--color-polar-100);
+  border-radius: 8px;
+  font-size: var(--font-size-xs);
+  color: var(--color-elephant-500);
+  text-decoration: none;
+}
+
+.seriesBadge:hover {
+  background: var(--color-fog-200);
+  color: var(--color-black-700);
+}
+
 .timestamp {
   margin: 0;
   font-size: var(--font-size-xs);

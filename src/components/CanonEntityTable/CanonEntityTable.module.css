@@ -1,0 +1,226 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: var(--border-width) solid var(--color-fog-200);
+  position: sticky;
+  top: 0;
+  background: var(--color-white);
+  z-index: 1;
+}
+
+.searchWrapper {
+  flex: 1;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.search {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  background: var(--color-polar-100);
+}
+
+.search:focus {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+.createButton {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  background: var(--color-white);
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 120ms ease;
+}
+
+.createButton:hover {
+  background: var(--color-fog-200);
+  color: var(--color-black-700);
+}
+
+.createButton:focus-visible {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+.grid {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: var(--border-width) solid var(--color-polar-100);
+  cursor: pointer;
+  transition: box-shadow 120ms ease;
+  border-left: 2px solid transparent;
+}
+
+.row:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.row.selected {
+  background: var(--color-fog-200);
+  border-left-color: var(--color-black-700);
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: -2px;
+}
+
+.rowMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rowName {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-black-700);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowTags {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowMeta {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  white-space: nowrap;
+  margin-left: var(--spacing-sm);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-3xl) var(--spacing-md);
+  color: var(--color-cement-400);
+  text-align: center;
+}
+
+.emptyState p {
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.emptyCreateButton {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  background: var(--color-white);
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  cursor: pointer;
+}
+
+.emptyCreateButton:hover {
+  background: var(--color-fog-200);
+  color: var(--color-black-700);
+}
+
+.createForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  border-bottom: var(--border-width) solid var(--color-fog-200);
+  background: var(--color-polar-100);
+}
+
+.createInput,
+.createTextarea {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  background: var(--color-white);
+  font-family: inherit;
+  resize: vertical;
+}
+
+.createInput:focus,
+.createTextarea:focus {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+.createActions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.saveButton {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius-md);
+  background: var(--color-black-700);
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.saveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.saveButton:focus-visible {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+.cancelButton {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  background: var(--color-white);
+  color: var(--color-elephant-500);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  background: var(--color-fog-200);
+}

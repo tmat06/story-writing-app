@@ -20,7 +20,7 @@ export function getStory(id: string): Story | null {
   return stories.find(s => s.id === id) || null;
 }
 
-export function createStory(title: string): Story {
+export function createStory(title: string, opts?: { seriesId?: string }): Story {
   const now = Date.now();
   const story: Story = {
     id: crypto.randomUUID(),
@@ -28,6 +28,7 @@ export function createStory(title: string): Story {
     createdAt: now,
     updatedAt: now,
     isArchived: false,
+    ...(opts?.seriesId ? { seriesId: opts.seriesId } : {}),
   };
 
   const stories = getStories();
@@ -38,7 +39,7 @@ export function createStory(title: string): Story {
 
 export function updateStory(
   id: string,
-  updates: Partial<Pick<Story, 'title' | 'isArchived'>>
+  updates: Partial<Pick<Story, 'title' | 'isArchived' | 'seriesId'>>
 ): Story | null {
   const stories = getStories();
   const index = stories.findIndex(s => s.id === id);

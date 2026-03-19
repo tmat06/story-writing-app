@@ -1,6 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { Story } from '@/types/story';
+import { getSeriesById } from '@/lib/series';
 import StoryActionMenu from '@/components/StoryActionMenu/StoryActionMenu';
 import styles from './StoryCard.module.css';
 
@@ -40,10 +42,21 @@ export default function StoryCard({
       }
     : { className: `${styles.card}${archivedClass}` };
 
+  const series = story.seriesId ? getSeriesById(story.seriesId) : undefined;
+
   return (
     <CardWrapper {...wrapperProps}>
       <div className={styles.content}>
         <h4 className={styles.title}>{story.title}</h4>
+        {series && (
+          <Link
+            href={`/series/${series.id}`}
+            className={styles.seriesBadge}
+            onClick={e => e.stopPropagation()}
+          >
+            {series.title}
+          </Link>
+        )}
         <p className={styles.timestamp}>
           Last edited {formatRelativeTime(story.updatedAt)}
         </p>
