@@ -131,3 +131,45 @@
   color: var(--color-cement-400);
   font-size: var(--font-size-sm);
 }
+
+.checkpointSection {
+  border-top: 1px solid var(--color-fog-200);
+  margin-top: var(--spacing-2xl);
+  padding-top: var(--spacing-xl);
+}
+
+.checkpointTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-black-700);
+  margin: 0 0 var(--spacing-lg);
+}
+
+.checkpointQuestion {
+  margin-bottom: var(--spacing-lg);
+}
+
+.checkpointLabel {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-elephant-500);
+  margin-bottom: var(--spacing-xs);
+}
+
+.checkpointTextarea {
+  width: 100%;
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-fashion-300);
+  border-radius: 4px;
+  resize: vertical;
+  color: var(--color-elephant-500);
+  font-family: var(--font-sans);
+  line-height: var(--line-height-normal);
+}
+
+.checkpointTextarea:focus {
+  outline: 2px solid var(--color-elephant-500);
+  outline-offset: 2px;
+}

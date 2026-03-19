@@ -235,20 +235,109 @@
   outline-offset: 2px;
 }
 
-.comingSoon {
+.checkpointSection {
   border-top: 1px solid var(--color-fog-200);
   padding-top: var(--spacing-md);
 }
 
-.comingSoonLabel {
+.checkpointToggleLabel {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
   font-size: var(--font-size-sm);
-  color: var(--color-cement-400);
-  cursor: not-allowed;
+  color: var(--color-elephant-500);
+  cursor: pointer;
+  font-weight: 500;
 }
 
-.comingSoonCheckbox {
-  cursor: not-allowed;
+.checkpointToggle {
+  cursor: pointer;
+}
+
+.checkpointConfig {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.templateRadios {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.templateLegend {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--spacing-xs);
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  cursor: pointer;
+}
+
+.defaultQuestionPreview {
+  margin: 0;
+  padding: 0 0 0 var(--spacing-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  line-height: 1.6;
+}
+
+.defaultQuestionPreview li {
+  margin-bottom: 4px;
+}
+
+.customQuestions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.customQuestionInput {
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--color-fashion-300);
+  border-radius: 4px;
+  color: var(--color-elephant-500);
+  background: var(--color-white);
+  width: 100%;
+}
+
+.customQuestionInput:focus {
+  outline: 2px solid var(--color-elephant-500);
+  outline-offset: 2px;
+}
+
+.addQuestionBtn {
+  background: none;
+  border: 1px dashed var(--color-fashion-300);
+  border-radius: 4px;
+  color: var(--color-cement-400);
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  cursor: pointer;
+  text-align: left;
+}
+
+.addQuestionBtn:hover {
+  border-color: var(--color-cement-400);
+  color: var(--color-elephant-500);
+}
+
+.addQuestionBtn:focus-visible {
+  outline: 2px solid var(--color-elephant-500);
+  outline-offset: 2px;
 }

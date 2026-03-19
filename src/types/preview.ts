@@ -1,5 +1,15 @@
 export type PreviewLinkStatus = 'active' | 'expired' | 'revoked';
 
+export interface CheckpointQuestion {
+  id: string;       // short id e.g. 'q1'
+  text: string;     // the question prompt shown to reader
+}
+
+export interface CheckpointResponse {
+  questionId: string;
+  answer: string;   // free-text, max 500 chars
+}
+
 export interface PreviewLink {
   token: string;            // 32-char URL-safe string
   storyId: string;
@@ -8,6 +18,8 @@ export interface PreviewLink {
   createdAt: number;
   expiresAt: number | null; // null = no expiry
   status: PreviewLinkStatus;
+  checkpointEnabled: boolean;
+  checkpointQuestions: CheckpointQuestion[];
 }
 
 export interface PreviewFeedback {
@@ -19,4 +31,5 @@ export interface PreviewFeedback {
   readerId: string;         // e.g. "Reader 1", from per-token sequence
   submittedAt: number;
   isRead: boolean;          // for unread badge
+  checkpointResponses: CheckpointResponse[];
 }
