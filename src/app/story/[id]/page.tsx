@@ -64,6 +64,7 @@ function StoryPageInner({ id }: { id: string }) {
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [scenesLoading, setLoading] = useState(true);
   const [storyTitle, setStoryTitle] = useState("");
+  const [storySeriesId, setStorySeriesId] = useState<string | undefined>(undefined);
   const [showRecovery, setShowRecovery] = useState(false);
   const [showError, setShowError] = useState(false);
   const [corkboardStatusFilter, setCorkboardStatusFilter] = useState<
@@ -83,9 +84,11 @@ function StoryPageInner({ id }: { id: string }) {
     hasRecovery,
   } = useAutosave(id);
 
-  // Load story title from localStorage
+  // Load story title and seriesId from localStorage
   useEffect(() => {
-    setStoryTitle(getStory(id)?.title ?? "");
+    const story = getStory(id);
+    setStoryTitle(story?.title ?? "");
+    setStorySeriesId(story?.seriesId);
   }, [id]);
 
   const handleTitleChange = (val: string) => {
@@ -292,6 +295,15 @@ function StoryPageInner({ id }: { id: string }) {
                 lastSaved &&
                 "Saved"}
             </span>
+          )}
+          {storySeriesId && (
+            <button
+              className={styles.seriesBibleBtn}
+              onClick={() => router.push(`/series/${storySeriesId}`)}
+              aria-label="Open Series Bible"
+            >
+              Series
+            </button>
           )}
           {viewMode === "editor" && (
             <button
