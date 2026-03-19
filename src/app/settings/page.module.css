@@ -26,10 +26,8 @@
   background-color: var(--color-polar-100);
   border: var(--border-width) solid var(--color-fashion-300);
   border-radius: var(--border-radius-md);
-  min-height: 120px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
 }
 
 .placeholder {
@@ -37,6 +35,100 @@
   font-size: var(--font-size-base);
   color: var(--color-cement-400);
   text-align: center;
+}
+
+/* Settings rows */
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+}
+
+.settingRow + .settingRow {
+  border-top: var(--border-width) solid var(--color-fog-200);
+}
+
+.settingLabel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.settingLabelText {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-black-700);
+}
+
+.settingLabelDescription {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+}
+
+/* Select control */
+.select {
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+  background: var(--color-white);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.select:focus-visible {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
+}
+
+/* Toggle (checkbox) control */
+.toggle {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+  accent-color: var(--color-black-700);
+  flex-shrink: 0;
+}
+
+/* Save status */
+.saveStatus {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  min-height: 1.25rem;
+  margin-top: var(--spacing-sm);
+}
+
+/* Actions bar */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--spacing-lg);
+  border-top: var(--border-width) solid var(--color-fog-200);
+  margin-top: var(--spacing-lg);
+}
+
+.resetButton {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-cement-400);
+  background: none;
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  cursor: pointer;
+}
+
+.resetButton:hover {
+  color: var(--color-black-700);
+  border-color: var(--color-fashion-300);
+}
+
+.resetButton:focus-visible {
+  outline: 2px solid var(--color-black-700);
+  outline-offset: 2px;
 }
 
 @media (max-width: 767px) {
