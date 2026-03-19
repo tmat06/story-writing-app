@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getStories, createStory } from '@/lib/stories';
 import StoryCard from '@/components/StoryCard/StoryCard';
+import StoryBundleDialog from '@/components/StoryBundleDialog/StoryBundleDialog';
 import styles from './page.module.css';
 
 export default function StoriesPage() {
   const [stories, setStories] = useState<ReturnType<typeof getStories>>([]);
   const [showArchived, setShowArchived] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -55,6 +57,12 @@ export default function StoriesPage() {
           />
         </div>
         <button
+          className={styles.importBundleButton}
+          onClick={() => setImportDialogOpen(true)}
+        >
+          Import Bundle
+        </button>
+        <button
           className={styles.archiveToggle}
           onClick={() => setShowArchived(!showArchived)}
         >
@@ -95,6 +103,16 @@ export default function StoriesPage() {
           </div>
         )}
       </div>
+
+      <StoryBundleDialog
+        isOpen={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+        onImportComplete={(newStoryId) => {
+          setImportDialogOpen(false);
+          handleUpdate();
+          router.push(`/story/${newStoryId}`);
+        }}
+      />
     </div>
   );
 }
