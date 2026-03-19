@@ -79,7 +79,6 @@ export function useSessionTimer(): UseSessionTimerReturn {
     if (timerState === 'running' && targetMs !== null && elapsedMs >= targetMs) {
       clearTimerInterval();
       setTimerState('complete');
-      console.log('SessionTimer: completed', { duration: formatDuration(targetMs) });
     }
   }, [elapsedMs, timerState, targetMs]);
 

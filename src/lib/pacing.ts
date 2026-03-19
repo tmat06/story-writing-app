@@ -188,8 +188,6 @@ export function computeAlerts(
     }
   }
 
-  console.log(`[pacing] computed ${alerts.length} alerts for story`);
-
   // Sort: warnings first, then info; cap at 8
   return alerts
     .sort((a, b) => {

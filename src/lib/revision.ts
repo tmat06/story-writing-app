@@ -126,7 +126,6 @@ export function createPass(storyId: string, type: PassType, scenes: Scene[]): Re
     passes = passes.slice(passes.length - MAX_PASSES_PER_STORY);
   }
   savePasses(storyId, passes);
-  console.log('RevisionPass: created', { passId, type, itemCount: items.length, storyId });
   return pass;
 }
 
@@ -143,7 +142,6 @@ export function updateItem(
   if (!item) return;
   Object.assign(item, updates);
   savePasses(storyId, passes);
-  console.log('RevisionPass: item updated', { passId, itemId, status: updates.status });
 }
 
 export function completePass(storyId: string, passId: string): void {
@@ -152,7 +150,6 @@ export function completePass(storyId: string, passId: string): void {
   if (!pass) return;
   pass.completedAt = Date.now();
   savePasses(storyId, passes);
-  console.log('RevisionPass: completed', { passId, type: pass.type });
 }
 
 export function exportPassReport(pass: RevisionPass, storyTitle: string): string {
