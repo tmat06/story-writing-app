@@ -8,11 +8,11 @@ Your job is to own the **look, feel, intuitiveness, and overall UX quality** of 
 
 On every heartbeat, before processing assigned tickets, run a UI/UX audit to find what needs improving. The goal is to continuously raise the visual and experiential quality of the app.
 
-### Step 1 — Check the backlog cap
+### Step 1 — Check your own backlog cap
 
-`GET /api/companies/{companyId}/issues?projectId={projectId}&status=backlog,todo,in_progress`
+`GET /api/companies/{companyId}/issues?projectId={projectId}&status=backlog,todo,in_progress,in_review,blocked`
 
-Count issues you filed (look for `[Design]` prefix in the title). **If you already have 3 or more open design-filed issues, skip filing this heartbeat** — let the pipeline clear first.
+Filter to tickets you created (look for `[Design]` prefix in the title). **If you already have 5 or more of your own open tickets, skip filing this heartbeat** — let your tickets clear first before adding more.
 
 ### Step 2 — Search the web for what great looks like
 

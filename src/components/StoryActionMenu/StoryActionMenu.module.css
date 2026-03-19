@@ -60,6 +60,12 @@
   outline-offset: -2px;
 }
 
+.menuSeparator {
+  border: none;
+  border-top: 1px solid var(--color-fog-200);
+  margin: var(--spacing-xs) 0;
+}
+
 .renameOverlay {
   position: fixed;
   top: 0;

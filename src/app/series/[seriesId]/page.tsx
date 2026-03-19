@@ -40,12 +40,10 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [stories, setStories] = useState<Story[]>([]);
 
-  // Stories in this series
   const [seriesStories, setSeriesStories] = useState<Story[]>([]);
   const [showAddStoryPicker, setShowAddStoryPicker] = useState(false);
   const [selectedAddStoryId, setSelectedAddStoryId] = useState('');
 
-  // Impact warning state
   const [pendingUpdate, setPendingUpdate] = useState<{
     id: string;
     updates: Partial<Pick<CanonEntity, 'name' | 'summary' | 'tags'>>;
@@ -55,11 +53,9 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
     sceneCount: number;
   } | null>(null);
 
-  // Scene link dialog state
   const [showSceneLinkDialog, setShowSceneLinkDialog] = useState(false);
   const [entityLinks, setEntityLinks] = useState<SceneEntityLink[]>([]);
 
-  // Load data
   useEffect(() => {
     const all = getSeries();
     setAllSeries(all);
@@ -97,7 +93,6 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seriesId, activeType, currentSeries]);
 
-  // Refresh entity links when selected entity changes
   useEffect(() => {
     if (selectedEntityId) {
       setEntityLinks(getSceneEntityLinks(selectedEntityId));
@@ -186,13 +181,15 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
 
   const selectedEntity = allEntities.find(e => e.id === selectedEntityId) ?? null;
 
-  const counts = useMemo(() => ({
-    character: allEntities.filter(e => e.type === 'character').length,
-    location: allEntities.filter(e => e.type === 'location').length,
-    lore: allEntities.filter(e => e.type === 'lore').length,
-  }), [allEntities]);
+  const counts = useMemo(
+    () => ({
+      character: allEntities.filter(e => e.type === 'character').length,
+      location: allEntities.filter(e => e.type === 'location').length,
+      lore: allEntities.filter(e => e.type === 'lore').length,
+    }),
+    [allEntities]
+  );
 
-  // Unassigned stories (not in any series) for the add picker
   const unassignedStories = stories.filter(s => !s.seriesId && !s.isArchived);
 
   if (!currentSeries) {
@@ -205,7 +202,6 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
 
   return (
     <div className={styles.layout}>
-      {/* Left rail */}
       <aside className={styles.leftRail}>
         <SeriesSwitcher
           series={allSeries}
@@ -219,7 +215,6 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
           counts={counts}
         />
 
-        {/* Stories in this series */}
         <div className={styles.storiesSection}>
           <h3 className={styles.storiesSectionTitle}>Stories in this series</h3>
           <ul className={styles.storiesList}>
@@ -290,7 +285,6 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
         </div>
       </aside>
 
-      {/* Center column */}
       <main className={styles.center}>
         <CanonEntityTable
           entities={entities}
@@ -303,7 +297,6 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
         />
       </main>
 
-      {/* Right panel */}
       <aside className={styles.rightPanel}>
         <EntityReferenceList
           entity={selectedEntity}
@@ -314,7 +307,6 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
         />
       </aside>
 
-      {/* Impact warning dialog */}
       {impactSummary && pendingUpdate && (
         <CanonImpactWarningDialog
           open
@@ -325,7 +317,6 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
         />
       )}
 
-      {/* Scene link dialog */}
       {showSceneLinkDialog && selectedEntity && (
         <SceneLinkDialog
           open={showSceneLinkDialog}

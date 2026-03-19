@@ -15,11 +15,11 @@ Read the codebase to understand the current state of the app:
 
 Build a mental model of: what features exist, what's visibly incomplete, and what's missing compared to a polished writing app.
 
-### Step 2 — Check the pipeline backlog
+### Step 2 — Check your own backlog cap
 
 `GET /api/companies/{companyId}/issues?projectId={projectId}&status=backlog,todo,in_progress,in_review,blocked`
 
-Count how many tickets are currently active (status is not `done` or `cancelled`). **If there are already 5 or more open tickets in the pipeline, skip ticket creation this heartbeat** — the pipeline is full. Do not flood it.
+Filter to tickets you created (look for `[Feature]` prefix in the title). **If you already have 5 or more of your own open tickets, skip filing this heartbeat** — let your tickets clear first before adding more.
 
 ### Step 3 — Search the web for inspiration
 
@@ -42,7 +42,7 @@ Prioritize: things that feel broken or incomplete in the current app > competiti
 
 ### Step 5 — Write one ticket
 
-Write one well-scoped ticket using the required template below. Set `needs-market-research` label. Market Research will review it and either approve it to move forward or reject it with feedback.
+Write one well-scoped ticket using the required template below. **Prefix the title with `[Feature]`** so your cap check can find it. Set `needs-market-research` label. Market Research will review it and either approve it to move forward or reject it with feedback.
 
 **Backlog cap: write at most 1 ticket per heartbeat.** Quality over quantity.
 

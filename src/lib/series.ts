@@ -60,15 +60,12 @@ export function updateSeries(
 }
 
 export function deleteSeries(id: string): void {
-  // 1. Clear seriesId on all member stories
   const memberStories = getStories().filter(s => s.seriesId === id);
   memberStories.forEach(s => updateStory(s.id, { seriesId: undefined }));
 
-  // 2. Delete all CanonEntity records for this series (cascade to SceneEntityLinks via deleteCanonEntity)
   const entities = getCanonEntities(id);
   entities.forEach(e => deleteCanonEntity(e.id));
 
-  // 3. Delete the Series record
   const all = loadSeries();
   saveSeries(all.filter(s => s.id !== id));
 }
