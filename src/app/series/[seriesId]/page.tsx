@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useMemo, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { CanonEntityType, CanonEntity, Series } from '@/types/series';
+import { CanonEntityType, CanonEntity, SceneEntityLink, Series } from '@/types/series';
 import { Story } from '@/types/story';
 import { getSeries, getSeriesById } from '@/lib/series';
 import {
@@ -11,13 +11,16 @@ import {
   updateCanonEntity,
   getSceneEntityLinks,
   getEntityImpactSummary,
+  linkEntityToScene,
+  unlinkEntityFromScene,
 } from '@/lib/canon';
-import { getStories } from '@/lib/stories';
+import { getStories, updateStory } from '@/lib/stories';
 import SeriesSwitcher from '@/components/SeriesSwitcher/SeriesSwitcher';
 import CanonTypeTabs from '@/components/CanonTypeTabs/CanonTypeTabs';
 import CanonEntityTable from '@/components/CanonEntityTable/CanonEntityTable';
 import EntityReferenceList from '@/components/EntityReferenceList/EntityReferenceList';
 import CanonImpactWarningDialog from '@/components/CanonImpactWarningDialog/CanonImpactWarningDialog';
+import SceneLinkDialog from '@/components/SceneLinkDialog/SceneLinkDialog';
 import styles from './page.module.css';
 
 interface SeriesBiblePageProps {
@@ -37,7 +40,10 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [stories, setStories] = useState<Story[]>([]);
 
-  // Impact warning state
+  const [seriesStories, setSeriesStories] = useState<Story[]>([]);
+  const [showAddStoryPicker, setShowAddStoryPicker] = useState(false);
+  const [selectedAddStoryId, setSelectedAddStoryId] = useState('');
+
   const [pendingUpdate, setPendingUpdate] = useState<{
     id: string;
     updates: Partial<Pick<CanonEntity, 'name' | 'summary' | 'tags'>>;
@@ -47,7 +53,9 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
     sceneCount: number;
   } | null>(null);
 
-  // Load data
+  const [showSceneLinkDialog, setShowSceneLinkDialog] = useState(false);
+  const [entityLinks, setEntityLinks] = useState<SceneEntityLink[]>([]);
+
   useEffect(() => {
     const all = getSeries();
     setAllSeries(all);
@@ -61,7 +69,9 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
       return;
     }
     setCurrentSeries(series);
-    setStories(getStories());
+    const allStories = getStories();
+    setStories(allStories);
+    setSeriesStories(allStories.filter(s => s.seriesId === seriesId));
   }, [seriesId, router]);
 
   const refreshEntities = () => {
@@ -70,12 +80,26 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
     setEntities(e.filter(en => en.type === activeType));
   };
 
+  const refreshSeriesStories = () => {
+    const allStories = getStories();
+    setStories(allStories);
+    setSeriesStories(allStories.filter(s => s.seriesId === seriesId));
+  };
+
   useEffect(() => {
     if (!currentSeries) return;
     refreshEntities();
     setSelectedEntityId(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seriesId, activeType, currentSeries]);
+
+  useEffect(() => {
+    if (selectedEntityId) {
+      setEntityLinks(getSceneEntityLinks(selectedEntityId));
+    } else {
+      setEntityLinks([]);
+    }
+  }, [selectedEntityId]);
 
   const handleSelectType = (type: CanonEntityType) => {
     setActiveType(type);
@@ -129,14 +153,44 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
     router.push('/series/new');
   };
 
-  const selectedEntity = allEntities.find(e => e.id === selectedEntityId) ?? null;
-  const selectedLinks = selectedEntityId ? getSceneEntityLinks(selectedEntityId) : [];
-
-  const counts: Record<CanonEntityType, number> = {
-    character: allEntities.filter(e => e.type === 'character').length,
-    location: allEntities.filter(e => e.type === 'location').length,
-    lore: allEntities.filter(e => e.type === 'lore').length,
+  const handleAddStory = () => {
+    if (!selectedAddStoryId) return;
+    updateStory(selectedAddStoryId, { seriesId });
+    setSelectedAddStoryId('');
+    setShowAddStoryPicker(false);
+    refreshSeriesStories();
   };
+
+  const handleRemoveStory = (storyId: string) => {
+    updateStory(storyId, { seriesId: undefined });
+    refreshSeriesStories();
+  };
+
+  const handleLinkToScene = (storyId: string, sceneId: string) => {
+    if (!selectedEntityId) return;
+    linkEntityToScene(selectedEntityId, storyId, sceneId);
+    setEntityLinks(getSceneEntityLinks(selectedEntityId));
+  };
+
+  const handleUnlink = (linkId: string) => {
+    unlinkEntityFromScene(linkId);
+    if (selectedEntityId) {
+      setEntityLinks(getSceneEntityLinks(selectedEntityId));
+    }
+  };
+
+  const selectedEntity = allEntities.find(e => e.id === selectedEntityId) ?? null;
+
+  const counts = useMemo(
+    () => ({
+      character: allEntities.filter(e => e.type === 'character').length,
+      location: allEntities.filter(e => e.type === 'location').length,
+      lore: allEntities.filter(e => e.type === 'lore').length,
+    }),
+    [allEntities]
+  );
+
+  const unassignedStories = stories.filter(s => !s.seriesId && !s.isArchived);
 
   if (!currentSeries) {
     return (
@@ -148,7 +202,6 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
 
   return (
     <div className={styles.layout}>
-      {/* Left rail */}
       <aside className={styles.leftRail}>
         <SeriesSwitcher
           series={allSeries}
@@ -161,9 +214,77 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
           onChange={handleSelectType}
           counts={counts}
         />
+
+        <div className={styles.storiesSection}>
+          <h3 className={styles.storiesSectionTitle}>Stories in this series</h3>
+          <ul className={styles.storiesList}>
+            {seriesStories.map(story => (
+              <li key={story.id} className={styles.storyRow}>
+                <span className={styles.storyRowTitle} title={story.title}>{story.title}</span>
+                <button
+                  type="button"
+                  className={styles.storyRemoveButton}
+                  onClick={() => handleRemoveStory(story.id)}
+                  aria-label={`Remove ${story.title} from series`}
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          {showAddStoryPicker ? (
+            <div className={styles.addStoryPicker}>
+              {unassignedStories.length === 0 ? (
+                <p className={styles.noUnassigned}>All stories are assigned to a series</p>
+              ) : (
+                <>
+                  <select
+                    className={styles.storySelect}
+                    value={selectedAddStoryId}
+                    onChange={e => setSelectedAddStoryId(e.target.value)}
+                    aria-label="Select story to add"
+                  >
+                    <option value="">Select a story…</option>
+                    {unassignedStories.map(s => (
+                      <option key={s.id} value={s.id}>{s.title}</option>
+                    ))}
+                  </select>
+                  <div className={styles.addStoryActions}>
+                    <button
+                      type="button"
+                      className={styles.addStoryConfirmButton}
+                      onClick={handleAddStory}
+                      disabled={!selectedAddStoryId}
+                    >
+                      Add
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.addStoryCancelButton}
+                      onClick={() => {
+                        setShowAddStoryPicker(false);
+                        setSelectedAddStoryId('');
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : (
+            <button
+              type="button"
+              className={styles.addStoryButton}
+              onClick={() => setShowAddStoryPicker(true)}
+            >
+              + Add story
+            </button>
+          )}
+        </div>
       </aside>
 
-      {/* Center column */}
       <main className={styles.center}>
         <CanonEntityTable
           entities={entities}
@@ -176,17 +297,16 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
         />
       </main>
 
-      {/* Right panel */}
       <aside className={styles.rightPanel}>
         <EntityReferenceList
           entity={selectedEntity}
-          links={selectedLinks}
+          links={entityLinks}
           stories={stories}
           onUpdateEntity={handleUpdateEntity}
+          onOpenSceneLinkDialog={() => setShowSceneLinkDialog(true)}
         />
       </aside>
 
-      {/* Impact warning dialog */}
       {impactSummary && pendingUpdate && (
         <CanonImpactWarningDialog
           open
@@ -194,6 +314,18 @@ export default function SeriesBiblePage({ params }: SeriesBiblePageProps) {
           impactSummary={impactSummary}
           onConfirm={handleImpactConfirm}
           onCancel={handleImpactCancel}
+        />
+      )}
+
+      {showSceneLinkDialog && selectedEntity && (
+        <SceneLinkDialog
+          open={showSceneLinkDialog}
+          entity={selectedEntity}
+          seriesStories={seriesStories}
+          existingLinks={entityLinks}
+          onLink={handleLinkToScene}
+          onUnlink={handleUnlink}
+          onClose={() => setShowSceneLinkDialog(false)}
         />
       )}
     </div>

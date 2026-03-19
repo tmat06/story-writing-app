@@ -3,12 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getStories, createStory } from '@/lib/stories';
+import { getSeries } from '@/lib/series';
+import { Series } from '@/types/series';
 import StoryCard from '@/components/StoryCard/StoryCard';
 import StoryBundleDialog from '@/components/StoryBundleDialog/StoryBundleDialog';
 import styles from './page.module.css';
 
 export default function StoriesPage() {
   const [stories, setStories] = useState<ReturnType<typeof getStories>>([]);
+  const [allSeries, setAllSeries] = useState<Series[]>([]);
   const [showArchived, setShowArchived] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
@@ -16,12 +19,14 @@ export default function StoriesPage() {
 
   useEffect(() => {
     setStories(getStories());
+    setAllSeries(getSeries());
   }, []);
 
   const filteredStories = stories.filter(s => s.isArchived === showArchived);
 
   const handleUpdate = () => {
     setStories(getStories());
+    setAllSeries(getSeries());
   };
 
   const handleNavigate = (id: string) => {
@@ -78,6 +83,7 @@ export default function StoriesPage() {
                 key={story.id}
                 story={story}
                 showActions={true}
+                availableSeries={allSeries}
                 onUpdate={handleUpdate}
                 onClick={() => handleNavigate(story.id)}
               />

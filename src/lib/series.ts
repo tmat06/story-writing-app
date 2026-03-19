@@ -1,4 +1,6 @@
 import { Series } from '@/types/series';
+import { getStories, updateStory } from '@/lib/stories';
+import { getCanonEntities, deleteCanonEntity } from '@/lib/canon';
 
 const STORAGE_KEY = 'series';
 
@@ -35,7 +37,6 @@ export function createSeries(title: string): Series {
   const series: Series = {
     id: crypto.randomUUID(),
     title,
-    storyIds: [],
     createdAt: now,
     updatedAt: now,
   };
@@ -47,7 +48,7 @@ export function createSeries(title: string): Series {
 
 export function updateSeries(
   id: string,
-  updates: Partial<Pick<Series, 'title' | 'storyIds'>>
+  updates: Partial<Pick<Series, 'title'>>
 ): Series {
   const all = loadSeries();
   const index = all.findIndex(s => s.id === id);
@@ -59,18 +60,12 @@ export function updateSeries(
 }
 
 export function deleteSeries(id: string): void {
-  saveSeries(loadSeries().filter(s => s.id !== id));
-}
+  const memberStories = getStories().filter(s => s.seriesId === id);
+  memberStories.forEach(s => updateStory(s.id, { seriesId: undefined }));
 
-export function addStoryToSeries(seriesId: string, storyId: string): Series {
-  const series = getSeriesById(seriesId);
-  if (!series) throw new Error(`Series ${seriesId} not found`);
-  if (series.storyIds.includes(storyId)) return series;
-  return updateSeries(seriesId, { storyIds: [...series.storyIds, storyId] });
-}
+  const entities = getCanonEntities(id);
+  entities.forEach(e => deleteCanonEntity(e.id));
 
-export function removeStoryFromSeries(seriesId: string, storyId: string): Series {
-  const series = getSeriesById(seriesId);
-  if (!series) throw new Error(`Series ${seriesId} not found`);
-  return updateSeries(seriesId, { storyIds: series.storyIds.filter(id => id !== storyId) });
+  const all = loadSeries();
+  saveSeries(all.filter(s => s.id !== id));
 }

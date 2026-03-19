@@ -3,7 +3,6 @@ export type CanonEntityType = 'character' | 'location' | 'lore';
 export interface Series {
   id: string;
   title: string;
-  storyIds: string[];
   createdAt: number;
   updatedAt: number;
 }

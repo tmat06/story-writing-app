@@ -36,6 +36,137 @@
   font-size: var(--font-size-sm);
 }
 
+/* Stories in this series section */
+.storiesSection {
+  padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm);
+  border-top: var(--border-width) solid var(--color-fog-200);
+}
+
+.storiesSectionTitle {
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-cement-400);
+  margin: 0 0 var(--spacing-xs) 0;
+  letter-spacing: 0.04em;
+}
+
+.storiesList {
+  list-style: none;
+  margin: 0 0 var(--spacing-xs) 0;
+  padding: 0;
+}
+
+.storyRow {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  gap: var(--spacing-xs);
+}
+
+.storyRowTitle {
+  flex: 1;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-black-700);
+}
+
+.storyRemoveButton {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--color-cement-400);
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: var(--border-radius-sm);
+  transition: color 120ms ease;
+}
+
+.storyRemoveButton:hover {
+  color: var(--color-black-700);
+}
+
+.addStoryButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  background: none;
+  border: 1px dashed var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-cement-400);
+  transition: border-color 120ms ease, color 120ms ease;
+}
+
+.addStoryButton:hover {
+  border-color: var(--color-cement-400);
+  color: var(--color-black-700);
+}
+
+.addStoryPicker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.storySelect {
+  width: 100%;
+  padding: 6px var(--spacing-xs);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  font-size: 14px;
+  background: var(--color-white);
+  color: var(--color-black-700);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.addStoryActions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.addStoryConfirmButton {
+  flex: 1;
+  padding: 6px;
+  background: var(--color-black-700);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.addStoryConfirmButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.addStoryCancelButton {
+  flex: 1;
+  padding: 6px;
+  background: none;
+  color: var(--color-cement-400);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.noUnassigned {
+  font-size: 13px;
+  color: var(--color-cement-400);
+  margin: 0;
+}
+
 /* Tablet: collapse right panel */
 @media (max-width: 1023px) {
   .layout {
