@@ -29,7 +29,7 @@ interface CorkboardProps {
   onReorder: (sceneId: string, newOrder: number) => void;
   onStatusChange: (sceneId: string, status: SceneStatus) => void;
   onAddScene: (scene: Omit<Scene, 'id' | 'order'>) => void;
-  onFieldChange: (sceneId: string, field: 'intent' | 'pov', value: string) => void;
+  onFieldChange: (sceneId: string, field: 'intent' | 'pov' | 'characters', value: string) => void;
   statusFilter?: SceneStatus | 'all';
   loading?: boolean;
   focusedSceneId?: string | null;
@@ -41,7 +41,7 @@ interface SortableSceneCardProps {
   scene: Scene;
   onClick: () => void;
   onStatusChange: (status: SceneStatus) => void;
-  onFieldChange: (field: 'intent' | 'pov', value: string) => void;
+  onFieldChange: (field: 'intent' | 'pov' | 'characters', value: string) => void;
   isSynced?: boolean;
   isDropTarget?: boolean;
   isFocused?: boolean;

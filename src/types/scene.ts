@@ -30,4 +30,7 @@ export interface Scene {
 
   /** Point-of-view character name */
   pov?: string;
+
+  /** Characters present in this scene */
+  characters?: string[];
 }

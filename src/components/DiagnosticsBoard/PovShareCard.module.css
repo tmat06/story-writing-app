@@ -1,0 +1,96 @@
+.card {
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+}
+
+.heading {
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-cement-400);
+  margin: 0 0 12px;
+}
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chapterLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  white-space: nowrap;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.bar {
+  flex: 1;
+  height: 20px;
+  display: flex;
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  background: var(--color-fog-200);
+}
+
+.emptyBar {
+  flex: 1;
+  background: var(--color-fog-200);
+}
+
+.segment {
+  height: 100%;
+  background: var(--color-carbon-600);
+  border: none;
+  cursor: pointer;
+  transition: filter 140ms cubic-bezier(0.2, 0, 0, 1);
+  padding: 0;
+}
+
+.segment:hover {
+  filter: brightness(1.2);
+}
+
+.segment:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--color-elephant-500);
+}
+
+.legendSwatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--color-carbon-600);
+}
+
+.empty {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  margin: 0;
+}

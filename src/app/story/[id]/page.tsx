@@ -15,6 +15,7 @@ import {
   type SubmissionTrackerHandle,
 } from "@/components/SubmissionTracker/SubmissionTracker";
 import { PacingBoard } from "@/components/PacingBoard/PacingBoard";
+import { DiagnosticsBoard } from "@/components/DiagnosticsBoard/DiagnosticsBoard";
 import { RevisionPassPanel } from "@/components/RevisionPassPanel/RevisionPassPanel";
 import { CollabPanel } from "@/components/CollabPanel/CollabPanel";
 import { NotesPanel } from "@/components/NotesPanel/NotesPanel";
@@ -112,7 +113,7 @@ function StoryPageInner({ id }: { id: string }) {
     const scene = searchParams.get("scene");
     if (
       view &&
-      ["editor", "corkboard", "submissions", "pacing"].includes(view)
+      ["editor", "corkboard", "submissions", "pacing", "diagnostics"].includes(view)
     ) {
       setViewMode(view);
     }
@@ -188,10 +189,15 @@ function StoryPageInner({ id }: { id: string }) {
 
   const handleFieldChange = (
     sceneId: string,
-    field: "intent" | "pov",
+    field: "intent" | "pov" | "characters",
     value: string,
   ) => {
-    updateSceneFields(id, sceneId, { [field]: value });
+    if (field === "characters") {
+      const chars = value.split(",").map((s) => s.trim()).filter(Boolean);
+      updateSceneFields(id, sceneId, { characters: chars });
+    } else {
+      updateSceneFields(id, sceneId, { [field]: value });
+    }
     refreshScenes();
   };
 
@@ -584,6 +590,19 @@ function StoryPageInner({ id }: { id: string }) {
 
         {viewMode === "submissions" && (
           <SubmissionTracker ref={trackerRef} storyId={id} />
+        )}
+
+        {viewMode === "diagnostics" && (
+          <div className={styles.diagnosticsContainer}>
+            <DiagnosticsBoard
+              storyId={id}
+              scenes={scenes}
+              onJumpToScene={(sceneId) => {
+                setFocusedSceneId(sceneId);
+                setViewMode("corkboard");
+              }}
+            />
+          </div>
         )}
       </div>
     </div>

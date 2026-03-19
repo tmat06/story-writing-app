@@ -8,7 +8,7 @@ interface SceneCardProps {
   storyId: string;
   onClick: () => void;
   onStatusChange: (status: SceneStatus) => void;
-  onFieldChange: (field: 'intent' | 'pov', value: string) => void;
+  onFieldChange: (field: 'intent' | 'pov' | 'characters', value: string) => void;
   isDragging?: boolean;
   isSynced?: boolean;
   isDropTarget?: boolean;
@@ -27,9 +27,10 @@ export function SceneCard({
   isFocused,
 }: SceneCardProps) {
   const router = useRouter();
-  const [editingField, setEditingField] = useState<'intent' | 'pov' | null>(null);
+  const [editingField, setEditingField] = useState<'intent' | 'pov' | 'characters' | null>(null);
   const [intentDraft, setIntentDraft] = useState(scene.intent ?? '');
   const [povDraft, setPovDraft] = useState(scene.pov ?? '');
+  const [charactersDraft, setCharactersDraft] = useState((scene.characters ?? []).join(', '));
 
   const rawContent =
     typeof window !== 'undefined'
@@ -52,6 +53,10 @@ export function SceneCard({
   useEffect(() => {
     setPovDraft(scene.pov ?? '');
   }, [scene.pov]);
+
+  useEffect(() => {
+    setCharactersDraft((scene.characters ?? []).join(', '));
+  }, [scene.characters]);
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     e.stopPropagation();
@@ -158,6 +163,44 @@ export function SceneCard({
               title="POV character — click to edit"
             >
               {scene.pov || 'POV'}
+            </button>
+          )}
+
+          {editingField === 'characters' ? (
+            <input
+              autoFocus
+              className={styles.chipInput}
+              value={charactersDraft}
+              placeholder="e.g. Alex, Jordan"
+              aria-label="Characters in scene"
+              onChange={(e) => setCharactersDraft(e.target.value)}
+              onBlur={() => {
+                onFieldChange('characters', charactersDraft);
+                setEditingField(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  onFieldChange('characters', charactersDraft);
+                  setEditingField(null);
+                }
+                if (e.key === 'Escape') {
+                  setCharactersDraft((scene.characters ?? []).join(', '));
+                  setEditingField(null);
+                }
+              }}
+            />
+          ) : (
+            <button
+              className={`${styles.chip} ${!(scene.characters?.length) ? styles.chipEmpty : ''}`}
+              onClick={() => setEditingField('characters')}
+              aria-label={scene.characters?.length ? `Characters: ${scene.characters.join(', ')}` : 'Add characters'}
+              title="Characters present — click to edit (comma-separated)"
+            >
+              {scene.characters?.length
+                ? (scene.characters.join(', ').length > 30
+                    ? scene.characters.join(', ').slice(0, 30) + '…'
+                    : scene.characters.join(', '))
+                : 'Characters'}
             </button>
           )}
         </div>
