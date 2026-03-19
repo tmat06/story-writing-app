@@ -452,7 +452,19 @@
 }
 
 .page[data-focus-mode='true'] .editor {
-  max-width: 720px;
+  max-width: 720px !important;
   width: 100%;
   flex: 1;
+}
+
+/* Writer prefs: accessibility overrides */
+.page[data-high-contrast='true'] .editor {
+  color: #000000;
+}
+
+.page[data-reduced-motion='true'] *,
+.page[data-reduced-motion='true'] *::before,
+.page[data-reduced-motion='true'] *::after {
+  transition-duration: 0.01ms !important;
+  animation-duration: 0.01ms !important;
 }

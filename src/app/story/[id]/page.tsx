@@ -22,6 +22,7 @@ import { clearSnapshot, loadSnapshot } from '@/lib/autosave';
 import { useAutosave } from '@/hooks/useAutosave';
 import { useFocusMode } from '@/hooks/useFocusMode';
 import { useSessionTimer } from '@/hooks/useSessionTimer';
+import { useWriterPrefs } from '@/hooks/useWriterPrefs';
 import { FocusControls } from '@/components/FocusControls/FocusControls';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import type { Scene, SceneStatus } from '@/types/scene';
@@ -175,6 +176,15 @@ function StoryPageInner({ id }: { id: string }) {
 
   const { isFocusMode, typewriterScroll, enterFocus, exitFocus, toggleTypewriter, textareaRef } = useFocusMode();
   const { timerState, elapsedMs, targetMs, startTimer, stopTimer, dismissSummary, wordsWritten } = useSessionTimer();
+  const { prefs } = useWriterPrefs();
+
+  // Apply focusByDefault pref on mount only
+  useEffect(() => {
+    if (prefs.focusByDefault) {
+      enterFocus();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentionally runs once on mount only
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
 
   const filteredSceneCount = corkboardStatusFilter === 'all'
@@ -186,7 +196,13 @@ function StoryPageInner({ id }: { id: string }) {
       : `${filteredSceneCount} of ${scenes.length} scenes`;
 
   return (
-    <div className={styles.page} data-view-mode={viewMode} data-focus-mode={isFocusMode ? 'true' : undefined}>
+    <div
+      className={styles.page}
+      data-view-mode={viewMode}
+      data-focus-mode={isFocusMode ? 'true' : undefined}
+      data-high-contrast={prefs.highContrast ? 'true' : undefined}
+      data-reduced-motion={prefs.reducedMotion ? 'true' : undefined}
+    >
 
       {/* SHELL HEADER — persistent across all views */}
       <div className={styles.shellHeader}>
@@ -304,6 +320,11 @@ function StoryPageInner({ id }: { id: string }) {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   data-typewriter-scroll={typewriterScroll && isFocusMode ? 'true' : undefined}
+                  style={{
+                    fontSize: prefs.fontSize,
+                    lineHeight: prefs.lineHeight,
+                    maxWidth: prefs.editorWidth,
+                  }}
                 />
                 {isFocusMode && (
                   <FocusControls
