@@ -6,7 +6,7 @@ This checklist defines when work is complete enough to move forward in the story
 
 - Scope is clear and bounded (what is included and excluded).
 - Acceptance criteria are explicit and testable.
-- Handoff comment includes exactly one `Assign to:` line when transitioning ownership.
+- Handoff is signaled by updating the pipeline stage label via `PATCH /api/issues/{id}` — no `Assign to:` comments.
 - Status is not set to `done` until final review/merge handoff is complete.
 
 ## Product + Research + Design
@@ -46,3 +46,12 @@ This checklist defines when work is complete enough to move forward in the story
 - **Logs/Ops**
   - Issue includes source, timestamp/window, impact, severity, and reproduction hints.
   - Repeated incidents include frequency and any known trigger pattern.
+
+## QA
+
+- **QA**
+  - Bug tickets include steps to reproduce, expected vs actual behavior, and file/line evidence.
+  - UX friction tickets include current behavior and a directional suggestion.
+  - Severity is set on every bug ticket.
+  - Ticket title is prefixed with `[QA]`.
+  - No duplicate tickets filed (existing open issues checked before filing).
