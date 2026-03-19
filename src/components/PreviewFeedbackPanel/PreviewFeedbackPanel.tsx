@@ -28,7 +28,7 @@ export function PreviewFeedbackPanel({ storyId, onRead }: PreviewFeedbackPanelPr
 
   const checkpointSummary = useMemo(() => {
     const links = getPreviewLinks(storyId);
-    const questionMap: Record<string, { text: string; answers: { readerId: string; answer: string }[] }> = {};
+    const questionMap: Record<string, { text: string; answers: { readerId: string; answer: string; feedbackId: string }[] }> = {};
     for (const link of links) {
       for (const q of (link.checkpointQuestions ?? [])) {
         if (!questionMap[q.id]) questionMap[q.id] = { text: q.text, answers: [] };
@@ -37,7 +37,7 @@ export function PreviewFeedbackPanel({ storyId, onRead }: PreviewFeedbackPanelPr
     for (const entry of feedback) {
       for (const r of (entry.checkpointResponses ?? [])) {
         if (questionMap[r.questionId]) {
-          questionMap[r.questionId].answers.push({ readerId: entry.readerId, answer: r.answer });
+          questionMap[r.questionId].answers.push({ readerId: entry.readerId, answer: r.answer, feedbackId: entry.id });
         }
       }
     }
@@ -135,8 +135,8 @@ export function PreviewFeedbackPanel({ storyId, onRead }: PreviewFeedbackPanelPr
               {q.answers.length === 0 ? (
                 <p className={styles.noAnswers}>No responses yet.</p>
               ) : (
-                q.answers.map((a, i) => (
-                  <div key={i} className={styles.answerRow}>
+                q.answers.map((a) => (
+                  <div key={a.feedbackId} className={styles.answerRow}>
                     <span className={styles.answerReader}>{a.readerId}</span>
                     <p className={styles.answerText}>{a.answer}</p>
                   </div>

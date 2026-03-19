@@ -164,8 +164,17 @@ export function regeneratePreviewLink(
   const links = loadLinks(storyId);
   const old = links.find((l) => l.token === oldToken);
   const expiresAt = old?.expiresAt ?? null;
+  const checkpointQuestions = old?.checkpointQuestions?.length
+    ? old.checkpointQuestions
+    : undefined;
   revokePreviewLink(storyId, oldToken);
-  return createPreviewLink(storyId, old?.storyTitle ?? '', content, expiresAt);
+  return createPreviewLink(
+    storyId,
+    old?.storyTitle ?? '',
+    content,
+    expiresAt,
+    checkpointQuestions,
+  );
 }
 
 export function submitFeedback(

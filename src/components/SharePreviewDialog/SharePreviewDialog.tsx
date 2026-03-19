@@ -110,9 +110,15 @@ export function SharePreviewDialog({ storyId, storyTitle, content, onClose }: Sh
         if (checkpointMode === 'default') {
           questions = DEFAULT_CHECKPOINT_QUESTIONS;
         } else {
-          questions = customQuestions
+          const filled = customQuestions
             .map((text, i) => ({ id: `q${i + 1}`, text: text.trim() }))
             .filter((q) => q.text.length > 0);
+          if (filled.length === 0) {
+            setCreateError('Add at least one question, or switch to the default template.');
+            setIsCreating(false);
+            return;
+          }
+          questions = filled;
         }
       }
       const link = createPreviewLink(storyId, storyTitle, content, expiresAt, questions);
