@@ -4,4 +4,5 @@ export interface Story {
   createdAt: number;
   updatedAt: number;
   isArchived: boolean;
+  seriesId?: string;
 }

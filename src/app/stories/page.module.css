@@ -103,6 +103,28 @@
   background: transparent;
 }
 
+.importBundleButton {
+  background: transparent;
+  color: var(--color-cement-400);
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.importBundleButton:hover {
+  color: var(--color-elephant-500);
+  background: transparent;
+}
+
+.importBundleButton:focus {
+  outline: 2px solid var(--color-fashion-300);
+  outline-offset: 2px;
+}
+
 .newStoryButton:focus,
 .archiveToggle:focus {
   outline: 2px solid var(--color-fashion-300);

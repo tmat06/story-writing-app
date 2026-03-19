@@ -20,6 +20,10 @@
   /* Pure white for contrast */
   --color-white: #ffffff;
 
+  /* Amber warning tokens */
+  --color-amber-500: #B86A00;
+  --color-amber-100: #FFF4E8;
+
   /* ============================================
      SPACING TOKENS
      ============================================ */

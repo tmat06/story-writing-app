@@ -1,4 +1,8 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { getSeries } from '@/lib/series';
 import styles from './Navigation.module.css';
 
 interface NavigationProps {
@@ -8,11 +12,22 @@ interface NavigationProps {
 }
 
 export default function Navigation({ currentPath, isOpen, onLinkClick }: NavigationProps) {
-  const navItems = [
+  const [hasSeries, setHasSeries] = useState(false);
+
+  useEffect(() => {
+    setHasSeries(getSeries().length > 0);
+  }, []);
+
+  const baseNavItems = [
     { href: '/', label: 'Home' },
     { href: '/stories', label: 'Stories' },
-    { href: '/settings', label: 'Settings' },
   ];
+
+  const seriesItem = { href: '/series', label: 'Series' };
+
+  const navItems = hasSeries
+    ? [...baseNavItems, seriesItem, { href: '/settings', label: 'Settings' }]
+    : [...baseNavItems, { href: '/settings', label: 'Settings' }];
 
   return (
     <nav className={`${styles.nav} ${isOpen ? styles.open : ''}`} aria-label="Main navigation">
@@ -24,7 +39,9 @@ export default function Navigation({ currentPath, isOpen, onLinkClick }: Navigat
 
       <ul className={styles.navList} role="list">
         {navItems.map((item) => {
-          const isActive = currentPath === item.href;
+          const isActive = item.href === '/series'
+            ? currentPath.startsWith('/series')
+            : currentPath === item.href;
           return (
             <li key={item.href}>
               <Link

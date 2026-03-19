@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { updateStory, deleteStory } from '@/lib/stories';
+import { exportStoryBundle } from '@/lib/bundle';
 import ConfirmDialog from '@/components/ConfirmDialog/ConfirmDialog';
 import styles from './StoryActionMenu.module.css';
 
@@ -50,6 +51,11 @@ export default function StoryActionMenu({
     updateStory(storyId, { isArchived: !isArchived });
     onUpdate();
     setMenuOpen(false);
+  };
+
+  const handleExportBundle = async () => {
+    setMenuOpen(false);
+    await exportStoryBundle(storyId);
   };
 
   const handleDelete = () => {
@@ -103,6 +109,16 @@ export default function StoryActionMenu({
             }}
           >
             Delete
+          </button>
+          <hr className={styles.menuSeparator} />
+          <button
+            className={styles.menuItem}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleExportBundle();
+            }}
+          >
+            Export Story Bundle
           </button>
         </div>
       )}

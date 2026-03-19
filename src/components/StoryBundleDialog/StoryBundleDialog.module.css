@@ -1,0 +1,288 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+}
+
+.dialog {
+  max-width: 640px;
+  width: 90%;
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  background: var(--color-white);
+  animation: dialogIn 140ms ease-out;
+}
+
+@keyframes dialogIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog {
+    animation: none;
+  }
+}
+
+.header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-black-700);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-cement-400);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.sectionLabel {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-elephant-500);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.dropzone {
+  border: 2px dashed var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  transition: border-color 120ms ease-out, background 120ms ease-out;
+  text-align: center;
+}
+
+.dropzone:hover,
+.dropzoneActive {
+  border-color: var(--color-fashion-300);
+  background: var(--color-polar-100);
+}
+
+.dropzoneHint {
+  font-size: var(--font-size-md);
+  color: var(--color-cement-400);
+  margin: 0;
+}
+
+.dropzoneFileName {
+  font-size: var(--font-size-md);
+  color: var(--color-black-700);
+  font-weight: var(--font-weight-medium);
+  margin: 0;
+}
+
+.chooseButton {
+  background: transparent;
+  border: 1px solid var(--color-fog-200);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chooseButton:hover {
+  border-color: var(--color-fashion-300);
+  color: var(--color-elephant-500);
+}
+
+.chooseButton:focus {
+  outline: 2px solid var(--color-fashion-300);
+  outline-offset: 2px;
+}
+
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.summaryCard {
+  background: var(--color-polar-100);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xs) var(--spacing-md);
+}
+
+.metaRow {
+  display: contents;
+}
+
+.metaLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-cement-400);
+}
+
+.metaValue {
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+}
+
+.integrityNotice {
+  background: var(--color-polar-100);
+  border: 1px solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+}
+
+.integrityMessage {
+  font-size: var(--font-size-md);
+  color: var(--color-cement-400);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.integrityHint {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  margin: 0;
+}
+
+.parsingMessage {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-md);
+  color: var(--color-cement-400);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--color-fog-200);
+  border-top-color: var(--color-fashion-300);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-fog-200);
+}
+
+.cancelButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--color-fog-200);
+  color: var(--color-cement-400);
+  transition: all 0.15s;
+}
+
+.cancelButton:hover {
+  background: var(--color-fog-100);
+}
+
+.cancelButton:focus {
+  outline: 2px solid var(--color-fashion-300);
+  outline-offset: 2px;
+}
+
+.importButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  background: var(--color-black-700);
+  border: none;
+  color: white;
+  transition: all 0.15s;
+}
+
+.importButton:hover:not(:disabled) {
+  background: var(--color-black-900);
+}
+
+.importButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.importButton:focus {
+  outline: 2px solid var(--color-fashion-300);
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  .overlay {
+    align-items: flex-end;
+  }
+
+  .dialog {
+    width: 100%;
+    max-width: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .footer {
+    position: sticky;
+    bottom: 0;
+    background: var(--color-white);
+    padding-bottom: 0;
+  }
+
+  .metaGrid {
+    grid-template-columns: 1fr;
+  }
+}
