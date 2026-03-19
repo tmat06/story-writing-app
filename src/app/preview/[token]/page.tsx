@@ -14,6 +14,7 @@ function PreviewPageInner({ token }: { token: string }) {
   const [reaction, setReaction] = useState<'up' | 'down' | null>(null);
   const [comment, setComment] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [checkpointAnswers, setCheckpointAnswers] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const resolved = resolvePreviewLink(token);
@@ -38,7 +39,12 @@ function PreviewPageInner({ token }: { token: string }) {
 
   function handleSubmit() {
     if (!reaction || !link) return;
-    submitFeedback(token, link.storyId, reaction, comment);
+    const checkpointResponses = link.checkpointEnabled
+      ? link.checkpointQuestions
+          .map((q) => ({ questionId: q.id, answer: (checkpointAnswers[q.id] ?? '').trim() }))
+          .filter((r) => r.answer.length > 0)
+      : [];
+    submitFeedback(token, link.storyId, reaction, comment, checkpointResponses);
     setSubmitted(true);
   }
 
@@ -47,6 +53,26 @@ function PreviewPageInner({ token }: { token: string }) {
       <p className={styles.header}>Story Writing App · <span>Preview</span></p>
       <h1 className={styles.title}>{link.storyTitle}</h1>
       <article className={styles.content}>{link.contentSnapshot}</article>
+
+      {link.checkpointEnabled && link.checkpointQuestions.length > 0 && !submitted && (
+        <div className={styles.checkpointSection}>
+          <h2 className={styles.checkpointTitle}>Reader questions</h2>
+          {link.checkpointQuestions.map((q) => (
+            <div key={q.id} className={styles.checkpointQuestion}>
+              <label htmlFor={`cp-${q.id}`} className={styles.checkpointLabel}>{q.text}</label>
+              <textarea
+                id={`cp-${q.id}`}
+                maxLength={500}
+                rows={3}
+                className={styles.checkpointTextarea}
+                value={checkpointAnswers[q.id] ?? ''}
+                onChange={(e) => setCheckpointAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
+              />
+              <p className={styles.charCount}>{(checkpointAnswers[q.id] ?? '').length} / 500</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className={styles.feedbackSection}>
         {submitted ? (

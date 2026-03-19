@@ -6,7 +6,9 @@ import {
   getActivePreviewLinks,
   revokePreviewLink,
   regeneratePreviewLink,
+  DEFAULT_CHECKPOINT_QUESTIONS,
 } from '@/lib/previewLinks';
+import type { CheckpointQuestion } from '@/types/preview';
 import { relativeTime } from '@/lib/relativeTime';
 import type { PreviewLink } from '@/types/preview';
 import styles from './SharePreviewDialog.module.css';
@@ -25,6 +27,9 @@ export function SharePreviewDialog({ storyId, storyTitle, content, onClose }: Sh
   const [expiryInput, setExpiryInput] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
+  const [checkpointsEnabled, setCheckpointsEnabled] = useState(false);
+  const [checkpointMode, setCheckpointMode] = useState<'default' | 'custom'>('default');
+  const [customQuestions, setCustomQuestions] = useState<string[]>(['', '', '']);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -100,9 +105,22 @@ export function SharePreviewDialog({ storyId, storyTitle, content, onClose }: Sh
       if (expiryInput) {
         expiresAt = new Date(expiryInput).getTime();
       }
-      const link = createPreviewLink(storyId, storyTitle, content, expiresAt);
+      let questions: CheckpointQuestion[] | undefined;
+      if (checkpointsEnabled) {
+        if (checkpointMode === 'default') {
+          questions = DEFAULT_CHECKPOINT_QUESTIONS;
+        } else {
+          questions = customQuestions
+            .map((text, i) => ({ id: `q${i + 1}`, text: text.trim() }))
+            .filter((q) => q.text.length > 0);
+        }
+      }
+      const link = createPreviewLink(storyId, storyTitle, content, expiresAt, questions);
       handleCopy(link.token);
       setExpiryInput('');
+      setCheckpointsEnabled(false);
+      setCheckpointMode('default');
+      setCustomQuestions(['', '', '']);
       refreshLinks();
     } catch (err) {
       setCreateError(err instanceof Error ? err.message : 'Failed to create link');
@@ -215,16 +233,81 @@ export function SharePreviewDialog({ storyId, storyTitle, content, onClose }: Sh
           </div>
         )}
 
-        <div className={styles.comingSoon}>
-          <label className={styles.comingSoonLabel}>
+        <div className={styles.checkpointSection}>
+          <label className={styles.checkpointToggleLabel}>
             <input
               type="checkbox"
-              disabled
-              aria-disabled="true"
-              className={styles.comingSoonCheckbox}
+              checked={checkpointsEnabled}
+              onChange={(e) => setCheckpointsEnabled(e.target.checked)}
+              className={styles.checkpointToggle}
             />
-            Enable structured checkpoints (coming soon)
+            Enable structured checkpoints
           </label>
+
+          {checkpointsEnabled && (
+            <div className={styles.checkpointConfig}>
+              <fieldset className={styles.templateRadios}>
+                <legend className={styles.templateLegend}>Template</legend>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="checkpointMode"
+                    value="default"
+                    checked={checkpointMode === 'default'}
+                    onChange={() => setCheckpointMode('default')}
+                  />
+                  Use default template
+                </label>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="checkpointMode"
+                    value="custom"
+                    checked={checkpointMode === 'custom'}
+                    onChange={() => setCheckpointMode('custom')}
+                  />
+                  Custom questions (up to 5)
+                </label>
+              </fieldset>
+
+              {checkpointMode === 'default' && (
+                <ul className={styles.defaultQuestionPreview}>
+                  {DEFAULT_CHECKPOINT_QUESTIONS.map((q) => (
+                    <li key={q.id}>{q.text}</li>
+                  ))}
+                </ul>
+              )}
+
+              {checkpointMode === 'custom' && (
+                <div className={styles.customQuestions}>
+                  {customQuestions.map((q, i) => (
+                    <input
+                      key={i}
+                      type="text"
+                      maxLength={200}
+                      placeholder={`Question ${i + 1}`}
+                      value={q}
+                      className={styles.customQuestionInput}
+                      onChange={(e) => {
+                        const next = [...customQuestions];
+                        next[i] = e.target.value;
+                        setCustomQuestions(next);
+                      }}
+                    />
+                  ))}
+                  {customQuestions.length < 5 && (
+                    <button
+                      type="button"
+                      className={styles.addQuestionBtn}
+                      onClick={() => setCustomQuestions([...customQuestions, ''])}
+                    >
+                      + Add question
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

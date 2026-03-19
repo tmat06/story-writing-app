@@ -44,3 +44,100 @@
   margin: 0;
   line-height: var(--line-height-normal);
 }
+
+.checkpointSummary {
+  border-top: 2px solid var(--color-fog-200);
+  padding: var(--spacing-md);
+}
+
+.checkpointSummaryTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-black-700);
+  margin: 0 0 var(--spacing-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.filterRow {
+  margin-bottom: var(--spacing-md);
+}
+
+.filterSelect {
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--color-fashion-300);
+  border-radius: 4px;
+  color: var(--color-elephant-500);
+  background: var(--color-white);
+  max-width: 100%;
+}
+
+.filterSelect:focus {
+  outline: 2px solid var(--color-elephant-500);
+  outline-offset: 2px;
+}
+
+.questionBlock {
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: var(--color-polar-100);
+  border-radius: 4px;
+}
+
+.questionHeading {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-elephant-500);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.noAnswers {
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  margin: 0;
+}
+
+.answerRow {
+  border-top: 1px solid var(--color-fog-200);
+  padding-top: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+}
+
+.answerReader {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-cement-400);
+}
+
+.answerText {
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  margin: 2px 0 0;
+  line-height: var(--line-height-normal);
+}
+
+.exportRow {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-md);
+}
+
+.exportBtn {
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: none;
+  border: 1px solid var(--color-fashion-300);
+  color: var(--color-elephant-500);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.exportBtn:hover {
+  background: var(--color-fog-200);
+}
+
+.exportBtn:focus-visible {
+  outline: 2px solid var(--color-elephant-500);
+  outline-offset: 2px;
+}

@@ -1,6 +1,14 @@
-import type { PreviewLink, PreviewFeedback } from '@/types/preview';
+import type { PreviewLink, PreviewFeedback, CheckpointQuestion, CheckpointResponse } from '@/types/preview';
 
 const MAX_ACTIVE_LINKS = 3;
+
+export const DEFAULT_CHECKPOINT_QUESTIONS: CheckpointQuestion[] = [
+  { id: 'q1', text: 'How clear was the writing? Were any passages confusing?' },
+  { id: 'q2', text: 'How was the pacing? Did the story move too fast, too slow, or just right?' },
+  { id: 'q3', text: 'How did you feel about the characters? Were they believable?' },
+  { id: 'q4', text: 'What was the strongest emotional moment for you?' },
+  { id: 'q5', text: 'Is there anything you were confused about or wanted to know more about?' },
+];
 
 function generateToken(): string {
   return crypto.randomUUID().replace(/-/g, '').slice(0, 32);
@@ -18,11 +26,29 @@ function readerSeqKey(token: string): string {
   return `preview_reader_seq_${token}`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function normalizeLink(raw: any): PreviewLink {
+  return {
+    ...raw,
+    checkpointEnabled: raw.checkpointEnabled ?? false,
+    checkpointQuestions: raw.checkpointQuestions ?? [],
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function normalizeFeedback(raw: any): PreviewFeedback {
+  return {
+    ...raw,
+    checkpointResponses: raw.checkpointResponses ?? [],
+  };
+}
+
 function loadLinks(storyId: string): PreviewLink[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(linksKey(storyId));
-    return raw ? JSON.parse(raw) : [];
+    const parsed: unknown[] = raw ? JSON.parse(raw) : [];
+    return parsed.map(normalizeLink);
   } catch {
     return [];
   }
@@ -37,7 +63,8 @@ function loadFeedback(storyId: string): PreviewFeedback[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(feedbackKey(storyId));
-    return raw ? JSON.parse(raw) : [];
+    const parsed: unknown[] = raw ? JSON.parse(raw) : [];
+    return parsed.map(normalizeFeedback);
   } catch {
     return [];
   }
@@ -52,7 +79,8 @@ export function createPreviewLink(
   storyId: string,
   storyTitle: string,
   content: string,
-  expiresAt?: number | null
+  expiresAt?: number | null,
+  checkpointQuestions?: CheckpointQuestion[],
 ): PreviewLink {
   const links = loadLinks(storyId);
   const activeCount = links.filter((l) => l.status === 'active').length;
@@ -60,6 +88,7 @@ export function createPreviewLink(
     throw new Error(`Maximum ${MAX_ACTIVE_LINKS} active preview links reached. Revoke one to create a new link.`);
   }
   const token = generateToken();
+  const questions = checkpointQuestions ?? [];
   const link: PreviewLink = {
     token,
     storyId,
@@ -68,6 +97,8 @@ export function createPreviewLink(
     createdAt: Date.now(),
     expiresAt: expiresAt ?? null,
     status: 'active',
+    checkpointEnabled: questions.length > 0,
+    checkpointQuestions: questions,
   };
   const updated = [link, ...links];
   saveLinks(storyId, updated);
@@ -97,7 +128,8 @@ export function resolvePreviewLink(token: string): PreviewLink | null {
     const key = localStorage.key(i);
     if (!key || !key.startsWith('preview_links_')) continue;
     try {
-      const links: PreviewLink[] = JSON.parse(localStorage.getItem(key) ?? '[]');
+      const rawLinks: unknown[] = JSON.parse(localStorage.getItem(key) ?? '[]');
+      const links: PreviewLink[] = rawLinks.map(normalizeLink);
       const idx = links.findIndex((l) => l.token === token);
       if (idx === -1) continue;
       const link = links[idx];
@@ -140,7 +172,8 @@ export function submitFeedback(
   token: string,
   storyId: string,
   reaction: 'up' | 'down',
-  comment: string
+  comment: string,
+  checkpointResponses?: CheckpointResponse[],
 ): void {
   if (typeof window === 'undefined') return;
   const seqKey = readerSeqKey(token);
@@ -155,6 +188,7 @@ export function submitFeedback(
     readerId: `Reader ${seq}`,
     submittedAt: Date.now(),
     isRead: false,
+    checkpointResponses: checkpointResponses ?? [],
   };
   const existing = loadFeedback(storyId);
   saveFeedback(storyId, [entry, ...existing]);
