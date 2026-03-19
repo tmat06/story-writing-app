@@ -60,7 +60,6 @@ export function createThread(
   };
   threads.push(newThread);
   saveAll(storyId, threads);
-  console.log('Collab: thread created', { threadId: newThread.id, type: newThread.type, storyId });
   return newThread;
 }
 
@@ -114,7 +113,6 @@ export function recordDecision(
   threads[idx].status = 'resolved';
   threads[idx].updatedAt = Date.now();
   saveAll(storyId, threads);
-  console.log('Collab: decision recorded', { threadId, action: decision.action, storyId });
 }
 
 export function getUnresolvedCount(storyId: string): number {

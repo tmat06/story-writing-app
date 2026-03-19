@@ -33,7 +33,6 @@ export function createStory(title: string): Story {
   const stories = getStories();
   stories.push(story);
   saveStories(stories);
-  console.log('Created story:', story.id);
   return story;
 }
 
@@ -54,7 +53,6 @@ export function updateStory(
 
   stories[index] = updated;
   saveStories(stories);
-  console.log('Updated story', id, ':', updates);
   return updated;
 }
 
@@ -62,7 +60,6 @@ export function deleteStory(id: string): void {
   const stories = getStories();
   const filtered = stories.filter(s => s.id !== id);
   saveStories(filtered);
-  console.log('Deleted story:', id);
 }
 
 function saveStories(stories: Story[]): void {

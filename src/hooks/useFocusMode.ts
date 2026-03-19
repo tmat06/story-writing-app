@@ -46,12 +46,10 @@ export function useFocusMode(): UseFocusModeReturn {
 
   const enterFocus = useCallback(() => {
     setIsFocusMode(true);
-    console.log('FocusMode: entered');
   }, []);
 
   const exitFocus = useCallback(() => {
     setIsFocusMode(false);
-    console.log('FocusMode: exited');
   }, []);
 
   const toggleTypewriter = useCallback(() => {

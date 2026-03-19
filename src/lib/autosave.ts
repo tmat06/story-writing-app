@@ -37,7 +37,6 @@ export async function saveContent(storyId: string, content: string): Promise<voi
     clearSnapshot(storyId);
     const meta: SaveMetadata = { lastSaved: Date.now(), saveState: 'saved' };
     localStorage.setItem(metadataKey(storyId), JSON.stringify(meta));
-    console.log(`Saved story ${storyId} at ${meta.lastSaved}`);
   } catch (err) {
     console.error(`Failed to save story ${storyId}:`, err);
     throw err;
@@ -56,7 +55,6 @@ export function saveSnapshot(storyId: string, content: string): void {
   try {
     const snap: Snapshot = { content, timestamp: Date.now() };
     localStorage.setItem(snapshotKey(storyId), JSON.stringify(snap));
-    console.log(`Snapshot saved for story ${storyId}`);
   } catch {
     // Swallow snapshot errors — autosave is primary
   }

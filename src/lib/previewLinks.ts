@@ -102,7 +102,6 @@ export function createPreviewLink(
   };
   const updated = [link, ...links];
   saveLinks(storyId, updated);
-  console.log('Created preview link', token, 'for story', storyId);
   return link;
 }
 
@@ -153,7 +152,6 @@ export function revokePreviewLink(storyId: string, token: string): void {
   const links = loadLinks(storyId);
   const updated = links.map((l) => l.token === token ? { ...l, status: 'revoked' as const } : l);
   saveLinks(storyId, updated);
-  console.log('Revoked preview link', token);
 }
 
 export function regeneratePreviewLink(
@@ -201,7 +199,6 @@ export function submitFeedback(
   };
   const existing = loadFeedback(storyId);
   saveFeedback(storyId, [entry, ...existing]);
-  console.log('Feedback submitted for token', token, 'reaction:', reaction);
 }
 
 export function getFeedback(storyId: string): PreviewFeedback[] {

@@ -24,7 +24,6 @@ export function RevisionSummary({ pass, storyTitle, onComplete }: Props) {
     a.download = 'revision-pass.txt';
     a.click();
     URL.revokeObjectURL(url);
-    console.log('RevisionPass: exported report');
   };
 
   return (

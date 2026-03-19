@@ -106,8 +106,6 @@ export function updateSceneOrder(
   sceneId: string,
   newOrder: number
 ): void {
-  console.log(`Updating scene order: ${sceneId} to position ${newOrder}`);
-
   if (typeof window === 'undefined') {
     return;
   }
@@ -151,8 +149,6 @@ export function addScene(
     throw new Error('addScene requires browser environment');
   }
 
-  console.log(`Adding scene to story ${storyId}:`, scene.title);
-
   const scenes = getScenes(storyId);
   const maxOrder = scenes.reduce((max, s) => Math.max(max, s.order), 0);
   const newScene: Scene = {
@@ -181,8 +177,6 @@ export function updateSceneFields(
   sceneId: string,
   updates: Partial<Pick<Scene, 'title' | 'summary' | 'intent' | 'pov'>>
 ): void {
-  console.log(`Updating scene fields: ${sceneId}`, updates);
-
   if (typeof window === 'undefined') {
     return;
   }
@@ -216,8 +210,6 @@ export function updateSceneStatus(
   sceneId: string,
   status: SceneStatus
 ): void {
-  console.log(`Updating scene status: ${sceneId} to ${status}`);
-
   if (typeof window === 'undefined') {
     return;
   }

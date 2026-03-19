@@ -86,7 +86,6 @@ export function useAutosave(storyId: string, initialContent?: string): UseAutosa
     if (snap) {
       setContentState(snap.content);
       setHasRecovery(false);
-      console.log(`Recovery snapshot loaded for story ${storyId} (timestamp: ${snap.timestamp})`);
     }
   }, [storyId]);
 
