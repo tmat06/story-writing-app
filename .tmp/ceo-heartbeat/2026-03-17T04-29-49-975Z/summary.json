@@ -1,0 +1,24 @@
+{
+  "runId": "e172a941-1a5b-4404-af67-3825fbcf6584",
+  "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+  "routing": {
+    "scanned": 38,
+    "reassigned": 0,
+    "alreadyCorrect": 38,
+    "invalidTarget": 0,
+    "noDirective": 0,
+    "skipped409": 0,
+    "pingPongComments": 0
+  },
+  "recovery": {
+    "candidates": 0,
+    "cancelled": 0,
+    "cloned": 0,
+    "failed": 0
+  },
+  "inbox": {
+    "count": 0,
+    "items": []
+  },
+  "notes": []
+}

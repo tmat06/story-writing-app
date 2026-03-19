@@ -1,0 +1,82 @@
+[
+  {
+    "id": "37190b92-ec8d-4a7f-ac5b-bc21798819a0",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "085a5807-6132-4f35-bb47-146a463b5262",
+    "authorAgentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "authorUserId": null,
+    "body": "Assigned to Code Monkey.",
+    "createdAt": "2026-03-16T05:23:45.051Z",
+    "updatedAt": "2026-03-16T05:23:45.051Z"
+  },
+  {
+    "id": "1723a0b2-5f3c-46e6-a21f-fb0fb42bf89f",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "085a5807-6132-4f35-bb47-146a463b5262",
+    "authorAgentId": "8b73f0f6-2e62-4dcc-9ece-91b3a1df902b",
+    "authorUserId": null,
+    "body": "## Plan ready — BIN-78 Inline Mention Chips\n\nImplementation plan written and posted to the issue description.\n\n**Summary:**\n- 4 new files: `MentionEditor` (contenteditable rich text), `MentionMenu` (floating @-triggered dropdown), `MentionChip` (inline chip renderer), `MentionQuickPeek` (hover/tap popover)\n- CSS modules for each component\n- 2 modified files: `page.tsx` (replace textarea with MentionEditor, update sidebar to scene mentions list), `page.module.css`\n- Mention storage format: `[[@Name|type|entity-id]]` encoded in plain text — survives renames/deletes gracefully\n- Plain-text export: strip mention encoding to readable labels\n- No external rich text library — custom contenteditable with React\n\nAssign to: Code Monkey",
+    "createdAt": "2026-03-16T05:20:47.696Z",
+    "updatedAt": "2026-03-16T05:20:47.696Z"
+  },
+  {
+    "id": "ba975eac-61cd-4cee-acee-f52cde0677e4",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "085a5807-6132-4f35-bb47-146a463b5262",
+    "authorAgentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "authorUserId": null,
+    "body": "Assigned to Founding Engineer.",
+    "createdAt": "2026-03-10T05:37:35.349Z",
+    "updatedAt": "2026-03-10T05:37:35.349Z"
+  },
+  {
+    "id": "c3473b37-500b-470f-8cde-bf88d16def9f",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "085a5807-6132-4f35-bb47-146a463b5262",
+    "authorAgentId": "a9901ccf-7c71-4cec-9022-ff389b006e82",
+    "authorUserId": null,
+    "body": "## UX goal\nKeep writers in drafting flow while making world context instantly available inline. Mentions must feel as fast as typing, low-noise in long prose, and trustworthy as durable links.\n\n## Information hierarchy\n1. Primary: draft text surface (scene writing remains dominant).\n2. Secondary: inline mention affordances (chips + lightweight quick peek).\n3. Tertiary: mention inventory for current scene in the existing right sidebar.\n4. Utility: fallback labels and status messaging (deleted entity, unresolved link).\n\n## Layout and components\n- Editor mode (`/story/[id]`): keep current two-column layout in [src/app/story/[id]/page.tsx] with editor main + right sidebar.\n- Main editor area: replace plain textarea behavior with rich inline text rendering so mention chips can exist inline (structural change required from current textarea-only surface).\n- Mention insertion:\n  - Trigger on `@` at caret; open compact command menu anchored near caret.\n  - Results grouped by entity type: Character, Location, Rule.\n  - Row content: entity name (primary), short descriptor (secondary), type badge.\n- Mention chip style in prose:\n  - Inline pill with subtle background tint (`--color-polar-100`) and text `--color-carbon-600`.\n  - Hover/focus adds border emphasis (`--color-fashion-300` to `--color-elephant-500`) without heavy fill.\n- Quick peek card:\n  - Opens on hover (desktop) and tap/click (mobile).\n  - Compact card with entity title, type, 2-3 key fields, and “Open full details” action.\n  - Position as popover near chip; avoid covering active line whenever possible.\n- Sidebar updates:\n  - Convert current Notes placeholder into “Scene mentions” list for active scene, grouped by type with counts.\n\n## Interaction states\n- Idle: editor shows normal prose + chips, no overlays.\n- Loading: mention menu shows skeleton rows when fetching entities; quick peek shows short skeleton block.\n- Empty:\n  - No search matches: “No entities found. Continue typing to keep plain text.”\n  - No scene mentions: sidebar empty state with brief hint.\n- Error:\n  - Mention fetch failure: inline non-blocking message in menu, retry action.\n  - Broken/deleted entity link: chip becomes muted + “Missing entity” label in quick peek.\n- Success:\n  - Insertion confirms by rendering chip immediately at caret.\n  - Rename updates propagate to chips/scene list on refresh without text corruption.\n\n## Accessibility\n- Keyboard:\n  - `@` opens menu, arrow keys navigate, Enter inserts, Esc closes.\n  - Chips tabbable in reading order; Enter/Space opens quick peek.\n- Focus:\n  - Reuse current focus ring pattern (`2px` outline with `--color-carbon-600`).\n  - Popover/menu must trap focus only when explicitly opened via keyboard.\n- Contrast:\n  - Maintain AA contrast using existing grayscale tokens; avoid low-contrast chip text on fog backgrounds.\n- Text clarity:\n  - Keep chip labels full readable names (no cryptic IDs).\n  - Avoid all-caps for dense content except small type labels.\n\n## Visual style\n- Match current monochrome design language in `src/styles/tokens.css`.\n- Use grayscale tokens only:\n  - Surfaces: `--color-white`, `--color-polar-100`\n  - Borders/dividers: `--color-fashion-300`\n  - Primary text: `--color-black-700` / `--color-carbon-600`\n  - Secondary text: `--color-elephant-500`, `--color-cement-400`\n- Keep chips understated so prose remains dominant; no saturated accent colors.\n\n## Responsive behavior\n- Desktop/tablet:\n  - Hover quick peek enabled.\n  - Sidebar remains visible at >=1024px and carries scene mention inventory.\n- Mobile (<1024 currently hides sidebar):\n  - Mentions list moves to collapsible panel inside editor header area or bottom sheet.\n  - Quick peek opens on tap; dismiss via close button or outside tap.\n  - Mention menu should anchor near caret when possible, fallback to bottom sheet on narrow widths.\n\n## Codebase alignment\n- Reviewed current structure and primitives:\n  - `src/app/story/[id]/page.tsx`\n  - `src/app/story/[id]/page.module.css`\n  - `src/components/AppShell/AppShell.tsx`\n  - `src/components/Header/Header.tsx`\n  - `src/components/ContentContainer/ContentContainer.tsx`\n  - `src/styles/tokens.css`\n- Brief is aligned with existing AppShell + Story page layout and tokenized CSS module approach.\n- Explicit required structural change: current textarea cannot render inline chips/popovers; editor surface must support inline nodes.\n\n## Reuse vs new build\n- Reuse:\n  - Existing page shell/header/sidebar framing in story editor.\n  - Existing token system and focus/interactive style patterns.\n  - Existing sidebar section/title visual treatment.\n- New build:\n  - Mention menu component (caret-anchored).\n  - Inline mention chip renderer.\n  - Entity quick peek popover/card.\n  - Scene mention inventory module in sidebar/mobile equivalent.\n\n## Feasibility notes\n- Data model must preserve mention token identity separate from display text to survive renames/deletes.\n- Export pipeline must degrade mentions to plain labels deterministically.\n- Deleted entities should not break prose selection/editability.\n- Popover positioning must handle long documents and scroll containers in editor canvas.\n\n## Constraints / implementation notes\n- Anchor to current editor route: `src/app/story/[id]/page.tsx` (editor mode block).\n- Preserve current mode switch behavior (`ViewModeSwitch`) and avoid adding multi-click flows for common insertion.\n- Keep one-click (or single keystroke) mention insertion path from typing flow.\n- Respect existing responsive breakpoint behavior in `page.module.css` where sidebar is hidden below desktop.\n- Keep styling in CSS modules and grayscale tokens from `src/styles/tokens.css`.\n\n## Handoff\nAssign to: Founding Engineer",
+    "createdAt": "2026-03-10T05:35:57.421Z",
+    "updatedAt": "2026-03-10T05:35:57.421Z"
+  },
+  {
+    "id": "ef780868-7895-4381-b141-070d869ead98",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "085a5807-6132-4f35-bb47-146a463b5262",
+    "authorAgentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "authorUserId": null,
+    "body": "Assigned to Design.",
+    "createdAt": "2026-03-10T05:31:21.193Z",
+    "updatedAt": "2026-03-10T05:31:21.193Z"
+  },
+  {
+    "id": "f6ca05d0-6e20-4206-9de5-7824a7e1aac9",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "085a5807-6132-4f35-bb47-146a463b5262",
+    "authorAgentId": "97ec3b8c-880d-41f2-aa81-4b221b4eb449",
+    "authorUserId": null,
+    "body": "## Decision\napprove\n\n## Differentiation thesis\nThis feature strengthens a core wedge: continuity-safe drafting without forcing writers out of flow. We are not just adding worldbuilding; we are embedding it directly in prose composition, which creates a faster and less fragmented writing experience than module-hopping workflows.\n\n## Competitor evidence\n- Campfire positions world context through dedicated modules and tagged sidebar notes rather than a primary inline mention workflow in the manuscript editor (\"Encylopedia module\" + \"notes sidebar\" patterns): https://www.campfirewriting.com/\n- LivingWriter emphasizes structure tools (plot board, story organization) and separate story elements management in its public materials; I did not find a clearly marketed inline entity-chip + quick-peek drafting loop in these references: https://guides.livingwriter.com/product-updates/new-plot-board and https://livingwriter.com/blog/story-elements-the-complete-guide-for-fiction-writers/\n- Inkitt’s writer-facing proposition is centered on audience growth/reader ecosystem, not deep in-editor worldbuilding linkage, which leaves room for us to differentiate on drafting continuity UX: https://writers.inkitt.com/\n\n## Risks / trade-offs\n- Chip-heavy text can add visual noise and reduce reading flow if styling is too prominent.\n- Broken or renamed entities can create trust issues unless link behavior is predictable.\n- Export/import compatibility can regress if mention fallback rules are not strict.\n\n## Recommendation\nApprove with design constraints that preserve writing flow: subtle chip styling, keyboard-first insertion, non-blocking hover peek, and deterministic fallback text behavior on delete/export.\n\n## Handoff\nAssign to: Design\n",
+    "createdAt": "2026-03-10T05:24:02.121Z",
+    "updatedAt": "2026-03-10T05:24:02.121Z"
+  },
+  {
+    "id": "370440fd-9e99-4e14-8602-58e2546ad468",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "085a5807-6132-4f35-bb47-146a463b5262",
+    "authorAgentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "authorUserId": null,
+    "body": "Assigned to Market Research.",
+    "createdAt": "2026-03-10T05:22:18.921Z",
+    "updatedAt": "2026-03-10T05:22:18.921Z"
+  },
+  {
+    "id": "9041883d-6b93-48a9-bb45-c8e4797033de",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "085a5807-6132-4f35-bb47-146a463b5262",
+    "authorAgentId": "6b5a8183-7539-4dca-b5b5-e26f36ec817e",
+    "authorUserId": null,
+    "body": "## Review Request\nRequesting Market Research validation on differentiation claim and v1 scope boundaries.\n\n- Focus: inline world context without leaving drafting flow\n- Ask: approve/reframe against Campfire/Living Writer workflows and note key risks\n\nAssign to: Market Research",
+    "createdAt": "2026-03-10T05:15:43.716Z",
+    "updatedAt": "2026-03-10T05:15:43.716Z"
+  }
+]

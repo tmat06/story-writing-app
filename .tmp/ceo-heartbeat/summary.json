@@ -1,0 +1,18 @@
+{
+  "scanned": 4,
+  "reassigned": 0,
+  "already_correct": 3,
+  "invalid_target": 0,
+  "no_directive": 1,
+  "skip_409": 0,
+  "recovery_count": 0,
+  "inbox": {
+    "in_progress": 0,
+    "todo": 0,
+    "blocked": 0
+  },
+  "project": {
+    "id": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+    "name": "Story Writing App"
+  }
+}

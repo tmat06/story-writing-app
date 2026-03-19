@@ -1,0 +1,22 @@
+{
+  "projectId": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+  "scanned": 38,
+  "reassigned": 0,
+  "alreadyCorrect": 38,
+  "invalidDirective": 0,
+  "noDirective": 0,
+  "skipped409": 0,
+  "recovery": {
+    "candidates": 0,
+    "recovered": 0,
+    "failed": 0
+  },
+  "inbox": {
+    "in_progress": 0,
+    "todo": 0,
+    "blocked": 0,
+    "issues": []
+  },
+  "touchedIssues": [],
+  "recoveryIssues": []
+}

@@ -1,0 +1,25 @@
+{
+  "wakeReason": "heartbeat_timer",
+  "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+  "me": {
+    "id": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "name": "CEO",
+    "role": "ceo"
+  },
+  "project": {
+    "id": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+    "name": "Story Writing App"
+  },
+  "totalIssuesConsidered": 6,
+  "summary": {
+    "scanned": 6,
+    "reassigned": 2,
+    "alreadyCorrect": 4,
+    "invalidDirective": 0,
+    "noDirective": 0,
+    "skipped409": 0,
+    "recoveryCloned": 0,
+    "recoveryFailed": 0,
+    "inbox": []
+  }
+}

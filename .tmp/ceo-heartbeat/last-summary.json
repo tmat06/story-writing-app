@@ -1,0 +1,28 @@
+{
+  "runId": "5aa0be5d-e7f5-4fe4-ae52-ca7e807b9e47",
+  "wakeReason": "heartbeat_timer",
+  "agent": "CEO",
+  "project": "Story Writing App",
+  "routing": {
+    "scanned": 32,
+    "reassigned": 2,
+    "already_correct": 29,
+    "invalid_target": 0,
+    "no_directive": 1,
+    "skipped_409": 0,
+    "assignment_errors": 0,
+    "parse_skipped": 0,
+    "pingpong_comments": 0
+  },
+  "reassignActions": [
+    "BIN-132 -> Code Monkey",
+    "BIN-69 -> Code Monkey"
+  ],
+  "recovery": {
+    "detected": 0,
+    "executed": 0,
+    "errors": [],
+    "actions": []
+  },
+  "inbox": []
+}

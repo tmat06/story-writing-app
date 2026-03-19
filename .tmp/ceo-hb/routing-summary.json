@@ -1,0 +1,16 @@
+{
+  "scanned": 37,
+  "reassigned": 1,
+  "alreadyCorrect": 35,
+  "noDirective": 1,
+  "invalidTarget": 0,
+  "parseSkip": 0,
+  "recoveryCount": 0,
+  "recoveryIssues": [],
+  "assignmentActions": [
+    {
+      "issue": "BIN-130",
+      "target": "Code Monkey"
+    }
+  ]
+}

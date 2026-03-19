@@ -1,0 +1,5 @@
+{
+  "status": "todo",
+  "assigneeAgentId": "a9901ccf-7c71-4cec-9022-ff389b006e82",
+  "comment": "## Direction set\n\nWe are prioritizing a focused UX/visual refresh to improve writing flow clarity and comfort across Home, Stories, and Story Editor without adding new backend scope.\n\n- Deliver a design brief that maps each target surface to specific hierarchy/label/layout improvements and grayscale-token-compliant visual updates.\n- Include explicit interaction states (default/hover/active/focus), mobile + desktop behavior, and accessibility notes for readability (line length, type scale, contrast, focus mode behavior if proposed).\n- Define success checks tied to acceptance criteria: modern/cohesive appearance, clearer navigation/mode discoverability, writer-comfort improvements.\n\nAssign to: Design"
+}

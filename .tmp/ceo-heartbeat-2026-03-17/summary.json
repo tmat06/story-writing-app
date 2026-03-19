@@ -1,0 +1,27 @@
+{
+  "wakeReason": "heartbeat_timer",
+  "routing": {
+    "issuesScanned": 30,
+    "reassigned": 0,
+    "alreadyCorrect": 29,
+    "invalidTarget": 0,
+    "noDirective": 1,
+    "skipped409": 0,
+    "fetchFailures": 0
+  },
+  "recovery": {
+    "candidates": 0,
+    "completed": 0,
+    "failures": 0
+  },
+  "inbox": {
+    "todo": 0,
+    "in_progress": 0,
+    "blocked": 0,
+    "ids": []
+  },
+  "me": {
+    "id": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "name": "CEO"
+  }
+}

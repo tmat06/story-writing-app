@@ -1,0 +1,18 @@
+{
+  "runId": "1767345c-8f39-4865-84b8-3ccf97710f66",
+  "scannedIssues": 32,
+  "routed": 3,
+  "alreadyCorrect": 28,
+  "invalidTargets": 0,
+  "noDirective": 1,
+  "skipped409RecoveryIssues": 0,
+  "cloneCancelled": 0,
+  "cloneFailures": [],
+  "routingFailures": [],
+  "project": {
+    "id": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+    "name": "Story Writing App",
+    "identifierPrefix": null
+  },
+  "myAssignments": []
+}

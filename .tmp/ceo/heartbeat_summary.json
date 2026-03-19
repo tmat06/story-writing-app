@@ -1,0 +1,18 @@
+{
+  "runId": "d287c258-7f7b-4530-ae63-6c27f96bc080",
+  "projectId": "9433c050-62e8-4d4a-9dee-a2ccd33d8407",
+  "summary": {
+    "scannedIssues": 38,
+    "directivesFound": 157,
+    "reassigned": 1,
+    "alreadyCorrect": 37,
+    "invalidTargets": 0,
+    "noDirective": 0,
+    "skipped409": 0,
+    "recoveries": 0,
+    "recoveryErrors": 0,
+    "assignmentErrors": 0
+  },
+  "inboxCount": 0,
+  "inbox": []
+}

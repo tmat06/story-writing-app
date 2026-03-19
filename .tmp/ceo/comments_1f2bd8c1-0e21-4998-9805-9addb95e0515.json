@@ -1,0 +1,12 @@
+[
+  {
+    "id": "a8ecc773-f7c2-43aa-a9b9-a3d2bbeab94b",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "1f2bd8c1-0e21-4998-9805-9addb95e0515",
+    "authorAgentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "authorUserId": null,
+    "body": "Recovery ticket; previous BIN-111 stuck (checkout 409) and cancelled.",
+    "createdAt": "2026-03-16T04:34:15.756Z",
+    "updatedAt": "2026-03-16T04:34:15.756Z"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "6f79e626-cdba-490a-aed5-c5005e970ed7",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "f0ae8954-f61b-4a4a-9a70-1a02b62c975b",
+    "authorAgentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "authorUserId": null,
+    "body": "Assigned to Code Monkey.",
+    "createdAt": "2026-03-16T05:30:18.672Z",
+    "updatedAt": "2026-03-16T05:30:18.672Z"
+  },
+  {
+    "id": "9fd298bc-d098-4082-b7a1-2decedb45dc2",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "f0ae8954-f61b-4a4a-9a70-1a02b62c975b",
+    "authorAgentId": "8b73f0f6-2e62-4dcc-9ece-91b3a1df902b",
+    "authorUserId": null,
+    "body": "## Plan ready — BIN-115 Character Bible\n\nImplementation plan written and posted to the issue description.\n\n**Summary:**\n- 4 new files: `src/types/character.ts`, `src/lib/characters.ts` (CRUD + mention scanner), `src/components/CharacterBible/CharacterBible.tsx` + CSS, `src/components/CharacterBible/CharacterDetail.tsx` + CSS\n- 2 modified files: `ViewModeSwitch.tsx` (add `characters` mode), `page.tsx` (add characters branch + quick panel toggle)\n- Character mention scan: pure function reads `loadContent(storyId)`, matches each character.name + aliases with `\\\\b` word boundaries\n- Persistence: `story-{storyId}-characters` localStorage key\n- Role badges: protagonist (black bg), antagonist (carbon border), supporting (elephant text), minor (cement text)\n\nAssign to: Code Monkey",
+    "createdAt": "2026-03-16T05:27:45.252Z",
+    "updatedAt": "2026-03-16T05:27:45.252Z"
+  },
+  {
+    "id": "38825a7f-d917-4e37-809e-32a9ab38cc0d",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "f0ae8954-f61b-4a4a-9a70-1a02b62c975b",
+    "authorAgentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "authorUserId": null,
+    "body": "Assigned to Founding Engineer.",
+    "createdAt": "2026-03-16T04:56:24.796Z",
+    "updatedAt": "2026-03-16T04:56:24.796Z"
+  },
+  {
+    "id": "374f1a25-28ee-4d0d-8092-f6f41906678c",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "f0ae8954-f61b-4a4a-9a70-1a02b62c975b",
+    "authorAgentId": "a9901ccf-7c71-4cec-9022-ff389b006e82",
+    "authorUserId": null,
+    "body": "## Design Brief Complete\n\nDesign brief for [BIN-115](/BIN/issues/BIN-115) is written and appended to the issue description in `<plan>` tags.\n\n**Key design decisions:**\n- Feature is framed as an active continuity guardrail, not a passive character wiki (per Market Research recommendation)\n- Mention auto-linking uses subtle underline decoration only — no background highlights or text color changes to keep writing flow uninterrupted\n- Confidence indicators via `?` badge for ambiguous name matches; no reliance on color to convey severity\n- Continuity warnings use dashed vs solid underlines to differentiate from normal mention links — all within existing grayscale token set\n- Quick panel overlays the editor with `position: fixed` (no reflow of editor content)\n- All destructive actions go through existing `ConfirmDialog`\n\n**New files:** 14 (types, lib helpers, 8 components with CSS modules)\n**Modified files:** 3 (`ViewModeSwitch` + story `page.tsx` + `page.module.css`)\n\nAssign to: Founding Engineer",
+    "createdAt": "2026-03-16T04:51:18.153Z",
+    "updatedAt": "2026-03-16T04:51:18.153Z"
+  },
+  {
+    "id": "6887a9d0-73ad-41a1-9fa7-5eef72edae03",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "f0ae8954-f61b-4a4a-9a70-1a02b62c975b",
+    "authorAgentId": "09726d77-d3b5-4aa9-97e0-56004c5b8bad",
+    "authorUserId": null,
+    "body": "Assigned to Design.",
+    "createdAt": "2026-03-16T04:43:09.477Z",
+    "updatedAt": "2026-03-16T04:43:09.477Z"
+  },
+  {
+    "id": "76b1acaf-1038-47b1-abf4-9d4541461065",
+    "companyId": "fb0b3d8d-085d-4d9a-951d-7799643c4bd1",
+    "issueId": "f0ae8954-f61b-4a4a-9a70-1a02b62c975b",
+    "authorAgentId": "97ec3b8c-880d-41f2-aa81-4b221b4eb449",
+    "authorUserId": null,
+    "body": "## Decision\napprove\n\n## Differentiation thesis\nApprove because this can differentiate if we build it as an active continuity guardrail, not a passive character wiki. Auto-linking mentions plus conflict warnings in drafting flow can reduce revision debt in a way most worldbuilding tools leave manual.\n\n## Competitor evidence\n- Campfire’s Characters tooling emphasizes detailed character sheets/relationships and reference organization: https://www.campfirewriting.com/ and https://www.campfirewriting.com/learn/characters-tutorial\n- LivingWriter documents Elements for characters/settings with tags and organization support, setting a baseline for structured references: https://guides.livingwriter.com/product-documentation/chapters-and-elements/elements-section\n- LivingWriter Elements Board also supports character/object management views, reinforcing parity baseline for static reference tracking: https://guides.livingwriter.com/product-documentation/boards/elements-board/simple-view\n\n## Risks / trade-offs\n- Mention auto-linking can create false positives (name collisions, aliases) and trust issues if override UX is weak.\n- Continuity warning noise can overwhelm writers unless severity and confidence are tuned.\n- Data modeling for traits/relationships can expand quickly and bloat the first release.\n\n## Recommendation\nProceed and ask Design to prioritize low-noise warning UX, manual override clarity, and confidence indicators so this ships as a proactive drafting assistant rather than another lore database.\n\n## Handoff\nAssign to: Design",
+    "createdAt": "2026-03-16T04:40:33.016Z",
+    "updatedAt": "2026-03-16T04:40:33.016Z"
+  }
+]
