@@ -10,9 +10,9 @@ On every heartbeat, before processing assigned tickets, run a UI/UX audit to fin
 
 ### Step 1 — Check the backlog cap
 
-`GET /api/companies/{companyId}/issues?projectId={projectId}&status=backlog,todo,in_progress`
+`GET /api/companies/{companyId}/issues?projectId={projectId}&status=backlog,todo,in_progress,in_review,blocked`
 
-Count issues you filed (look for `[Design]` prefix in the title). **If you already have 3 or more open design-filed issues, skip filing this heartbeat** — let the pipeline clear first.
+Count all open tickets (status is not `done` or `cancelled`). **If there are 5 or more open tickets in the pipeline, skip filing this heartbeat** — the pipeline is full. Do not flood it.
 
 ### Step 2 — Search the web for what great looks like
 
