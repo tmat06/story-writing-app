@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, use, Suspense } from 'react';
+import { useState, useEffect, useRef, use, Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ViewModeSwitch, type ViewMode } from '@/components/ViewModeSwitch/ViewModeSwitch';
 import { Corkboard } from '@/components/Corkboard/Corkboard';
@@ -172,7 +172,8 @@ function StoryPageInner({ id }: { id: string }) {
   };
 
   const unresolvedCollabCount = getUnresolvedCount(id);
-  const unreadFeedbackCount = getUnreadFeedbackCount(id);
+  const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(() => getUnreadFeedbackCount(id));
+  const handleFeedbackRead = useCallback(() => setUnreadFeedbackCount(0), []);
 
   const { isFocusMode, typewriterScroll, enterFocus, exitFocus, toggleTypewriter, textareaRef } = useFocusMode();
   const { timerState, elapsedMs, targetMs, startTimer, stopTimer, dismissSummary, wordsWritten } = useSessionTimer();
@@ -408,7 +409,7 @@ function StoryPageInner({ id }: { id: string }) {
                 </div>
               ) : sidebarTab === 'feedback' ? (
                 <div role="tabpanel" id="panel-feedback" aria-labelledby="tab-feedback" className={styles.sidebarPanelFull}>
-                  <PreviewFeedbackPanel storyId={id} />
+                  <PreviewFeedbackPanel storyId={id} onRead={handleFeedbackRead} />
                 </div>
               ) : (
                 <div role="tabpanel" id="panel-collab" aria-labelledby="tab-collab" className={styles.sidebarPanelFull}>

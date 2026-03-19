@@ -8,9 +8,10 @@ import styles from './PreviewFeedbackPanel.module.css';
 
 interface PreviewFeedbackPanelProps {
   storyId: string;
+  onRead?: () => void;
 }
 
-export function PreviewFeedbackPanel({ storyId }: PreviewFeedbackPanelProps) {
+export function PreviewFeedbackPanel({ storyId, onRead }: PreviewFeedbackPanelProps) {
   const [feedback, setFeedback] = useState<PreviewFeedback[]>([]);
   const [hasActiveLinks, setHasActiveLinks] = useState(false);
 
@@ -20,6 +21,7 @@ export function PreviewFeedbackPanel({ storyId }: PreviewFeedbackPanelProps) {
     setHasActiveLinks(getActivePreviewLinks(storyId).length > 0);
     if (entries.length > 0) {
       markFeedbackRead(storyId, entries.map((f) => f.id));
+      onRead?.();
     }
   }, [storyId]);
 
