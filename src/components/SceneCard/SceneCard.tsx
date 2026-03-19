@@ -12,6 +12,7 @@ interface SceneCardProps {
   isDragging?: boolean;
   isSynced?: boolean;
   isDropTarget?: boolean;
+  isFocused?: boolean;
 }
 
 export function SceneCard({
@@ -23,6 +24,7 @@ export function SceneCard({
   isDragging = false,
   isSynced,
   isDropTarget,
+  isFocused,
 }: SceneCardProps) {
   const router = useRouter();
   const [editingField, setEditingField] = useState<'intent' | 'pov' | null>(null);
@@ -58,7 +60,7 @@ export function SceneCard({
 
   return (
     <div
-      className={`${styles.card} ${isDragging ? styles.dragging : ''} ${isDropTarget ? styles.dropTarget : ''}`}
+      className={`${styles.card} ${isDragging ? styles.dragging : ''} ${isDropTarget ? styles.dropTarget : ''} ${isFocused ? styles.focused : ''}`}
       data-synced={isSynced || undefined}
       onClick={onClick}
       role="button"
