@@ -74,6 +74,11 @@ export default function SceneLinkDialog({
     }
   }, [selectedStoryId]);
 
+  const linkedSceneIds = new Set(
+    existingLinks.filter(l => l.storyId === selectedStoryId).map(l => l.sceneId)
+  );
+  const availableScenes = scenes.filter(s => !linkedSceneIds.has(s.id));
+
   const handleAddLink = () => {
     if (!selectedStoryId || !selectedSceneId) return;
     onLink(selectedStoryId, selectedSceneId);
@@ -147,14 +152,18 @@ export default function SceneLinkDialog({
                   className={styles.select}
                   value={selectedSceneId}
                   onChange={e => setSelectedSceneId(e.target.value)}
-                  disabled={scenes.length === 0}
+                  disabled={availableScenes.length === 0}
                 >
                   <option value="">
-                    {scenes.length === 0 ? 'No scenes in this story' : 'Select a scene…'}
+                    {scenes.length === 0
+                      ? 'No scenes in this story'
+                      : availableScenes.length === 0
+                      ? 'All scenes already linked'
+                      : 'Select a scene…'}
                   </option>
-                  {scenes.map((scene, index) => (
+                  {availableScenes.map((scene) => (
                     <option key={scene.id} value={scene.id}>
-                      {scene.title || `Scene ${index + 1}`}
+                      {scene.title || `Scene ${scenes.indexOf(scene) + 1}`}
                     </option>
                   ))}
                 </select>
