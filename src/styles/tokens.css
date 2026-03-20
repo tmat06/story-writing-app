@@ -10,6 +10,7 @@
 :root {
   /* Grayscale - Approved tokens only */
   --color-black-700: #1a1a1a;      /* Darkest - primary text */
+  --color-black-800: #111111;      /* Primary button hover */
   --color-carbon-600: #2d2d2d;     /* Dark headers/emphasis */
   --color-elephant-500: #4a4a4a;   /* Secondary text */
   --color-cement-400: #6b6b6b;     /* Tertiary/muted text */
