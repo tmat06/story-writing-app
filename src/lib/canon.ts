@@ -106,6 +106,11 @@ export function linkEntityToScene(
   storyId: string,
   sceneId: string
 ): SceneEntityLink {
+  const all = loadLinks();
+  const existing = all.find(
+    l => l.entityId === entityId && l.storyId === storyId && l.sceneId === sceneId
+  );
+  if (existing) return existing;
   const link: SceneEntityLink = {
     id: crypto.randomUUID(),
     entityId,
@@ -113,7 +118,6 @@ export function linkEntityToScene(
     sceneId,
     createdAt: Date.now(),
   };
-  const all = loadLinks();
   all.push(link);
   saveLinks(all);
   return link;
