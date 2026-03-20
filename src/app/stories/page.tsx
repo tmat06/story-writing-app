@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { getStories, createStory } from '@/lib/stories';
 import { getSeries } from '@/lib/series';
 import { Series } from '@/types/series';
@@ -9,20 +9,63 @@ import StoryCard from '@/components/StoryCard/StoryCard';
 import StoryBundleDialog from '@/components/StoryBundleDialog/StoryBundleDialog';
 import styles from './page.module.css';
 
-export default function StoriesPage() {
+function StoriesPageInner() {
   const [stories, setStories] = useState<ReturnType<typeof getStories>>([]);
   const [allSeries, setAllSeries] = useState<Series[]>([]);
-  const [showArchived, setShowArchived] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState<'all' | 'active' | 'archived' | 'series'>('all');
+  const [sort, setSort] = useState<'updated' | 'title' | 'created'>('updated');
 
   useEffect(() => {
     setStories(getStories());
     setAllSeries(getSeries());
   }, []);
 
-  const filteredStories = stories.filter(s => s.isArchived === showArchived);
+  useEffect(() => {
+    const q = searchParams.get('q') ?? '';
+    const f = searchParams.get('filter') ?? 'all';
+    const s = searchParams.get('sort') ?? 'updated';
+    setSearchQuery(q);
+    setFilter(f as 'all' | 'active' | 'archived' | 'series');
+    setSort(s as 'updated' | 'title' | 'created');
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchQuery) params.set('q', searchQuery);
+    if (filter !== 'all') params.set('filter', filter);
+    if (sort !== 'updated') params.set('sort', sort);
+    const qs = params.toString();
+    router.replace(qs ? `/stories?${qs}` : '/stories', { scroll: false });
+  }, [searchQuery, filter, sort]);
+
+  const filteredStories = useMemo(() => {
+    let result = stories;
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(s => s.title.toLowerCase().includes(q));
+    }
+
+    if (filter === 'active')   result = result.filter(s => !s.isArchived);
+    if (filter === 'archived') result = result.filter(s => s.isArchived);
+    if (filter === 'series')   result = result.filter(s => !!s.seriesId);
+
+    if (sort === 'title')   return [...result].sort((a, b) => a.title.localeCompare(b.title));
+    if (sort === 'created') return [...result].sort((a, b) => b.createdAt - a.createdAt);
+    return [...result].sort((a, b) => b.updatedAt - a.updatedAt);
+  }, [stories, searchQuery, filter, sort]);
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setFilter('all');
+    setSort('updated');
+  };
 
   const handleUpdate = () => {
     setStories(getStories());
@@ -59,6 +102,8 @@ export default function StoriesPage() {
             className={styles.searchInput}
             placeholder="Search stories..."
             aria-label="Search stories"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
         <button
@@ -67,12 +112,33 @@ export default function StoriesPage() {
         >
           Import Bundle
         </button>
-        <button
-          className={styles.archiveToggle}
-          onClick={() => setShowArchived(!showArchived)}
+      </div>
+
+      <div className={styles.filterRow}>
+        <div className={styles.filterPills} role="group" aria-label="Filter stories">
+          {(['all', 'active', 'archived', 'series'] as const).map(f => (
+            <button
+              key={f}
+              className={filter === f ? styles.filterPillActive : styles.filterPill}
+              onClick={() => setFilter(f)}
+              aria-pressed={filter === f}
+            >
+              {f === 'all' ? 'All' : f === 'active' ? 'Active' : f === 'archived' ? 'Archived' : 'Series-linked'}
+            </button>
+          ))}
+        </div>
+        <label htmlFor="story-sort" className={styles.visuallyHidden}>Sort stories</label>
+        <select
+          id="story-sort"
+          className={styles.sortSelect}
+          value={sort}
+          onChange={e => setSort(e.target.value as typeof sort)}
+          aria-label="Sort stories"
         >
-          {showArchived ? 'Hide Archived' : 'Show Archived'}
-        </button>
+          <option value="updated">Last edited (newest)</option>
+          <option value="title">Title (A–Z)</option>
+          <option value="created">Created (newest)</option>
+        </select>
       </div>
 
       <div className={styles.storiesList}>
@@ -91,19 +157,22 @@ export default function StoriesPage() {
           </div>
         ) : (
           <div className={styles.emptyState}>
-            {!showArchived ? (
+            {(searchQuery || filter !== 'all') ? (
               <>
-                <p className={styles.emptyTitle}>No stories yet</p>
+                <p className={styles.emptyTitle}>No stories match your search</p>
                 <p className={styles.emptyText}>
-                  Create your first story to get started
+                  Try a different keyword or clear the filters.
                 </p>
+                <div className={styles.emptyStateActions}>
+                  <button className={styles.clearSearchButton} onClick={handleClearSearch}>
+                    Clear search
+                  </button>
+                </div>
               </>
             ) : (
               <>
-                <p className={styles.emptyTitle}>No archived stories</p>
-                <p className={styles.emptyText}>
-                  Archive a story to see it here
-                </p>
+                <p className={styles.emptyTitle}>No stories yet</p>
+                <p className={styles.emptyText}>Create your first story to get started</p>
               </>
             )}
           </div>
@@ -120,5 +189,13 @@ export default function StoriesPage() {
         }}
       />
     </div>
+  );
+}
+
+export default function StoriesPage() {
+  return (
+    <Suspense>
+      <StoriesPageInner />
+    </Suspense>
   );
 }
