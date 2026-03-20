@@ -398,6 +398,12 @@
   padding: var(--spacing-lg);
 }
 
+.diagnosticsContainer {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
 /* =====================
    RESPONSIVE
    ===================== */

@@ -24,6 +24,12 @@
   --color-amber-500: #B86A00;
   --color-amber-100: #FFF4E8;
 
+  /* Diagnostic semantic tokens */
+  --color-diagnostic-ok: #d9e9dc;
+  --color-diagnostic-warn: #f4e8c9;
+  --color-diagnostic-alert: #ecd6d6;
+  --color-diagnostic-focus: #2d2d2d;
+
   /* ============================================
      SPACING TOKENS
      ============================================ */

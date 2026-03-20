@@ -79,7 +79,7 @@ export function getScenes(storyId: string): Scene[] {
       const scenes = JSON.parse(stored) as Scene[];
       // Migrate: ensure intent/pov fields exist on stored scenes
       return scenes
-        .map((s) => ({ intent: '', pov: '', ...s }))
+        .map((s) => ({ intent: '', pov: '', characters: [], ...s }))
         .sort((a, b) => a.order - b.order);
     } catch (error) {
       console.error('Failed to parse stored scenes:', error);
@@ -175,7 +175,7 @@ export function addScene(
 export function updateSceneFields(
   storyId: string,
   sceneId: string,
-  updates: Partial<Pick<Scene, 'title' | 'summary' | 'intent' | 'pov'>>
+  updates: Partial<Pick<Scene, 'title' | 'summary' | 'intent' | 'pov' | 'characters'>>
 ): void {
   if (typeof window === 'undefined') {
     return;

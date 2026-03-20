@@ -1,7 +1,7 @@
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import styles from './ViewModeSwitch.module.css';
 
-export type ViewMode = 'editor' | 'corkboard' | 'submissions' | 'pacing';
+export type ViewMode = 'editor' | 'corkboard' | 'submissions' | 'pacing' | 'diagnostics';
 
 interface ViewModeSwitchProps {
   mode: ViewMode;
@@ -57,6 +57,17 @@ export function ViewModeSwitch({ mode, onChange }: ViewModeSwitchProps) {
           aria-pressed={mode === 'pacing'}
         >
           Pacing
+        </button>
+      </Tooltip>
+      <Tooltip content="Spot POV and character-balance issues across your manuscript.">
+        <button
+          type="button"
+          className={mode === 'diagnostics' ? styles.active : styles.inactive}
+          onClick={() => onChange('diagnostics')}
+          aria-label="Switch to diagnostics view"
+          aria-pressed={mode === 'diagnostics'}
+        >
+          Diagnostics
         </button>
       </Tooltip>
     </div>
