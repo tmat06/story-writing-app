@@ -3,7 +3,7 @@ import type { Scene } from './scene';
 import type { Note } from './note';
 import type { RevisionPass } from './revision';
 import type { SubmissionEntry } from './submission';
-import type { CanonEntity, SceneEntityLink } from './series';
+import type { Series, CanonEntity, SceneEntityLink } from './series';
 
 export const BUNDLE_SCHEMA_VERSION = 1;
 
@@ -29,6 +29,7 @@ export interface StoryBundle {
   manuscriptSnapshot: string;
   sceneContents: Record<string, string>;
   submissions: SubmissionEntry[];
+  series?: Series; // included only when the story belongs to a series
   canonEntities: CanonEntity[];
   sceneEntityLinks: SceneEntityLink[];
 }

@@ -3,6 +3,7 @@ import { getScenes } from '@/lib/scenes';
 import { getNotes } from '@/lib/notes';
 import { getPasses } from '@/lib/revision';
 import { getSubmissions } from '@/lib/submissions';
+import { getSeriesById, createSeries } from '@/lib/series';
 import type { CanonEntity, SceneEntityLink } from '@/types/series';
 import {
   BUNDLE_SCHEMA_VERSION,
@@ -85,6 +86,8 @@ export async function exportStoryBundle(storyId: string): Promise<void> {
   const allEntities = loadAllCanonEntities();
   const storyEntities = allEntities.filter(e => linkedEntityIds.has(e.id));
 
+  const series = story.seriesId ? getSeriesById(story.seriesId) : undefined;
+
   const payload = {
     story,
     scenes,
@@ -94,6 +97,7 @@ export async function exportStoryBundle(storyId: string): Promise<void> {
     manuscriptSnapshot,
     sceneContents,
     submissions,
+    ...(series ? { series } : {}),
     canonEntities: storyEntities,
     sceneEntityLinks: storyLinks,
   };
@@ -185,6 +189,16 @@ export function importBundle(bundle: StoryBundle): string {
     idMap.set(scene.id, crypto.randomUUID());
   }
 
+  // --- series remapping ---
+  let newSeriesId: string | undefined;
+  if (bundle.series) {
+    // Bundle carries source series — create a new local series with the same title
+    const newSeries = createSeries(bundle.series.title);
+    newSeriesId = newSeries.id;
+  }
+  // If bundle.story.seriesId is set but bundle.series is absent (old bundle format),
+  // newSeriesId stays undefined — the stale reference is dropped.
+
   // Write story
   const stories = getStories();
   const newStory: Story = {
@@ -192,6 +206,7 @@ export function importBundle(bundle: StoryBundle): string {
     id: newStoryId,
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    seriesId: newSeriesId, // remapped or undefined — never stale
   };
   stories.push(newStory);
   localStorage.setItem('stories', JSON.stringify(stories));
@@ -245,32 +260,40 @@ export function importBundle(bundle: StoryBundle): string {
   }));
   localStorage.setItem(`story-${newStoryId}-submissions`, JSON.stringify(newSubmissions));
 
-  // Append canon entities and links with new UUIDs, remapping scene references
+  // Append canon entities and links with new UUIDs, remapping scene and series references
   if ((bundle.canonEntities ?? []).length > 0 || (bundle.sceneEntityLinks ?? []).length > 0) {
-    const entityIdMap = new Map<string, string>();
-    const allEntities = loadAllCanonEntities();
-    for (const entity of bundle.canonEntities ?? []) {
-      const newEntityId = crypto.randomUUID();
-      entityIdMap.set(entity.id, newEntityId);
-      allEntities.push({ ...entity, id: newEntityId });
-    }
-    saveAllCanonEntities(allEntities);
-
-    const allLinks = loadAllSceneEntityLinks();
-    for (const link of bundle.sceneEntityLinks ?? []) {
-      const newSceneId = idMap.get(link.sceneId);
-      const newEntityId = entityIdMap.get(link.entityId);
-      if (newSceneId && newEntityId) {
-        allLinks.push({
-          ...link,
-          id: crypto.randomUUID(),
-          storyId: newStoryId,
-          sceneId: newSceneId,
-          entityId: newEntityId,
-        });
+    if (!newSeriesId) {
+      // Old bundle without series data — canon entities cannot be safely remapped
+      console.warn(
+        '[BundleImport] Bundle carries canon entities but no series data; ' +
+        'canon entities were skipped to avoid orphaned references.'
+      );
+    } else {
+      const entityIdMap = new Map<string, string>();
+      const allEntities = loadAllCanonEntities();
+      for (const entity of bundle.canonEntities ?? []) {
+        const newEntityId = crypto.randomUUID();
+        entityIdMap.set(entity.id, newEntityId);
+        allEntities.push({ ...entity, id: newEntityId, seriesId: newSeriesId });
       }
+      saveAllCanonEntities(allEntities);
+
+      const allLinks = loadAllSceneEntityLinks();
+      for (const link of bundle.sceneEntityLinks ?? []) {
+        const newSceneId = idMap.get(link.sceneId);
+        const newEntityId = entityIdMap.get(link.entityId);
+        if (newSceneId && newEntityId) {
+          allLinks.push({
+            ...link,
+            id: crypto.randomUUID(),
+            storyId: newStoryId,
+            sceneId: newSceneId,
+            entityId: newEntityId,
+          });
+        }
+      }
+      saveAllSceneEntityLinks(allLinks);
     }
-    saveAllSceneEntityLinks(allLinks);
   }
 
   console.info('[BundleImport] Imported story:', newStoryId);
