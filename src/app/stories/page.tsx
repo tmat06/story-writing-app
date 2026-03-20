@@ -85,33 +85,44 @@ function StoriesPageInner() {
   return (
     <div className={styles.page}>
       <div className={styles.toolbar}>
-        <button
-          className={styles.newStoryButton}
-          onClick={handleCreateStory}
-          disabled={isCreating}
-        >
-          {isCreating ? 'Creating...' : 'New Story'}
-        </button>
-        <div className={styles.searchWrapper}>
-          <label htmlFor="story-search" className={styles.visuallyHidden}>
-            Search stories
-          </label>
-          <input
-            type="text"
-            id="story-search"
-            className={styles.searchInput}
-            placeholder="Search stories..."
-            aria-label="Search stories"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
+        {/* Zone 1: Primary action (left) */}
+        <div className={styles.toolbarPrimary}>
+          <button
+            className={styles.newStoryButton}
+            onClick={handleCreateStory}
+            disabled={isCreating}
+          >
+            {isCreating ? 'Creating...' : 'New Story'}
+          </button>
         </div>
-        <button
-          className={styles.importBundleButton}
-          onClick={() => setImportDialogOpen(true)}
-        >
-          Import Bundle
-        </button>
+
+        {/* Zone 2: Discovery controls (center) */}
+        <div className={styles.toolbarDiscovery}>
+          <div className={styles.searchWrapper}>
+            <label htmlFor="story-search" className={styles.visuallyHidden}>
+              Search stories
+            </label>
+            <input
+              type="text"
+              id="story-search"
+              className={styles.searchInput}
+              placeholder="Search stories..."
+              aria-label="Search stories"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Zone 3: Utility toggles (right) */}
+        <div className={styles.toolbarUtility}>
+          <button
+            className={styles.importBundleButton}
+            onClick={() => setImportDialogOpen(true)}
+          >
+            Import Bundle
+          </button>
+        </div>
       </div>
 
       <div className={styles.filterRow}>
