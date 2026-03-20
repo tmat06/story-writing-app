@@ -1,6 +1,5 @@
 .page {
-  margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-lg) * -1);
-  height: calc(100vh - 64px);
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -9,30 +8,53 @@
    SHELL REGIONS
    ===================== */
 
-.shellHeader {
+.commandRail {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md) var(--spacing-lg);
+  gap: 8px;
+  height: 48px;
+  padding: 0 16px;
   background: var(--color-white);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
   flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
 }
 
-.shellHeaderRight {
+.commandRailLeft {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  margin-left: auto;
+  flex: 1;
+  min-width: 0;
+}
+
+.commandRailCenter {
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
 }
 
-.shellToolbar {
+.commandRailRight {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  min-height: 44px;
-  padding: 0 var(--spacing-lg);
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.commandRailRightGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewSubBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
   background: var(--color-white);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
   flex-shrink: 0;
@@ -104,7 +126,8 @@
   font-size: var(--font-size-sm);
   cursor: pointer;
   white-space: nowrap;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
+  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
 }
 
 .seriesBibleBtn:hover {
@@ -124,7 +147,8 @@
   font-size: var(--font-size-sm);
   cursor: pointer;
   white-space: nowrap;
-  border-radius: 4px;
+  border-radius: var(--border-radius-md);
+  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
 }
 
 .sharePreviewBtn:hover {
@@ -147,9 +171,9 @@
   color: var(--color-elephant-500);
   background: none;
   border: var(--border-width) solid var(--color-fog-200);
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  transition: background 100ms ease, color 100ms ease;
+  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
   white-space: nowrap;
 }
 
@@ -182,9 +206,9 @@
   color: var(--color-elephant-500);
   background: var(--color-white);
   border: var(--border-width) solid var(--color-fashion-300);
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  transition: background 120ms ease-out, color 120ms ease-out;
+  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
 }
 
 .filterBtn:hover {
@@ -211,9 +235,9 @@
   color: var(--color-elephant-500);
   background: none;
   border: var(--border-width) solid var(--color-fog-200);
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  transition: background 120ms ease-out, color 120ms ease-out;
+  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
   white-space: nowrap;
 }
 
@@ -234,8 +258,9 @@
   color: var(--color-white);
   background: var(--color-carbon-600);
   border: none;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
+  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
 }
 
 .addSubmissionBtn:hover {
@@ -428,19 +453,19 @@
 }
 
 @media (max-width: 767px) {
-  .page {
-    margin: calc(var(--spacing-lg) * -1) calc(var(--spacing-md) * -1);
+  .commandRail {
+    height: 44px;
+    padding: 0 12px;
+    gap: 8px;
   }
 
-  .shellHeader {
-    padding: var(--spacing-md);
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
+  .viewSubBar {
+    padding: 0 12px;
+    overflow-x: auto;
   }
 
   .titleInput {
-    font-size: var(--font-size-xl);
-    flex-basis: 100%;
+    font-size: var(--font-size-lg);
   }
 
   .editor {
@@ -460,11 +485,12 @@
   border-right: none;
 }
 
-.page[data-focus-mode='true'] .shellHeader > *:not(.titleInput) {
+.page[data-focus-mode='true'] .commandRailCenter,
+.page[data-focus-mode='true'] .commandRailRight {
   display: none;
 }
 
-.page[data-focus-mode='true'] .shellToolbar {
+.page[data-focus-mode='true'] .viewSubBar {
   display: none;
 }
 

@@ -13,7 +13,7 @@
   border: none;
   background: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
   white-space: nowrap;
 }
 
@@ -22,14 +22,14 @@
   background-color: var(--color-fog-200);
   font-weight: 600;
   border-color: var(--color-cement-400);
-  transition: background 120ms ease-out, color 120ms ease-out;
+  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
 }
 
 .inactive {
   color: var(--color-elephant-500);
   background-color: var(--color-white);
   font-weight: 500;
-  transition: background 120ms ease-out, color 120ms ease-out;
+  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
 }
 
 .inactive:hover {
