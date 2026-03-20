@@ -34,6 +34,9 @@ import {
 import { getStory, updateStory } from "@/lib/stories";
 import { clearSnapshot, loadSnapshot } from "@/lib/autosave";
 import { useAutosave } from "@/hooks/useAutosave";
+import { useResumeState } from "@/hooks/useResumeState";
+import { resolveSceneId, clampCursor } from "@/lib/resumeState";
+import { ResumeIndicator } from "@/components/ResumeIndicator/ResumeIndicator";
 import { useFocusMode } from "@/hooks/useFocusMode";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { useWriterPrefs } from "@/hooks/useWriterPrefs";
@@ -68,11 +71,13 @@ function StoryPageInner({ id }: { id: string }) {
   const [storySeriesId, setStorySeriesId] = useState<string | undefined>(undefined);
   const [showRecovery, setShowRecovery] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [showResumeIndicator, setShowResumeIndicator] = useState(false);
   const [corkboardStatusFilter, setCorkboardStatusFilter] = useState<
     SceneStatus | "all"
   >("all");
 
   const trackerRef = useRef<SubmissionTrackerHandle>(null);
+  const restoredRef = useRef(false);
 
   const {
     content,
@@ -84,6 +89,8 @@ function StoryPageInner({ id }: { id: string }) {
     restoreSnapshot,
     hasRecovery,
   } = useAutosave(id);
+
+  const { loadRestore, scheduleUpdate, optOut, setOptOut } = useResumeState(id);
 
   // Load story title and seriesId from localStorage
   useEffect(() => {
@@ -131,12 +138,64 @@ function StoryPageInner({ id }: { id: string }) {
     setLoading(false);
   }, [id]);
 
+  // Restore resume state after scenes and content are loaded
+  useEffect(() => {
+    // Skip if URL explicitly specifies a scene (explicit navigation takes precedence)
+    if (searchParams.get("scene")) return;
+    if (restoredRef.current || scenesLoading || content === undefined) return;
+    restoredRef.current = true;
+
+    const restore = loadRestore();
+    if (!restore) return;
+
+    const validSceneId = resolveSceneId(restore.sceneId, scenes.map((s) => s.id));
+    if (validSceneId) {
+      setFocusedSceneId(validSceneId);
+    }
+
+    const validModes: ViewMode[] = ["editor", "corkboard", "submissions", "pacing", "diagnostics"];
+    if (validModes.includes(restore.viewMode as ViewMode)) {
+      setViewMode(restore.viewMode as ViewMode);
+    }
+
+    if (restore.viewMode === "editor" && textareaRef.current) {
+      const pos = clampCursor(restore.cursorPosition, textareaRef.current.value.length);
+      requestAnimationFrame(() => {
+        if (!textareaRef.current) return;
+        if (textareaRef.current.value.length > 0) {
+          textareaRef.current.focus();
+          textareaRef.current.setSelectionRange(pos, pos);
+        }
+      });
+    }
+
+    setShowResumeIndicator(true);
+    if (process.env.NODE_ENV === "development") {
+      console.debug("[resume] restored", { storyId: id, sceneId: validSceneId, cursorPosition: restore.cursorPosition, viewMode: restore.viewMode });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scenes, scenesLoading, content]);
+
   const refreshScenes = () => {
     const refreshedScenes = getScenes(id);
     setScenes(refreshedScenes);
   };
 
+  const handleCursorChange = useCallback(() => {
+    if (!textareaRef.current) return;
+    scheduleUpdate({
+      sceneId: focusedSceneId ?? null,
+      cursorPosition: textareaRef.current.selectionStart,
+      viewMode,
+    });
+  }, [focusedSceneId, viewMode, scheduleUpdate]);
+
   const handleSceneClick = (sceneId: string) => {
+    scheduleUpdate({
+      sceneId,
+      cursorPosition: textareaRef.current?.selectionStart ?? 0,
+      viewMode: "editor",
+    });
     router.push(`/story/${id}?view=editor&scene=${sceneId}`);
   };
 
@@ -285,7 +344,17 @@ function StoryPageInner({ id }: { id: string }) {
           value={storyTitle}
           onChange={(e) => handleTitleChange(e.target.value)}
         />
-        <ViewModeSwitch mode={viewMode} onChange={setViewMode} />
+        <ViewModeSwitch
+          mode={viewMode}
+          onChange={(mode) => {
+            setViewMode(mode);
+            scheduleUpdate({
+              sceneId: focusedSceneId ?? null,
+              cursorPosition: textareaRef.current?.selectionStart ?? 0,
+              viewMode: mode,
+            });
+          }}
+        />
         <div className={styles.shellHeaderRight}>
           {viewMode === "editor" && (
             <SaveStatus
@@ -386,6 +455,18 @@ function StoryPageInner({ id }: { id: string }) {
           <div className={styles.editorLayout}>
             <div className={styles.editorMain}>
               <div className={styles.editorCanvas}>
+                {showResumeIndicator && (
+                  <div className={styles.bannerContainer}>
+                    <ResumeIndicator
+                      onDismiss={() => setShowResumeIndicator(false)}
+                      optOut={optOut}
+                      onOptOutChange={(v) => {
+                        setOptOut(v);
+                        setShowResumeIndicator(false);
+                      }}
+                    />
+                  </div>
+                )}
                 {showRecovery && (
                   <div className={styles.bannerContainer}>
                     <RecoveryBanner
@@ -415,6 +496,8 @@ function StoryPageInner({ id }: { id: string }) {
                   aria-label="Story content editor"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
+                  onKeyUp={handleCursorChange}
+                  onMouseUp={handleCursorChange}
                   data-typewriter-scroll={
                     typewriterScroll && isFocusMode ? "true" : undefined
                   }

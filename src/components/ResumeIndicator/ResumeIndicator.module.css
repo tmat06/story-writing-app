@@ -1,0 +1,100 @@
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  background: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  animation: fadeSlideIn 180ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner {
+    animation: none;
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.icon {
+  flex-shrink: 0;
+  font-style: normal;
+  color: var(--color-cement-400);
+  font-size: var(--font-size-base);
+}
+
+.message {
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+  line-height: var(--line-height-normal);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.optOutLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  cursor: pointer;
+}
+
+.optOutCheckbox {
+  cursor: pointer;
+}
+
+.dismissButton {
+  background: none;
+  border: none;
+  padding: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  cursor: pointer;
+  line-height: 1;
+  border-radius: var(--border-radius-sm);
+}
+
+.dismissButton:hover {
+  color: var(--color-black-700);
+}
+
+.dismissButton:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  .banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    align-self: flex-start;
+    flex-wrap: wrap;
+  }
+}
