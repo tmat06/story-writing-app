@@ -33,6 +33,8 @@ export default function AppShell({ children }: AppShellProps) {
     setIsMobileNavOpen(false);
   };
 
+  const isEditorRoute = pathname.startsWith('/story/');
+
   return (
     <div className={styles.shell}>
       {/* Skip to main content link for accessibility */}
@@ -57,10 +59,16 @@ export default function AppShell({ children }: AppShellProps) {
       </div>
 
       <div className={styles.mainWrapper}>
-        <Header title={pageTitle} onMenuToggle={handleMenuToggle} />
-        <div id="main-content">
-          <ContentContainer>{children}</ContentContainer>
-        </div>
+        {!isEditorRoute && <Header title={pageTitle} onMenuToggle={handleMenuToggle} />}
+        {isEditorRoute ? (
+          <main id="main-content" className={styles.editorMainWrapper}>
+            {children}
+          </main>
+        ) : (
+          <div id="main-content">
+            <ContentContainer>{children}</ContentContainer>
+          </div>
+        )}
       </div>
     </div>
   );
