@@ -11,9 +11,9 @@
 .commandRail {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
   height: 48px;
-  padding: 0 16px;
+  padding: 0 var(--spacing-md);
   background: var(--color-white);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
   flex-shrink: 0;
@@ -38,7 +38,7 @@
 .commandRailRight {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
   flex-shrink: 0;
   margin-left: auto;
 }
@@ -46,15 +46,15 @@
 .commandRailRightGroup {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .viewSubBar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
   height: 40px;
-  padding: 0 16px;
+  padding: 0 var(--spacing-md);
   background: var(--color-white);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
   flex-shrink: 0;
@@ -135,8 +135,8 @@
 }
 
 .seriesBibleBtn:focus-visible {
-  outline: 2px solid var(--color-elephant-500);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .sharePreviewBtn {
@@ -156,8 +156,8 @@
 }
 
 .sharePreviewBtn:focus-visible {
-  outline: 2px solid var(--color-elephant-500);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 /* =====================
@@ -183,8 +183,8 @@
 }
 
 .focusModeButton:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .toolbarSceneCount {
@@ -224,8 +224,8 @@
 }
 
 .filterBtn:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .addBeatBtn {
@@ -247,8 +247,8 @@
 }
 
 .addBeatBtn:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .addSubmissionBtn {
@@ -256,20 +256,20 @@
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--color-white);
-  background: var(--color-carbon-600);
+  background: var(--color-black-700);
   border: none;
   border-radius: var(--border-radius-md);
   cursor: pointer;
-  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
+  transition: background var(--transition-fast);
 }
 
 .addSubmissionBtn:hover {
-  background: var(--color-black-700);
+  background: var(--color-black-800);
 }
 
 .addSubmissionBtn:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 /* =====================
@@ -456,7 +456,7 @@
   .commandRail {
     height: 44px;
     padding: 0 12px;
-    gap: 8px;
+    gap: var(--spacing-sm);
   }
 
   .viewSubBar {

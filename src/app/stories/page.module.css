@@ -66,19 +66,20 @@
   color: var(--color-cement-400);
 }
 
-.searchInput:focus {
+.searchInput:focus-visible {
   outline: none;
   border-color: var(--color-carbon-600);
-  box-shadow: 0 0 0 3px rgba(45, 45, 45, 0.24);
+  box-shadow: var(--focus-ring);
+  background: var(--color-polar-100);
 }
 
 .newStoryButton {
   padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-sm);
+  border-radius: var(--radius-control);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
+  transition: background var(--transition-fast);
   background: var(--color-black-700);
   color: var(--color-white);
   border: none;
@@ -86,27 +87,29 @@
 
 .newStoryButton:hover:not(:disabled) {
   background: var(--color-black-800);
-  transform: translateY(-1px);
+}
+
+.newStoryButton:active:not(:disabled) {
+  transform: translateY(0.5px);
 }
 
 .newStoryButton:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
-  transform: none;
 }
 
 .newStoryButton:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(45, 45, 45, 0.24);
+  box-shadow: var(--focus-ring);
 }
 
 .archiveToggle {
   padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--radius-control);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background var(--transition-fast);
   background: var(--color-white);
   color: var(--color-elephant-500);
   border: 1px solid var(--color-fashion-300);
@@ -119,16 +122,16 @@
 
 .archiveToggle:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(45, 45, 45, 0.24);
+  box-shadow: var(--focus-ring);
 }
 
 .importBundleButton {
   padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-sm);
+  border-radius: var(--radius-control);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: color 0.15s ease, background 0.15s ease;
+  transition: background var(--transition-fast);
   background: transparent;
   color: var(--color-cement-400);
   border: none;
@@ -141,7 +144,7 @@
 
 .importBundleButton:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(45, 45, 45, 0.24);
+  box-shadow: var(--focus-ring);
 }
 
 .storiesGrid {
@@ -221,11 +224,11 @@
 .filterPill,
 .filterPillActive {
   padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-full, 9999px);
+  border-radius: var(--border-radius-full);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background var(--transition-fast), color var(--transition-fast);
   border: 1px solid var(--color-fog-300);
 }
 
@@ -247,8 +250,8 @@
 
 .filterPill:focus-visible,
 .filterPillActive:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 /* Sort dropdown */
@@ -263,8 +266,8 @@
 }
 
 .sortSelect:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 /* Empty state actions */
@@ -284,7 +287,7 @@
   background: transparent;
   color: var(--color-elephant-500);
   border: 1px solid var(--color-fog-300);
-  transition: all 0.15s;
+  transition: background var(--transition-fast);
 }
 
 .clearSearchButton:hover {
@@ -293,8 +296,8 @@
 }
 
 .clearSearchButton:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 /* Responsive: stack filterRow on mobile */

@@ -96,24 +96,24 @@
   background: var(--color-black-700);
   color: white;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--radius-control);
   font-size: var(--font-size-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: background 100ms ease;
+  transition: background var(--transition-fast);
 }
 
 .resumeButton:hover {
-  background: var(--color-carbon-600);
+  background: var(--color-black-800);
 }
 
 .resumeButton:active {
-  transform: scale(0.98);
+  transform: translateY(0.5px);
 }
 
 .resumeButton:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .storyList {

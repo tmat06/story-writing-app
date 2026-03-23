@@ -10,12 +10,14 @@
 :root {
   /* Grayscale - Approved tokens only */
   --color-black-700: #1a1a1a;      /* Darkest - primary text */
-  --color-black-800: #111111;      /* Primary button hover */
+  --color-black-800: #141414;      /* Dark hover for primary buttons */
   --color-carbon-600: #2d2d2d;     /* Dark headers/emphasis */
   --color-elephant-500: #4a4a4a;   /* Secondary text */
   --color-cement-400: #6b6b6b;     /* Tertiary/muted text */
   --color-fashion-300: #9a9a9a;    /* Borders/dividers */
   --color-fog-200: #d4d4d4;        /* Subtle backgrounds */
+  --color-fog-100: #ebebeb;        /* Lighter fog, pill/filter hover fills */
+  --color-fog-300: #bdbdbd;        /* Slightly darker fog, subtle borders */
   --color-polar-100: #f5f5f5;      /* Lightest backgrounds */
 
   /* Pure white for contrast */
@@ -57,6 +59,7 @@
   /* Font sizes */
   --font-size-xs: 0.75rem;     /* 12px */
   --font-size-sm: 0.875rem;    /* 14px */
+  --font-size-md: 0.9375rem;   /* 15px — dense toolbar/control text */
   --font-size-base: 1rem;      /* 16px */
   --font-size-lg: 1.125rem;    /* 18px */
   --font-size-xl: 1.25rem;     /* 20px */
@@ -84,11 +87,17 @@
   --border-radius-sm: 0.25rem;   /* 4px */
   --border-radius-md: 0.5rem;    /* 8px */
   --border-radius-lg: 0.75rem;   /* 12px */
+  --border-radius-full: 9999px;  /* Pill shape */
+  --radius-control: 0.5rem;      /* Unified control border-radius (8px) */
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --focus-ring: 0 0 0 2px rgba(45, 45, 45, 0.35);  /* Shared accessible focus ring */
+
+  /* Transitions */
+  --transition-fast: 140ms cubic-bezier(0.2, 0, 0, 1);  /* Standard control transition */
 
   /* Z-index layers */
   --z-base: 0;
