@@ -127,6 +127,10 @@ function StoryPageInner({ id }: { id: string }) {
     if (scene) {
       setFocusedSceneId(scene);
     }
+    const panel = searchParams.get("panel") as "revision" | "feedback" | "notes" | "collab" | null;
+    if (panel && ["notes", "revision", "collab", "feedback"].includes(panel)) {
+      setSidebarTab(panel);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentionally run once on mount
 
