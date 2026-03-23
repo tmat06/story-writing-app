@@ -162,6 +162,9 @@ function StoriesPageInner() {
                 showActions={true}
                 availableSeries={allSeries}
                 onUpdate={handleUpdate}
+                onDuplicate={(newStoryId) => {
+                  router.push(`/story/${newStoryId}?from=duplicate`);
+                }}
                 onClick={() => handleNavigate(story.id)}
               />
             ))}

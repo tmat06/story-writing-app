@@ -63,6 +63,73 @@ export function deleteStory(id: string): void {
   saveStories(filtered);
 }
 
+export function duplicateStory(sourceId: string): Story | null {
+  const source = getStory(sourceId);
+  if (!source) return null;
+
+  const now = Date.now();
+  const newId = crypto.randomUUID();
+
+  // Clone story record
+  const newStory: Story = {
+    id: newId,
+    title: `Copy of ${source.title}`,
+    createdAt: now,
+    updatedAt: now,
+    isArchived: false,
+    ...(source.seriesId ? { seriesId: source.seriesId } : {}),
+  };
+  const stories = getStories();
+  stories.push(newStory);
+  saveStories(stories);
+
+  console.info('[Duplicate] Duplicated story %s → %s', sourceId, newId);
+
+  // Clone scenes — remap each scene UUID, preserve all other fields + order
+  const sourceScenes: import('@/types/scene').Scene[] = (() => {
+    try {
+      const raw = localStorage.getItem(`story-${sourceId}-scenes`);
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  })();
+  const sceneIdMap: Record<string, string> = {};
+  const newScenes = sourceScenes.map(scene => {
+    const newSceneId = crypto.randomUUID();
+    sceneIdMap[scene.id] = newSceneId;
+    return { ...scene, id: newSceneId };
+  });
+  try {
+    localStorage.setItem(`story-${newId}-scenes`, JSON.stringify(newScenes));
+  } catch { /* swallow — partial duplicate still opens */ }
+
+  // Clone manuscript content
+  try {
+    const content = localStorage.getItem(`story_${sourceId}_content`);
+    if (content !== null) {
+      localStorage.setItem(`story_${newId}_content`, content);
+    }
+  } catch { /* swallow — content is optional */ }
+
+  // Clone notes — remap note UUIDs + storyId + scene references
+  try {
+    const rawNotes = localStorage.getItem(`story-${sourceId}-notes`);
+    if (rawNotes) {
+      const sourceNotes = JSON.parse(rawNotes) as import('@/types/note').Note[];
+      const newNotes = sourceNotes.map(note => ({
+        ...note,
+        id: crypto.randomUUID(),
+        storyId: newId,
+        ...(note.sceneId && sceneIdMap[note.sceneId]
+          ? { sceneId: sceneIdMap[note.sceneId] }
+          : {}),
+      }));
+      localStorage.setItem(`story-${newId}-notes`, JSON.stringify(newNotes));
+    }
+  } catch { /* swallow */ }
+
+  return newStory;
+}
+
 function saveStories(stories: Story[]): void {
   try {
     if (typeof window === 'undefined') return;

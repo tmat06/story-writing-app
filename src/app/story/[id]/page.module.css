@@ -520,3 +520,38 @@
   transition-duration: 0.01ms !important;
   animation-duration: 0.01ms !important;
 }
+
+/* Duplicate story banner */
+.duplicateBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-black-700);
+  line-height: var(--line-height-normal);
+}
+
+.duplicateBannerDismiss {
+  background: none;
+  border: none;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  cursor: pointer;
+  text-decoration: underline;
+  flex-shrink: 0;
+}
+
+.duplicateBannerDismiss:hover {
+  color: var(--color-black-700);
+}
+
+.duplicateBannerDismiss:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}

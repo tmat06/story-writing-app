@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { updateStory, deleteStory } from '@/lib/stories';
+import { updateStory, deleteStory, duplicateStory } from '@/lib/stories';
 import { Series } from '@/types/series';
 import { exportStoryBundle } from '@/lib/bundle';
 import ConfirmDialog from '@/components/ConfirmDialog/ConfirmDialog';
@@ -14,6 +14,7 @@ interface StoryActionMenuProps {
   seriesId?: string;
   availableSeries: Series[];
   onUpdate: () => void;
+  onDuplicate?: (newStoryId: string) => void;
   onAssignToSeries?: (seriesId: string) => void;
   onRemoveFromSeries?: () => void;
 }
@@ -25,10 +26,12 @@ export default function StoryActionMenu({
   seriesId,
   availableSeries,
   onUpdate,
+  onDuplicate,
   onAssignToSeries,
   onRemoveFromSeries,
 }: StoryActionMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isDuplicating, setIsDuplicating] = useState(false);
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [showSeriesPicker, setShowSeriesPicker] = useState(false);
@@ -48,6 +51,21 @@ export default function StoryActionMenu({
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [menuOpen]);
+
+  const handleDuplicate = () => {
+    if (isDuplicating) return;
+    setIsDuplicating(true);
+    setMenuOpen(false);
+    try {
+      const newStory = duplicateStory(storyId);
+      if (newStory) {
+        onUpdate();
+        onDuplicate?.(newStory.id);
+      }
+    } finally {
+      setIsDuplicating(false);
+    }
+  };
 
   const handleRename = () => {
     if (newTitle.trim()) {
@@ -184,6 +202,17 @@ export default function StoryActionMenu({
             }}
           >
             Delete
+          </button>
+          <hr className={styles.menuSeparator} />
+          <button
+            className={styles.menuItem}
+            disabled={isDuplicating}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDuplicate();
+            }}
+          >
+            {isDuplicating ? 'Duplicating…' : 'Duplicate story'}
           </button>
           <hr className={styles.menuSeparator} />
           <button

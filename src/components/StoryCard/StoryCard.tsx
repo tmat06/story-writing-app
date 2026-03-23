@@ -12,6 +12,7 @@ interface StoryCardProps {
   showActions?: boolean;
   availableSeries?: Series[];
   onUpdate?: () => void;
+  onDuplicate?: (newStoryId: string) => void;
   onClick?: () => void;
 }
 
@@ -33,6 +34,7 @@ export default function StoryCard({
   showActions = false,
   availableSeries = [],
   onUpdate,
+  onDuplicate,
   onClick,
 }: StoryCardProps) {
   const CardWrapper = onClick ? 'button' : 'div';
@@ -73,6 +75,7 @@ export default function StoryCard({
             seriesId={story.seriesId}
             availableSeries={availableSeries}
             onUpdate={onUpdate}
+            onDuplicate={onDuplicate}
           />
         </div>
       )}

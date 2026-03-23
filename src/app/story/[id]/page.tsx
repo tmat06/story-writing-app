@@ -72,6 +72,7 @@ function StoryPageInner({ id }: { id: string }) {
   const [showRecovery, setShowRecovery] = useState(false);
   const [showError, setShowError] = useState(false);
   const [showResumeIndicator, setShowResumeIndicator] = useState(false);
+  const [showDuplicateBanner, setShowDuplicateBanner] = useState(false);
   const [corkboardStatusFilter, setCorkboardStatusFilter] = useState<
     SceneStatus | "all"
   >("all");
@@ -126,6 +127,15 @@ function StoryPageInner({ id }: { id: string }) {
     }
     if (scene) {
       setFocusedSceneId(scene);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentionally run once on mount
+
+  // Show duplicate banner if navigated here via duplication
+  useEffect(() => {
+    if (searchParams.get('from') === 'duplicate') {
+      setShowDuplicateBanner(true);
+      router.replace(`/story/${id}`, { scroll: false });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentionally run once on mount
@@ -494,6 +504,19 @@ function StoryPageInner({ id }: { id: string }) {
                       onRetry={handleRetry}
                       onDismiss={handleDismissError}
                     />
+                  </div>
+                )}
+                {showDuplicateBanner && (
+                  <div className={styles.bannerContainer}>
+                    <div className={styles.duplicateBanner}>
+                      This is a copy of the original story. Edits here won&apos;t affect it.{' '}
+                      <button
+                        className={styles.duplicateBannerDismiss}
+                        onClick={() => setShowDuplicateBanner(false)}
+                      >
+                        Dismiss
+                      </button>
+                    </div>
                   </div>
                 )}
                 <label htmlFor="story-editor" className={styles.visuallyHidden}>
