@@ -31,7 +31,7 @@ import {
   addScene,
   updateSceneFields,
 } from "@/lib/scenes";
-import { getStory, updateStory } from "@/lib/stories";
+import { getStory, updateStory, touchStoryUpdatedAt } from "@/lib/stories";
 import { clearSnapshot, loadSnapshot } from "@/lib/autosave";
 import { useAutosave } from "@/hooks/useAutosave";
 import { useResumeState } from "@/hooks/useResumeState";
@@ -113,6 +113,13 @@ function StoryPageInner({ id }: { id: string }) {
   useEffect(() => {
     if (saveState === "failed") setShowError(true);
   }, [saveState]);
+
+  // Bump story updatedAt on each confirmed autosave so Quick Resume targets the correct story
+  useEffect(() => {
+    if (saveState === "saved") {
+      touchStoryUpdatedAt(id);
+    }
+  }, [saveState, id]);
 
   // Read query params on mount to set initial view and focused scene
   useEffect(() => {
