@@ -8,34 +8,53 @@
    SHELL REGIONS
    ===================== */
 
+/* =====================
+   COMMAND RAIL — mobile-first two-row layout
+   ===================== */
+
 .commandRail {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 48px;
-  padding: 0 16px;
+  flex-direction: column;
+  padding: 0 12px;
   background: var(--color-white);
   border-bottom: var(--border-width) solid var(--color-fashion-300);
+  box-shadow: var(--shadow-sm);
   flex-shrink: 0;
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
 }
 
-.commandRailLeft {
+.crRow1 {
   display: flex;
   align-items: center;
-  flex: 1;
-  min-width: 0;
+  height: 44px;
+  gap: 8px;
+  width: 100%;
 }
 
-.commandRailCenter {
+.crRow2 {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  gap: 8px;
+  width: 100%;
+}
+
+.crRow1Right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.crViewSwitch {
   display: flex;
   align-items: center;
   flex-shrink: 0;
 }
 
-.commandRailRight {
+.crRow2Right {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -43,10 +62,31 @@
   margin-left: auto;
 }
 
-.commandRailRightGroup {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* Mobile: overflow button visible; desktop inline actions hidden */
+.crOverflowBtn { display: flex; }
+.crDesktopActions { display: none; }
+
+/* Desktop: collapse two rows into a single flex row */
+@media (min-width: 1024px) {
+  .commandRail {
+    flex-direction: row;
+    align-items: center;
+    height: 48px;
+    padding: 0 16px;
+  }
+
+  /* display:contents makes row divs invisible to layout; children join parent flex directly */
+  .crRow1 { display: contents; }
+  .crRow2 { display: contents; }
+
+  /* Explicit order: title | ViewModeSwitch | saveStatus | primaryAction+desktopActions */
+  .titleInput  { order: 1; flex: 1; min-width: 0; }
+  .crViewSwitch { order: 2; flex-shrink: 0; }
+  .crRow1Right  { order: 3; flex-shrink: 0; margin-left: auto; display: flex; align-items: center; }
+  .crRow2Right  { order: 4; flex-shrink: 0; margin-left: 0; }
+
+  .crOverflowBtn    { display: none; }
+  .crDesktopActions { display: flex; align-items: center; gap: 8px; }
 }
 
 .viewSubBar {
@@ -453,12 +493,6 @@
 }
 
 @media (max-width: 767px) {
-  .commandRail {
-    height: 44px;
-    padding: 0 12px;
-    gap: 8px;
-  }
-
   .viewSubBar {
     padding: 0 12px;
     overflow-x: auto;
@@ -485,9 +519,19 @@
   border-right: none;
 }
 
-.page[data-focus-mode='true'] .commandRailCenter,
-.page[data-focus-mode='true'] .commandRailRight {
+/* Hide row 2 (mode switch + actions) in focus mode */
+.page[data-focus-mode='true'] .crRow2 {
   display: none;
+}
+/* Hide save status slot in row 1 during focus mode */
+.page[data-focus-mode='true'] .crRow1Right {
+  display: none;
+}
+/* Desktop: single row collapses to title-only bar in focus mode */
+@media (min-width: 1024px) {
+  .page[data-focus-mode='true'] .commandRail {
+    height: 44px;
+  }
 }
 
 .page[data-focus-mode='true'] .viewSubBar {

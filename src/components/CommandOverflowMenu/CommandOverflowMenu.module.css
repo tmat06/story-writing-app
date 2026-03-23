@@ -1,0 +1,70 @@
+.wrapper {
+  position: relative;
+}
+
+.toggle {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0 var(--spacing-sm);
+  background: transparent;
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.toggle:hover {
+  background: var(--color-fog-200);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: 2px;
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 140px;
+  background: var(--color-white);
+  border: var(--border-width) solid var(--color-fashion-300);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  z-index: var(--z-dropdown);
+  overflow: hidden;
+}
+
+.item {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-elephant-500);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 140ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.item:hover {
+  background: var(--color-polar-100);
+}
+
+.item:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
+  outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .toggle {
+    transition: none;
+  }
+}
