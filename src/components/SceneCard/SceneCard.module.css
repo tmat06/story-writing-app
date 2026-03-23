@@ -7,7 +7,7 @@
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-md);
   cursor: pointer;
-  transition: box-shadow 150ms ease, border-color 150ms ease;
+  transition: box-shadow 120ms cubic-bezier(0.2, 0, 0, 1), border-color 120ms cubic-bezier(0.2, 0, 0, 1);
   user-select: none;
 }
 
@@ -64,7 +64,7 @@
   font-size: var(--font-size-base);
   font-weight: 600;
   color: var(--color-black-700);
-  line-height: var(--line-height-tight);
+  line-height: 1.4;
 }
 
 .chapter {
@@ -92,7 +92,10 @@
 .footer {
   display: flex;
   align-items: center;
+  gap: var(--spacing-sm);
   margin-top: var(--spacing-xs);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-fog-200);
 }
 
 .wordCount {
@@ -101,37 +104,34 @@
   color: var(--color-cement-400);
 }
 
-.jumpBtn {
-  position: absolute;
-  top: var(--spacing-sm);
-  left: var(--spacing-sm);
-  padding: 2px var(--spacing-sm);
+.openEditorBtn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--spacing-sm);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   color: var(--color-elephant-500);
-  background: var(--color-white);
+  background: transparent;
   border: 1px solid var(--color-fashion-300);
   border-radius: var(--border-radius-sm);
   cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.15s;
-  z-index: 1;
+  transition: color 120ms cubic-bezier(0.2, 0, 0, 1),
+              border-color 120ms cubic-bezier(0.2, 0, 0, 1),
+              background 120ms cubic-bezier(0.2, 0, 0, 1);
+  white-space: nowrap;
 }
 
-.card:hover .jumpBtn,
-.card:focus-within .jumpBtn {
-  opacity: 1;
-}
-
-.jumpBtn:hover {
+.openEditorBtn:hover {
+  color: var(--color-carbon-600);
+  border-color: var(--color-cement-400);
   background: var(--color-polar-100);
-  border-color: var(--color-fashion-300);
 }
 
-.jumpBtn:focus-visible {
+.openEditorBtn:focus-visible {
   outline: 2px solid var(--color-carbon-600);
   outline-offset: 1px;
-  opacity: 1;
+  color: var(--color-carbon-600);
 }
 
 @keyframes syncFlash {
@@ -208,11 +208,12 @@
   border: 1px solid var(--color-fog-200);
   border-radius: var(--border-radius-sm);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 120ms cubic-bezier(0.2, 0, 0, 1);
   max-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 1.4;
 }
 
 .chip:hover {
@@ -239,4 +240,14 @@
   border: 1px solid var(--color-carbon-600);
   border-radius: var(--border-radius-sm);
   outline: none;
+}
+
+@media (max-width: 390px) {
+  .footer {
+    flex-wrap: wrap;
+  }
+  .openEditorBtn {
+    flex: 1 0 100%;
+    justify-content: center;
+  }
 }
