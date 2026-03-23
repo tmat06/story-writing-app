@@ -122,6 +122,11 @@ export function deleteSubmission(storyId: string, id: string): void {
   localStorage.setItem(storageKey(storyId), JSON.stringify(filtered));
 }
 
+export function clearSubmissionsData(storyId: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(storageKey(storyId));
+}
+
 /**
  * Helper: is a given ISO date string in the past (before today)?
  */

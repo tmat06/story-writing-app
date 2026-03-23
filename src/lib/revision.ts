@@ -152,6 +152,11 @@ export function completePass(storyId: string, passId: string): void {
   savePasses(storyId, passes);
 }
 
+export function clearRevisionData(storyId: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(REVISION_KEY(storyId));
+}
+
 export function exportPassReport(pass: RevisionPass, storyTitle: string): string {
   const passLabels: Record<PassType, string> = {
     'arc-consistency': 'Arc Consistency',

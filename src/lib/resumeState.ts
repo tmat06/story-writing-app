@@ -34,6 +34,15 @@ export function clearResumeState(storyId: string): void {
   }
 }
 
+export function clearResumeStateData(storyId: string): void {
+  try {
+    localStorage.removeItem(key(storyId));
+    localStorage.removeItem(optOutKey(storyId));
+  } catch {
+    // Silently swallow storage errors
+  }
+}
+
 export function getResumeOptOut(storyId: string): boolean {
   try {
     const raw = localStorage.getItem(optOutKey(storyId));

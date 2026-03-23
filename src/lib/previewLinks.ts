@@ -75,6 +75,12 @@ function saveFeedback(storyId: string, feedback: PreviewFeedback[]): void {
   localStorage.setItem(feedbackKey(storyId), JSON.stringify(feedback));
 }
 
+export function clearPreviewData(storyId: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(linksKey(storyId));
+  localStorage.removeItem(feedbackKey(storyId));
+}
+
 export function createPreviewLink(
   storyId: string,
   storyTitle: string,

@@ -1,4 +1,11 @@
 import { Story } from '@/types/story';
+import { clearAutosaveData } from './autosave';
+import { clearScenesData } from './scenes';
+import { clearNotesData } from './notes';
+import { clearSubmissionsData } from './submissions';
+import { clearRevisionData } from './revision';
+import { clearResumeStateData } from './resumeState';
+import { clearPreviewData } from './previewLinks';
 
 const STORAGE_KEY = 'stories';
 
@@ -61,6 +68,15 @@ export function deleteStory(id: string): void {
   const stories = getStories();
   const filtered = stories.filter(s => s.id !== id);
   saveStories(filtered);
+
+  // Clean up all story-scoped localStorage artifacts
+  clearAutosaveData(id);
+  clearScenesData(id);
+  clearNotesData(id);
+  clearSubmissionsData(id);
+  clearRevisionData(id);
+  clearResumeStateData(id);
+  clearPreviewData(id);
 }
 
 function saveStories(stories: Story[]): void {

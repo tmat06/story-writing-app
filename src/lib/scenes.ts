@@ -205,6 +205,11 @@ export function updateSceneFields(
  *
  * TODO: Replace with API call (PATCH /api/stories/:storyId/scenes/:sceneId)
  */
+export function clearScenesData(storyId: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(`story-${storyId}-scenes`);
+}
+
 export function updateSceneStatus(
   storyId: string,
   sceneId: string,

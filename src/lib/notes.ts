@@ -62,6 +62,11 @@ export function updateNote(
   return note;
 }
 
+export function clearNotesData(storyId: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(_storageKey(storyId));
+}
+
 export function deleteNote(storyId: string, id: string): void {
   const notes = getNotes(storyId);
   _saveNotes(storyId, notes.filter((n) => n.id !== id));

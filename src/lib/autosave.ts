@@ -100,6 +100,13 @@ export function getSaveMetadata(storyId: string): SaveMetadata | null {
   }
 }
 
+export function clearAutosaveData(storyId: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(contentKey(storyId));
+  localStorage.removeItem(snapshotKey(storyId));
+  localStorage.removeItem(metadataKey(storyId));
+}
+
 export function formatRelativeTime(timestamp: number): string {
   const delta = Date.now() - timestamp;
   const seconds = Math.floor(delta / 1000);
