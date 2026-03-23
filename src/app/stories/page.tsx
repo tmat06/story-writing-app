@@ -3,10 +3,12 @@
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getStories, createStory } from '@/lib/stories';
+import { initScenesForStory } from '@/lib/scenes';
 import { getSeries } from '@/lib/series';
 import { Series } from '@/types/series';
 import StoryCard from '@/components/StoryCard/StoryCard';
 import StoryBundleDialog from '@/components/StoryBundleDialog/StoryBundleDialog';
+import StartStoryDialog from '@/components/StartStoryDialog/StartStoryDialog';
 import styles from './page.module.css';
 
 function StoriesPageInner() {
@@ -14,6 +16,7 @@ function StoriesPageInner() {
   const [allSeries, setAllSeries] = useState<Series[]>([]);
   const [isCreating, setIsCreating] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [startDialogOpen, setStartDialogOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -76,11 +79,29 @@ function StoriesPageInner() {
     router.push(`/story/${id}`);
   };
 
-  const handleCreateStory = () => {
+  const handleQuickCreate = (mode: 'blank' | 'starter') => {
     setIsCreating(true);
-    const newStory = createStory('Untitled Story');
+    const newStory = createStory('Untitled Story', { startMode: mode });
+    initScenesForStory(newStory.id, mode);
     router.push(`/story/${newStory.id}`);
   };
+
+  const handleCreateStory = () => {
+    setStartDialogOpen(true);
+  };
+
+  // Cmd/Ctrl+N quick-creates a blank story without the dialog
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+        e.preventDefault();
+        if (!isCreating) handleQuickCreate('blank');
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCreating]);
 
   return (
     <div className={styles.page}>
@@ -198,6 +219,16 @@ function StoriesPageInner() {
           handleUpdate();
           router.push(`/story/${newStoryId}`);
         }}
+      />
+
+      <StartStoryDialog
+        isOpen={startDialogOpen}
+        onClose={() => setStartDialogOpen(false)}
+        onConfirm={(mode) => {
+          setStartDialogOpen(false);
+          handleQuickCreate(mode);
+        }}
+        isCreating={isCreating}
       />
     </div>
   );

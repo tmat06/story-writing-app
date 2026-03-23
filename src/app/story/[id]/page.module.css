@@ -520,3 +520,24 @@
   transition-duration: 0.01ms !important;
   animation-duration: 0.01ms !important;
 }
+
+.clearPlaceholdersButton {
+  border: 1px solid var(--color-fashion-300);
+  background: transparent;
+  color: var(--color-elephant-500);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: var(--border-radius-md);
+  transition: background 140ms cubic-bezier(0.2,0,0,1), color 140ms cubic-bezier(0.2,0,0,1);
+}
+
+.clearPlaceholdersButton:hover {
+  background: var(--color-fog-200);
+}
+
+.clearPlaceholdersButton:focus-visible {
+  outline: 2px solid var(--color-elephant-500);
+  outline-offset: 2px;
+}

@@ -86,9 +86,8 @@ export function getScenes(storyId: string): Scene[] {
     }
   }
 
-  // Initialize with mock data on first load
-  localStorage.setItem(storageKey, JSON.stringify(MOCK_SCENES));
-  return MOCK_SCENES;
+  // No stored scenes found — return empty array (caller should init via initScenesForStory)
+  return [];
 }
 
 /**
@@ -226,4 +225,71 @@ export function updateSceneStatus(
 
   const storageKey = `story-${storyId}-scenes`;
   localStorage.setItem(storageKey, JSON.stringify(scenes));
+}
+
+/**
+ * Initialize scene storage for a newly created story.
+ * Must be called immediately after createStory() before any getScenes() call.
+ *
+ * @param storyId - The story identifier
+ * @param mode - 'blank' writes an empty scene list; 'starter' seeds two placeholder scenes
+ */
+export function initScenesForStory(storyId: string, mode: 'blank' | 'starter'): void {
+  if (typeof window === 'undefined') return;
+
+  const storageKey = `story-${storyId}-scenes`;
+
+  if (mode === 'blank') {
+    localStorage.setItem(storageKey, JSON.stringify([]));
+    return;
+  }
+
+  // starter: two empty placeholder scenes under Chapter 1
+  const starterScenes: Scene[] = [
+    {
+      id: crypto.randomUUID(),
+      title: 'Scene 1',
+      chapter: 'Chapter 1',
+      summary: '',
+      status: 'planned',
+      order: 1,
+      intent: '',
+      pov: '',
+      isStarterPlaceholder: true,
+    },
+    {
+      id: crypto.randomUUID(),
+      title: 'Scene 2',
+      chapter: 'Chapter 1',
+      summary: '',
+      status: 'planned',
+      order: 2,
+      intent: '',
+      pov: '',
+      isStarterPlaceholder: true,
+    },
+  ];
+  localStorage.setItem(storageKey, JSON.stringify(starterScenes));
+}
+
+/**
+ * Remove all starter placeholder scenes from a story.
+ * Safe to call even if no placeholders exist.
+ *
+ * @param storyId - The story identifier
+ */
+export function clearStarterPlaceholders(storyId: string): void {
+  if (typeof window === 'undefined') return;
+
+  const storageKey = `story-${storyId}-scenes`;
+  const stored = localStorage.getItem(storageKey);
+  if (!stored) return;
+
+  try {
+    const scenes = JSON.parse(stored) as Scene[];
+    const filtered = scenes.filter((s) => s.isStarterPlaceholder !== true);
+    localStorage.setItem(storageKey, JSON.stringify(filtered));
+  } catch (error) {
+    console.error('Failed to clear starter placeholders:', error);
+  }
 }

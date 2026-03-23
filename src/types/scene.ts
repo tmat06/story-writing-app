@@ -33,4 +33,7 @@ export interface Scene {
 
   /** Characters present in this scene */
   characters?: string[];
+
+  /** True if this scene was auto-created by the starter template and has not been edited */
+  isStarterPlaceholder?: boolean;
 }

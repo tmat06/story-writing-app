@@ -5,4 +5,5 @@ export interface Story {
   updatedAt: number;
   isArchived: boolean;
   seriesId?: string;
+  startMode?: 'blank' | 'starter';
 }

@@ -20,7 +20,7 @@ export function getStory(id: string): Story | null {
   return stories.find(s => s.id === id) || null;
 }
 
-export function createStory(title: string, opts?: { seriesId?: string }): Story {
+export function createStory(title: string, opts?: { seriesId?: string; startMode?: 'blank' | 'starter' }): Story {
   const now = Date.now();
   const story: Story = {
     id: crypto.randomUUID(),
@@ -29,6 +29,7 @@ export function createStory(title: string, opts?: { seriesId?: string }): Story 
     updatedAt: now,
     isArchived: false,
     ...(opts?.seriesId ? { seriesId: opts.seriesId } : {}),
+    ...(opts?.startMode ? { startMode: opts.startMode } : {}),
   };
 
   const stories = getStories();

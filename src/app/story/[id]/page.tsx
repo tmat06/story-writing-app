@@ -30,6 +30,7 @@ import {
   updateSceneStatus,
   addScene,
   updateSceneFields,
+  clearStarterPlaceholders,
 } from "@/lib/scenes";
 import { getStory, updateStory } from "@/lib/stories";
 import { clearSnapshot, loadSnapshot } from "@/lib/autosave";
@@ -317,6 +318,8 @@ function StoryPageInner({ id }: { id: string }) {
   }, [prefs.focusByDefault, enterFocus]);
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
 
+  const hasStarterPlaceholders = scenes.some((s) => s.isStarterPlaceholder === true);
+
   const filteredSceneCount =
     corkboardStatusFilter === "all"
       ? scenes.length
@@ -385,6 +388,18 @@ function StoryPageInner({ id }: { id: string }) {
           )}
           {viewMode === "editor" && !isFocusMode && (
             <div className={styles.commandRailRightGroup}>
+              {hasStarterPlaceholders && (
+                <button
+                  className={styles.clearPlaceholdersButton}
+                  onClick={() => {
+                    clearStarterPlaceholders(id);
+                    setScenes(getScenes(id));
+                  }}
+                  title="Remove starter placeholder scenes"
+                >
+                  Clear placeholders
+                </button>
+              )}
               <Tooltip content="Enter distraction-free writing mode.">
                 <button
                   type="button"
