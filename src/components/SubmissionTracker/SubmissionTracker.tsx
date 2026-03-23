@@ -6,11 +6,16 @@ import {
   getSubmissions,
   upsertSubmission,
   archiveSubmission,
+  markFollowedUp,
+  snoozeReminder,
+  dismissReminder,
 } from '@/lib/submissions';
 import { KpiStrip } from './KpiStrip';
+import { ReminderDigest } from './ReminderDigest';
 import { SubmissionBoard } from './SubmissionBoard';
 import { SubmissionTimeline } from './SubmissionTimeline';
 import { SubmissionPanel } from './SubmissionPanel';
+import { Toast } from '@/components/Toast/Toast';
 import styles from './SubmissionTracker.module.css';
 
 interface SubmissionTrackerProps {
@@ -28,6 +33,8 @@ export const SubmissionTracker = forwardRef<SubmissionTrackerHandle, SubmissionT
     const [panelEntry, setPanelEntry] = useState<SubmissionEntry | null>(null);
     const [panelOpen, setPanelOpen] = useState(false);
     const [savedId, setSavedId] = useState<string | null>(null);
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
+    const [toastUndoFn, setToastUndoFn] = useState<(() => void) | null>(null);
 
     const loadEntries = useCallback(() => {
       setEntries(getSubmissions(storyId));
@@ -68,6 +75,41 @@ export const SubmissionTracker = forwardRef<SubmissionTrackerHandle, SubmissionT
       setPanelOpen(false);
     };
 
+    const showToast = (message: string, undoFn?: () => void) => {
+      setToastMessage(message);
+      setToastUndoFn(undoFn ? () => undoFn : null);
+    };
+
+    const handleMarkFollowedUp = (id: string) => {
+      const snapshot = getSubmissions(storyId).find((e) => e.id === id);
+      markFollowedUp(storyId, id);
+      loadEntries();
+      showToast('Follow-up recorded', snapshot ? () => {
+        upsertSubmission(storyId, snapshot);
+        loadEntries();
+      } : undefined);
+    };
+
+    const handleSnooze = (id: string) => {
+      const snapshot = getSubmissions(storyId).find((e) => e.id === id);
+      snoozeReminder(storyId, id, 7);
+      loadEntries();
+      showToast('Snoozed 7 days', snapshot ? () => {
+        upsertSubmission(storyId, snapshot);
+        loadEntries();
+      } : undefined);
+    };
+
+    const handleDismiss = (id: string) => {
+      const snapshot = getSubmissions(storyId).find((e) => e.id === id);
+      dismissReminder(storyId, id);
+      loadEntries();
+      showToast('Reminder dismissed', snapshot ? () => {
+        upsertSubmission(storyId, snapshot);
+        loadEntries();
+      } : undefined);
+    };
+
     const hasEntries = entries.filter((e) => !e.archivedAt).length > 0;
 
     return (
@@ -90,6 +132,13 @@ export const SubmissionTracker = forwardRef<SubmissionTrackerHandle, SubmissionT
           </div>
         ) : (
           <>
+            <ReminderDigest
+              entries={entries.filter((e) => !e.archivedAt)}
+              onMarkFollowedUp={handleMarkFollowedUp}
+              onSnooze={handleSnooze}
+              onDismiss={handleDismiss}
+            />
+
             <div className={styles.viewTabBar} role="tablist" aria-label="Submission view">
               <button
                 type="button"
@@ -136,6 +185,14 @@ export const SubmissionTracker = forwardRef<SubmissionTrackerHandle, SubmissionT
             onSave={handleSave}
             onClose={handleClose}
             onArchive={handleArchive}
+          />
+        )}
+
+        {toastMessage && (
+          <Toast
+            message={toastMessage}
+            onDismiss={() => { setToastMessage(null); setToastUndoFn(null); }}
+            onUndo={toastUndoFn ?? undefined}
           />
         )}
       </div>

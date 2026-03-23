@@ -15,6 +15,21 @@ export type ResponseType =
   | 'other';
 
 /**
+ * A single reminder log entry recording a follow-up action.
+ */
+export interface ReminderLogEntry {
+  at: string;
+  action: 'followed_up' | 'snoozed' | 'dismissed';
+  note?: string;
+}
+
+/**
+ * Computed reminder urgency status for a submission entry.
+ * 'none' means no actionable reminder (dismissed, snoozed, no sentDate, closed, etc.)
+ */
+export type ReminderStatus = 'on_track' | 'follow_up_due' | 'overdue' | 'none';
+
+/**
  * A single submission entry tied to a manuscript
  */
 export interface SubmissionEntry {
@@ -46,4 +61,14 @@ export interface SubmissionEntry {
   createdAt: string;
   /** ISO date string of last update */
   updatedAt: string;
+  /** Days after sentDate before follow-up is due. Default 14 if null. */
+  followUpAfterDays: number | null;
+  /** Optional expected response window in days from sentDate. */
+  expectedResponseWindowDays: number | null;
+  /** ISO date of last snooze expiry (null means no active snooze). */
+  snoozedUntil: string | null;
+  /** True if writer has dismissed the reminder permanently. */
+  reminderDismissed: boolean;
+  /** Timeline log entries for follow-up actions. */
+  reminderLog: ReminderLogEntry[];
 }

@@ -42,19 +42,31 @@ function emptyForm(): FormState {
     notes: '',
     linkedArtifactId: null,
     archivedAt: null,
+    followUpAfterDays: null,
+    expectedResponseWindowDays: null,
+    snoozedUntil: null,
+    reminderDismissed: false,
+    reminderLog: [],
   };
 }
 
 export function SubmissionPanel({ entry, onSave, onClose, onArchive, storyId }: SubmissionPanelProps) {
   const isEdit = entry !== null;
   const firstFieldRef = useRef<HTMLInputElement>(null);
-  const [form, setForm] = useState<FormState>(entry ? { ...entry } : emptyForm());
+  const [form, setForm] = useState<FormState>(entry ? {
+    ...emptyForm(),
+    ...entry,
+  } : emptyForm());
   const [recipientError, setRecipientError] = useState(false);
+  const [followUpDaysError, setFollowUpDaysError] = useState(false);
+  const [responseWindowError, setResponseWindowError] = useState(false);
 
   // Sync form when entry changes (switching between entries)
   useEffect(() => {
-    setForm(entry ? { ...entry } : emptyForm());
+    setForm(entry ? { ...emptyForm(), ...entry } : emptyForm());
     setRecipientError(false);
+    setFollowUpDaysError(false);
+    setResponseWindowError(false);
   }, [entry]);
 
   // Auto-focus first field on open
@@ -78,11 +90,21 @@ export function SubmissionPanel({ entry, onSave, onClose, onArchive, storyId }: 
   };
 
   const handleSave = () => {
+    let hasError = false;
     if (!form.recipientName.trim()) {
       setRecipientError(true);
       firstFieldRef.current?.focus();
-      return;
+      hasError = true;
     }
+    if (form.followUpAfterDays !== null && (form.followUpAfterDays < 1 || !Number.isInteger(form.followUpAfterDays))) {
+      setFollowUpDaysError(true);
+      hasError = true;
+    }
+    if (form.expectedResponseWindowDays !== null && (form.expectedResponseWindowDays < 1 || !Number.isInteger(form.expectedResponseWindowDays))) {
+      setResponseWindowError(true);
+      hasError = true;
+    }
+    if (hasError) return;
 
     const now = new Date().toISOString();
     const saved: SubmissionEntry = isEdit
@@ -240,6 +262,62 @@ export function SubmissionPanel({ entry, onSave, onClose, onArchive, storyId }: 
               onChange={(e) => setField('nextActionDate', e.target.value || null)}
             />
           </div>
+
+          <div className={styles.sectionDivider} aria-hidden="true" />
+          <p className={styles.sectionLabel}>Reminder rules</p>
+
+          <div className={styles.fieldRow}>
+            <div className={styles.field}>
+              <label htmlFor="followUpAfterDays" className={styles.label}>
+                Follow up after (days)
+              </label>
+              <input
+                id="followUpAfterDays"
+                type="number"
+                min={1}
+                max={365}
+                className={`${styles.input} ${followUpDaysError ? styles.inputError : ''}`}
+                value={form.followUpAfterDays ?? ''}
+                onChange={(e) => {
+                  const v = e.target.value === '' ? null : parseInt(e.target.value, 10);
+                  setField('followUpAfterDays', v);
+                  if (followUpDaysError) setFollowUpDaysError(false);
+                }}
+                placeholder="14"
+                aria-invalid={followUpDaysError}
+              />
+              {followUpDaysError && (
+                <span className={styles.errorMessage}>Must be a positive whole number</span>
+              )}
+            </div>
+
+            <div className={styles.field}>
+              <label htmlFor="expectedResponseWindowDays" className={styles.label}>
+                Expected response window (days)
+              </label>
+              <input
+                id="expectedResponseWindowDays"
+                type="number"
+                min={1}
+                max={730}
+                className={`${styles.input} ${responseWindowError ? styles.inputError : ''}`}
+                value={form.expectedResponseWindowDays ?? ''}
+                onChange={(e) => {
+                  const v = e.target.value === '' ? null : parseInt(e.target.value, 10);
+                  setField('expectedResponseWindowDays', v);
+                  if (responseWindowError) setResponseWindowError(false);
+                }}
+                placeholder="Optional"
+                aria-invalid={responseWindowError}
+              />
+              {responseWindowError && (
+                <span className={styles.errorMessage}>Must be a positive whole number</span>
+              )}
+            </div>
+          </div>
+          <p className={styles.helperText}>
+            We&apos;ll mark this submission as due/overdue based on these settings and the sent date.
+          </p>
 
           <div className={styles.field}>
             <label htmlFor="linkedArtifactId" className={styles.label}>

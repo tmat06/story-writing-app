@@ -1,6 +1,6 @@
 import type { SubmissionEntry } from '@/types/submission';
-import { SUBMISSION_STATUS_LABELS } from '@/lib/submissions';
-import { OverdueChip } from './OverdueChip';
+import { SUBMISSION_STATUS_LABELS, computeReminderStatus } from '@/lib/submissions';
+import { ReminderStatusChip } from './ReminderStatusChip';
 import styles from './SubmissionCard.module.css';
 
 interface SubmissionCardProps {
@@ -26,6 +26,8 @@ export function SubmissionCard({ entry, onClick, highlighted }: SubmissionCardPr
     }
   };
 
+  const reminderStatus = computeReminderStatus(entry);
+
   return (
     <div
       role="button"
@@ -37,7 +39,7 @@ export function SubmissionCard({ entry, onClick, highlighted }: SubmissionCardPr
     >
       <div className={styles.topRow}>
         <span className={styles.recipient}>{entry.recipientName || 'Untitled'}</span>
-        <OverdueChip nextActionDate={entry.nextActionDate} />
+        <ReminderStatusChip status={reminderStatus} />
       </div>
 
       {entry.channelType && (

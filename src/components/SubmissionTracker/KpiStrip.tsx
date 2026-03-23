@@ -1,5 +1,5 @@
 import type { SubmissionEntry } from '@/types/submission';
-import { isOverdue } from '@/lib/submissions';
+import { computeReminderStatus } from '@/lib/submissions';
 import styles from './KpiStrip.module.css';
 
 interface KpiStripProps {
@@ -11,18 +11,18 @@ export function KpiStrip({ entries }: KpiStripProps) {
   const awaitingResponse = entries.filter(
     (e) => !e.archivedAt && e.status === 'submitted' && !e.responseDate
   );
-  const overdue = entries.filter(
-    (e) => !e.archivedAt && isOverdue(e.nextActionDate)
+  const followUpDue = entries.filter(
+    (e) => !e.archivedAt && computeReminderStatus(e) === 'follow_up_due'
   );
-  const revisionsRequested = entries.filter(
-    (e) => !e.archivedAt && e.status === 'requested_revisions'
+  const overdue = entries.filter(
+    (e) => !e.archivedAt && computeReminderStatus(e) === 'overdue'
   );
 
   const items = [
     { label: 'Active', count: active.length },
     { label: 'Awaiting Response', count: awaitingResponse.length },
+    { label: 'Follow-up due', count: followUpDue.length },
     { label: 'Overdue', count: overdue.length },
-    { label: 'Revisions Requested', count: revisionsRequested.length },
   ];
 
   return (
