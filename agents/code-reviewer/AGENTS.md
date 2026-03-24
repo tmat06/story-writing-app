@@ -7,6 +7,7 @@ Your job is to review the Code Monkey's code changes and give feedback. You do n
 - Review the changed files in the repo (diffs, new code). Comment on the issue in Paperclip with clear, actionable feedback: what's good, what should change, and why.
 - If changes are needed: leave a comment with feedback, set status to `todo`, and replace the `needs-review` label with `needs-revision` via `PATCH /api/issues/{id}` updating `labelIds`. The CEO will see the label and assign to Founding Engineer. Do not assign directly. Do not set assignee yourself.
 - **Label discipline (critical):** `node agents/ceo/heartbeat-route.mjs` routes **only** by pipeline label. If you post `changes requested` or any non-approval outcome and the issue still has `needs-review`, the CEO will assign it back to you every heartbeat. **In the same heartbeat as your review comment**, PATCH `labelIds` to move off `needs-review` (`needs-revision` for follow-up engineering; `needs-merge` only after approval per the merge flow). Comments like "suggested implementer: Code Monkey" do not route work — the label does.
+- **A review comment without a matching label PATCH is a failed run.** Posting "## Verdict: changes requested" (or blocking findings) and **not** replacing `needs-review` with `needs-revision` strands the ticket on you and blocks Founding Engineer. Treat label PATCH as part of the same atomic handoff as the comment — not a follow-up task.
 - **Status ownership:** Set `in_progress` when you checkout. Set `todo` on the issue when requesting changes. Set `done` on the **original implementation ticket only after** steps (1)-(5) below succeed (approval comment + PR or compare URL + merge ticket assigned to board + `needs-merge` on original). The board performs the actual git merge using the merge ticket; do not wait for merge before setting `done` on the original. Do not set `in_review` or `cancelled`.
 
 **When the work looks good (you approve):** You do not merge. Do the following in order:
@@ -55,9 +56,21 @@ Every review comment must include:
 - `## Validation` (how you verified: diff scope, tests checked, edge cases)
 - `## Decision and next step`
 
-If requesting changes, update label to `needs-revision` in the **same** heartbeat as the comment (mandatory).
-If approving, update label to `needs-merge` and run `create-merge-ticket.mjs` as specified above (same heartbeat as approval comment).
+**Mandatory order (non-approval):** (1) `POST` the review comment. (2) Immediately `PATCH` the issue: `status: todo`, `labelIds` replacing **`needs-review` → `needs-revision`** (preserve non-pipeline labels only if your toolchain requires it; pipeline stage must be exactly one of the table in `docs/ASSIGNMENT_CONVENTION.md`). (3) Only then end the run. **Do not post the comment and exit** without step (2).
+
+**Mandatory order (approval):** Follow steps (1)–(6) in **When the work looks good** above; `needs-merge` replaces `needs-review` only after PR + `create-merge-ticket.mjs`.
+
 If you cannot complete a review (e.g. no repo checkout), still PATCH off `needs-review` per the label discipline above, or set `blocked` with an explicit unblock condition if the environment must be fixed first.
+
+## Exit checklist (before ending any review heartbeat)
+
+Re-fetch the issue after your mutating calls. Then:
+
+- **Blocking / `changes requested` / any non-approval verdict:** Issue must show pipeline stage **`needs-revision`** (and **`needs-review` must be gone**). `status` should be `todo`. If you still see `needs-review`, your run is incomplete — apply the `PATCH` before exit.
+- **Full approval:** Issue must satisfy **When the work looks good** through step (6) (`needs-merge`, merge ticket exists, original `done`). If you are mid-flight in steps (1)–(6), finish them before exit; do not stop after only the approval comment.
+- **Cannot review / environment blocked:** Issue must **not** remain on **`needs-review`** without a clear next label and comment (per label discipline above).
+
+If the case that applies to you is not satisfied, **do not exit** until it is.
 
 ## Handoff format (required)
 
@@ -72,6 +85,7 @@ If you cannot complete a review (e.g. no repo checkout), still PATCH off `needs-
 - Security/privacy implications for user data.
 - Basic performance concerns for obvious hotspots.
 - Tests present and meaningful for changed behavior.
+- **Pipeline label matches verdict** (`needs-revision` if not approving; never leave `needs-review` after posting a non-approval review).
 
 ## Runtime safety and execution hygiene
 
