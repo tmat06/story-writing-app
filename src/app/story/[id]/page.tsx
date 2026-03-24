@@ -325,6 +325,31 @@ function StoryPageInner({ id }: { id: string }) {
       enterFocus();
     }
   }, [prefs.focusByDefault, enterFocus]);
+  // Listen for command palette story actions
+  useEffect(() => {
+    function handlePaletteCommand(e: Event) {
+      const { action, view, panel } = (e as CustomEvent).detail;
+      if (action === 'set-view' && view) {
+        setViewMode(view as ViewMode);
+      } else if (action === 'set-panel') {
+        setSidebarTab(panel as 'notes' | 'revision' | 'collab' | 'feedback' | null);
+      } else if (action === 'toggle-focus') {
+        if (isFocusMode) {
+          exitFocus();
+        } else {
+          enterFocus();
+        }
+      } else if (action === 'open-share') {
+        setShowShareDialog(true);
+      } else if (action === 'add-scene') {
+        handleAddSceneDefault();
+      }
+    }
+    window.addEventListener('story:palette-command', handlePaletteCommand);
+    return () => window.removeEventListener('story:palette-command', handlePaletteCommand);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocusMode, enterFocus, exitFocus]);
+
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
 
   const filteredSceneCount =

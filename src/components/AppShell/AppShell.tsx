@@ -1,10 +1,13 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import Navigation from '@/components/Navigation/Navigation';
 import Header from '@/components/Header/Header';
 import ContentContainer from '@/components/ContentContainer/ContentContainer';
+import { useGlobalShortcuts } from '@/hooks/useGlobalShortcuts';
+import CommandPalette from '@/components/CommandPalette/CommandPalette';
+import ShortcutHelp from '@/components/ShortcutHelp/ShortcutHelp';
 import styles from './AppShell.module.css';
 
 interface AppShellProps {
@@ -21,8 +24,23 @@ function getPageTitle(pathname: string): string {
 
 export default function AppShell({ children }: AppShellProps) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const pathname = usePathname();
   const pageTitle = getPageTitle(pathname);
+
+  const handleCloseOverlay = useCallback(() => {
+    setIsPaletteOpen(false);
+    setIsHelpOpen(false);
+  }, []);
+
+  useGlobalShortcuts({
+    onOpenPalette: () => setIsPaletteOpen(true),
+    onOpenHelp: () => setIsHelpOpen(true),
+    isPaletteOpen,
+    isHelpOpen,
+    onClose: handleCloseOverlay,
+  });
 
   const handleMenuToggle = () => {
     setIsMobileNavOpen(!isMobileNavOpen);
@@ -70,6 +88,16 @@ export default function AppShell({ children }: AppShellProps) {
           </div>
         )}
       </div>
+
+      <CommandPalette
+        isOpen={isPaletteOpen}
+        onClose={handleCloseOverlay}
+        onOpenHelp={() => { setIsPaletteOpen(false); setIsHelpOpen(true); }}
+      />
+      <ShortcutHelp
+        isOpen={isHelpOpen}
+        onClose={handleCloseOverlay}
+      />
     </div>
   );
 }
