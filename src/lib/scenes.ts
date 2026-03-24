@@ -190,6 +190,12 @@ export function updateSceneFields(
 
   Object.assign(scene, updates);
 
+  // Demote starter placeholder on any user edit so clearStarterPlaceholders
+  // cannot delete user-authored content
+  if (scene.isStarterPlaceholder) {
+    scene.isStarterPlaceholder = false;
+  }
+
   const storageKey = `story-${storyId}-scenes`;
   localStorage.setItem(storageKey, JSON.stringify(scenes));
 }
