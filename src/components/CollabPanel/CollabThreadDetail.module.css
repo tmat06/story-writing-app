@@ -131,7 +131,6 @@
   border-radius: var(--border-radius-sm);
   padding: var(--spacing-xs) var(--spacing-sm);
   resize: vertical;
-  font-family: var(--font-sans);
 }
 
 .commentInput:focus {

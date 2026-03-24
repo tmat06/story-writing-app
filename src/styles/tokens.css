@@ -114,3 +114,29 @@
     animation-duration: 0.01ms !important;
   }
 }
+
+/* ============================================
+   GLOBAL TYPOGRAPHY BASELINE
+   ============================================ */
+
+html,
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);     /* 16px */
+  line-height: var(--line-height-normal); /* 1.5 */
+  color: var(--color-black-700);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Shell heading scale — shell pages only (not manuscript editor) */
+h1 { font-size: var(--font-size-3xl); font-weight: var(--font-weight-semibold); line-height: var(--line-height-tight); margin: 0; }
+h2 { font-size: var(--font-size-2xl); font-weight: var(--font-weight-semibold); line-height: var(--line-height-tight); margin: 0; }
+h3 { font-size: var(--font-size-xl);  font-weight: var(--font-weight-medium);   line-height: var(--line-height-tight); margin: 0; }
+
+/* Secondary / metadata text utility class */
+.u-meta {
+  font-size: var(--font-size-sm);    /* 14px */
+  line-height: var(--line-height-normal); /* 1.5 */
+  color: var(--color-cement-400);
+}

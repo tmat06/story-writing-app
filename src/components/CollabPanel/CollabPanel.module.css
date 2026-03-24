@@ -146,7 +146,6 @@
   border-radius: var(--border-radius-sm);
   padding: var(--spacing-xs) var(--spacing-sm);
   width: 100%;
-  font-family: var(--font-sans);
 }
 
 .filterInput:focus,
