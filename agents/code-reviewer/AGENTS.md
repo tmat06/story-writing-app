@@ -22,7 +22,7 @@ gh pr create --base main --head <branch-name> \
 ```
 This outputs the PR URL (e.g. `https://github.com/tmat06/story-writing-app/pull/4`). Capture it. If `gh` is unavailable or the PR already exists, use the compare URL as fallback: `https://github.com/tmat06/story-writing-app/compare/main...<branch-name>`.
 
-(3) **Create the merge ticket (required — use the script).** Nothing else in this repo creates these tickets; ad-hoc API calls are easy to skip in long runs. From the project root, with the same Paperclip env vars as a heartbeat (including `PAPERCLIP_RUN_ID`):
+(3) **Create the merge ticket (required — use the script).** Ad-hoc API calls are easy to skip in long runs. **Backup:** the CEO’s `heartbeat-route.mjs` will auto-create the same queue ticket on the next run if one is missing **and** the original issue’s comments already contain a GitHub PR link or a `Branch: …` line — do not rely on that delay; run the script in this heartbeat. From the project root, with the same Paperclip env vars as a heartbeat (including `PAPERCLIP_RUN_ID`):
 
 ```
 node agents/code-reviewer/create-merge-ticket.mjs \

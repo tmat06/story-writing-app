@@ -22,6 +22,7 @@ This script:
 - On non-timer wakes with `PAPERCLIP_TASK_ID` set: routes only that issue (fast path)
 - On timer wakes: scans all active issues, builds concurrency map (max 1 todo/in_progress per agent), routes by label
 - Handles `needs-merge` (assigns to board user), `checkout-stuck` (clone-and-cancel)
+- **Merge queue backfill:** for each `needs-merge` issue, if no Paperclip issue titled `Review and merge: <identifier>` exists yet, creates one (child of the original), assigns it to the board user, and parses the **original issue’s comments** for a GitHub `pull/…` URL or a `Branch: …` line (compare URL fallback). Set `STORY_APP_GITHUB_REPO` (e.g. `owner/repo`) if not using the default `tmat06/story-writing-app`. Skips quietly if a merge ticket already exists or the thread has no PR/branch hint (`merge_ticket_skipped` / `merge_ticket_failed` in the JSON summary).
 - Prints a JSON summary to stdout; exits 0 on success, 1 on fatal error
 
 Read the JSON output to understand what was routed, skipped, or errored. Do not duplicate the routing logic yourself.

@@ -37,6 +37,12 @@ const LABEL_TO_AGENT = {
 
 const CONCURRENCY_LIMIT = 1; // max todo/in_progress tickets per agent
 
+// Default GitHub owner/repo for compare-URL fallback when thread has Branch: but no PR link.
+const DEFAULT_GITHUB_REPO = (process.env.STORY_APP_GITHUB_REPO ?? 'tmat06/story-writing-app').replace(
+  /^\/+|\/+$/g,
+  '',
+);
+
 // ---------------------------------------------------------------------------
 // API helpers
 // ---------------------------------------------------------------------------
@@ -81,6 +87,93 @@ async function getAllIssues(projectId) {
   return all;
 }
 
+function mergeTicketTitle(identifier) {
+  return `Review and merge: ${identifier}`;
+}
+
+function mergeTicketAlreadyExists(existingIssues, identifier) {
+  const want = mergeTicketTitle(identifier);
+  return existingIssues.some((i) => (i.title ?? '').trim() === want);
+}
+
+function extractPrUrlAndBranchFromComments(commentsPayload) {
+  const comments = toArray(commentsPayload);
+  const text = comments.map((c) => c.body ?? '').join('\n');
+  const prMatch = text.match(/https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/pull\/\d+/);
+  const prUrl = prMatch ? prMatch[0].replace(/[.,;:)]+$/, '') : null;
+  const brMatch = text.match(/Branch:\s*(\S+)/i);
+  const branch = brMatch ? brMatch[1].replace(/[.,;:)]+$/, '') : null;
+  return { prUrl, branch };
+}
+
+/**
+ * If Code Reviewer skipped create-merge-ticket.mjs, create the board queue issue here.
+ * Requires a GitHub PR URL or a `Branch: …` line in the original issue comments.
+ */
+async function ensureMergeTicketIfMissing(issue, project, existingIssues, company) {
+  const identifier = issue.identifier ?? issue.id;
+
+  if (mergeTicketAlreadyExists(existingIssues, identifier)) {
+    return { skipped: 'merge_ticket_already_exists' };
+  }
+
+  const boardUserId = issue.createdByUserId;
+  if (!boardUserId) {
+    return { skipped: 'original_missing_createdByUserId' };
+  }
+
+  const commentsRaw = await request('GET', `/api/issues/${issue.id}/comments`);
+  const { prUrl, branch } = extractPrUrlAndBranchFromComments(commentsRaw);
+
+  let linkBlock = '';
+  if (prUrl) {
+    linkBlock = `**PR:** ${prUrl}\n`;
+  } else if (branch) {
+    const enc = encodeURIComponent(branch);
+    linkBlock =
+      `**Compare (open PR from here):** https://github.com/${DEFAULT_GITHUB_REPO}/compare/main...${enc}\n` +
+      `**Branch:** \`${branch}\`\n`;
+  } else {
+    return { skipped: 'no_github_pr_or_branch_in_comments' };
+  }
+
+  const description =
+    'Automated merge ticket from `heartbeat-route.mjs` (created because no matching queue ticket existed).\n\n' +
+    'Merge into `main` on GitHub when ready.\n\n' +
+    linkBlock +
+    `\n**Original implementation issue:** ${identifier}`;
+
+  const created = await request('POST', `/api/companies/${company}/issues`, {
+    projectId: issue.projectId ?? project.id,
+    goalId: issue.goalId ?? null,
+    parentId: issue.id,
+    title: mergeTicketTitle(identifier),
+    description,
+    status: 'todo',
+  });
+
+  const mergeId = created?.id ?? created?.issue?.id;
+  if (!mergeId) {
+    throw new Error('POST merge ticket returned no issue id');
+  }
+
+  await request('PATCH', `/api/issues/${mergeId}`, {
+    assigneeAgentId: null,
+    assigneeUserId: boardUserId,
+  });
+
+  await request('POST', `/api/issues/${issue.id}/comments`, {
+    body: `Merge queue ticket created (routing automation): ${mergeTicketTitle(identifier)}.`,
+  });
+
+  return {
+    merge_ticket_created: true,
+    original: identifier,
+    mergeIssueId: mergeId,
+    mergeIdentifier: created?.identifier ?? created?.issue?.identifier ?? mergeId,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -94,6 +187,9 @@ async function main() {
     skipped_no_label: [],
     skipped_concurrency: [],
     checkout_stuck_recovered: [],
+    merge_tickets_created: [],
+    merge_ticket_skipped: [],
+    merge_ticket_failed: [],
     errors: [],
   };
 
@@ -176,16 +272,29 @@ async function main() {
         continue;
       }
 
-      // needs-merge → board user
+      // needs-merge → board user + ensure "Review and merge:" queue ticket exists
       if (isMerge) {
         const alreadyBoard = issue.assigneeUserId === issue.createdByUserId && !issue.assigneeAgentId;
-        if (alreadyBoard) { summary.already_correct.push(id); continue; }
-        await request('PATCH', `/api/issues/${issue.id}`, {
-          assigneeUserId: issue.createdByUserId,
-          assigneeAgentId: null,
-        });
-        await request('POST', `/api/issues/${issue.id}/comments`, { body: 'Assigned to board for merge.' });
-        summary.routed.push({ issue: id, target: 'board user' });
+        if (!alreadyBoard) {
+          await request('PATCH', `/api/issues/${issue.id}`, {
+            assigneeUserId: issue.createdByUserId,
+            assigneeAgentId: null,
+          });
+          await request('POST', `/api/issues/${issue.id}/comments`, { body: 'Assigned to board for merge.' });
+          summary.routed.push({ issue: id, target: 'board user' });
+        } else {
+          summary.already_correct.push(id);
+        }
+
+        try {
+          const dedupeList =
+            issues.length > 1 ? issues : await getAllIssues(project.id);
+          const mt = await ensureMergeTicketIfMissing(issue, project, dedupeList, COMPANY);
+          if (mt.merge_ticket_created) summary.merge_tickets_created.push(mt);
+          else if (mt.skipped) summary.merge_ticket_skipped.push({ issue: id, reason: mt.skipped });
+        } catch (e) {
+          summary.merge_ticket_failed.push({ issue: id, error: e.message });
+        }
         continue;
       }
 
