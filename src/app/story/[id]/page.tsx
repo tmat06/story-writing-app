@@ -41,7 +41,7 @@ import { useFocusMode } from "@/hooks/useFocusMode";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { useWriterPrefs } from "@/hooks/useWriterPrefs";
 import { FocusControls } from "@/components/FocusControls/FocusControls";
-import { recordStoryWordSnapshot, recordFocusMinutes } from "@/lib/dailyGoal";
+import { recordStoryWordSnapshot, recordFocusMinutes, initWordSnapshot, todayDateString } from "@/lib/dailyGoal";
 import { Tooltip } from "@/components/Tooltip/Tooltip";
 import { CommandOverflowMenu } from "@/components/CommandOverflowMenu/CommandOverflowMenu";
 import type { Scene, SceneStatus } from "@/types/scene";
@@ -327,6 +327,12 @@ function StoryPageInner({ id }: { id: string }) {
     }
   }, [prefs.focusByDefault, enterFocus]);
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
+
+  // Initialize word snapshot baseline on mount so the first save delta is correct
+  useEffect(() => {
+    initWordSnapshot(todayDateString(), id, wordCount);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Record word snapshots for daily goal tracking after each autosave
   useEffect(() => {
