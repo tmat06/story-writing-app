@@ -246,6 +246,12 @@ export function computeDiagnosticsWarnings(
     .slice(0, 10);
 }
 
+export function clearDiagnosticsData(storyId: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(`story-${storyId}-diagnostic-thresholds`);
+  localStorage.removeItem(`story-${storyId}-diagnostic-dismissals`);
+}
+
 export function getPovBalanceStatus(warnings: DiagnosticWarning[]): 'ok' | 'warn' | 'alert' {
   const hasDominance = warnings.some((w) => w.type === 'pov-dominance');
   if (hasDominance) return 'warn';

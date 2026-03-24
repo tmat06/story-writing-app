@@ -6,6 +6,9 @@ import { clearSubmissionsData } from './submissions';
 import { clearRevisionData } from './revision';
 import { clearResumeStateData } from './resumeState';
 import { clearPreviewData } from './previewLinks';
+import { clearDiagnosticsData } from './diagnostics';
+import { clearPacingData } from './pacing';
+import { clearCollaborationData } from './collaboration';
 
 const STORAGE_KEY = 'stories';
 
@@ -77,6 +80,28 @@ export function deleteStory(id: string): void {
   clearRevisionData(id);
   clearResumeStateData(id);
   clearPreviewData(id);
+  clearDiagnosticsData(id);
+  clearPacingData(id);
+  clearCollaborationData(id);
+
+  // Corkboard chapter-filter (written directly in Corkboard.tsx)
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(`story-${id}-board-chapter-filter`);
+  }
+
+  // Per-scene content keys: story_<id>_scene_<sceneId>_content
+  if (typeof window !== 'undefined') {
+    const prefix = `story_${id}_scene_`;
+    const suffix = '_content';
+    const toRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(prefix) && k.endsWith(suffix)) {
+        toRemove.push(k);
+      }
+    }
+    toRemove.forEach(k => localStorage.removeItem(k));
+  }
 }
 
 function saveStories(stories: Story[]): void {

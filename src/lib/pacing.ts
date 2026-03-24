@@ -217,6 +217,12 @@ export function dismissAlert(storyId: string, alertId: string): void {
   );
 }
 
+export function clearPacingData(storyId: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(`story-${storyId}-tension-tags`);
+  localStorage.removeItem(`story-${storyId}-dismissed-alerts`);
+}
+
 export function saveSnapshot(storyId: string, snapshot: PacingSnapshot): void {
   if (typeof window === 'undefined') return;
   sessionStorage.setItem(`pacing-snapshot-${storyId}`, JSON.stringify(snapshot));

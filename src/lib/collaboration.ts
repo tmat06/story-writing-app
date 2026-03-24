@@ -119,6 +119,11 @@ export function getUnresolvedCount(storyId: string): number {
   return loadAll(storyId).filter((t) => t.status !== 'resolved').length;
 }
 
+export function clearCollaborationData(storyId: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(storageKey(storyId));
+}
+
 export function filterThreads(
   threads: CollabThread[],
   filters: { status: ThreadStatus | 'all'; assignee: string; sceneId: string }
