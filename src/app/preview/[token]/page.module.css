@@ -19,7 +19,7 @@
 
 .content {
   white-space: pre-wrap;
-  font-family: var(--font-sans);
+  font-family: var(--font-ui);
   font-size: var(--font-size-base);
   line-height: 1.7;
   color: var(--color-black-700);
@@ -84,7 +84,7 @@
   border-radius: 4px;
   resize: vertical;
   color: var(--color-elephant-500);
-  font-family: var(--font-sans);
+  font-family: var(--font-ui);
   line-height: var(--line-height-normal);
 }
 
@@ -165,7 +165,7 @@
   border-radius: 4px;
   resize: vertical;
   color: var(--color-elephant-500);
-  font-family: var(--font-sans);
+  font-family: var(--font-ui);
   line-height: var(--line-height-normal);
 }
 

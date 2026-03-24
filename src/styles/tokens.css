@@ -47,10 +47,13 @@
      TYPOGRAPHY TOKENS
      ============================================ */
 
-  /* Font families */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  /* Font families — editorial pairing */
+  --font-ui:      var(--font-manrope, 'Manrope'), 'Inter', sans-serif;
+  --font-reading: var(--font-literata, 'Lora'), 'Iowan Old Style', Georgia, serif;
+  --font-display: var(--font-manrope, 'Manrope'), 'Inter', sans-serif;
+
+  /* Legacy alias — points to UI stack for backward compat */
+  --font-sans: var(--font-ui);
   --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code',
     'Fira Mono', 'Roboto Mono', monospace;
 
@@ -64,10 +67,23 @@
   --font-size-3xl: 1.875rem;   /* 30px */
   --font-size-4xl: 2.25rem;    /* 36px */
 
+  /* Editorial shell scale additions */
+  --font-size-2xs:   0.8125rem;  /* 13px — card meta */
+  --font-size-nav:   0.875rem;   /* 14px — nav labels */
+  --font-size-body:  1.0625rem;  /* 17px — comfortable reading */
+  --font-size-title: 1.375rem;   /* 22px — section headings */
+  --font-size-hero:  1.75rem;    /* 28px — page titles */
+
   /* Line heights */
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
+
+  /* Letter-spacing tokens */
+  --tracking-tight:  -0.01em;   /* page titles */
+  --tracking-normal:  0em;
+  --tracking-wide:    0.02em;   /* card meta, labels */
+  --tracking-caps:    0.06em;   /* all-caps labels */
 
   /* Font weights */
   --font-weight-normal: 400;
@@ -121,7 +137,7 @@
 
 html,
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-ui);
   font-size: var(--font-size-base);     /* 16px */
   line-height: var(--line-height-normal); /* 1.5 */
   color: var(--color-black-700);
@@ -130,9 +146,9 @@ body {
 }
 
 /* Shell heading scale — shell pages only (not manuscript editor) */
-h1 { font-size: var(--font-size-3xl); font-weight: var(--font-weight-semibold); line-height: var(--line-height-tight); margin: 0; }
-h2 { font-size: var(--font-size-2xl); font-weight: var(--font-weight-semibold); line-height: var(--line-height-tight); margin: 0; }
-h3 { font-size: var(--font-size-xl);  font-weight: var(--font-weight-medium);   line-height: var(--line-height-tight); margin: 0; }
+h1 { font-size: var(--font-size-hero);  font-weight: var(--font-weight-semibold); letter-spacing: var(--tracking-tight);  line-height: var(--line-height-tight); margin: 0; }
+h2 { font-size: var(--font-size-title); font-weight: var(--font-weight-semibold); letter-spacing: var(--tracking-normal); line-height: var(--line-height-tight); margin: 0; }
+h3 { font-size: var(--font-size-body);  font-weight: var(--font-weight-medium);   letter-spacing: var(--tracking-normal); line-height: var(--line-height-tight); margin: 0; }
 
 /* Secondary / metadata text utility class */
 .u-meta {
