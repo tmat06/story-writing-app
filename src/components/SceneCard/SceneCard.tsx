@@ -82,6 +82,9 @@ export function SceneCard({
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
+        // CRITICAL: only handle direct keypresses on the card root,
+        // not events bubbling up from child controls (chips, inputs, selects).
+        if (e.target !== e.currentTarget) return;
         if (e.key === ' ') {
           e.preventDefault();
           onSelect?.(scene.id);
