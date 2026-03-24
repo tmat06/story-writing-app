@@ -312,3 +312,40 @@
     width: 100%;
   }
 }
+
+/* --- Skeleton helpers --- */
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.skeletonStoryCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-fashion-300);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- Content entry fade --- */
+
+.fadeIn {
+  animation: contentFadeIn 120ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+@keyframes contentFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (max-width: 767px) {
+  .skeletonGrid {
+    grid-template-columns: 1fr;
+  }
+}

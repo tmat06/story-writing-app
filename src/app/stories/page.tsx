@@ -7,11 +7,13 @@ import { getSeries } from '@/lib/series';
 import { Series } from '@/types/series';
 import StoryCard from '@/components/StoryCard/StoryCard';
 import StoryBundleDialog from '@/components/StoryBundleDialog/StoryBundleDialog';
+import { Skeleton } from '@/components/Skeleton/Skeleton';
 import styles from './page.module.css';
 
 function StoriesPageInner() {
   const [stories, setStories] = useState<ReturnType<typeof getStories>>([]);
   const [allSeries, setAllSeries] = useState<Series[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const router = useRouter();
@@ -22,8 +24,13 @@ function StoriesPageInner() {
   const [sort, setSort] = useState<'updated' | 'title' | 'created'>('updated');
 
   useEffect(() => {
+    const loadStart = Date.now();
     setStories(getStories());
     setAllSeries(getSeries());
+    const elapsed = Date.now() - loadStart;
+    const remaining = Math.max(0, 160 - elapsed);
+    const timer = setTimeout(() => setIsLoading(false), remaining);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -153,8 +160,18 @@ function StoriesPageInner() {
       </div>
 
       <div className={styles.storiesList}>
-        {filteredStories.length > 0 ? (
-          <div className={styles.storiesGrid}>
+        {isLoading ? (
+          <div className={styles.skeletonGrid}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className={styles.skeletonStoryCard}>
+                <Skeleton height="20px" width="80%" />
+                <Skeleton height="12px" width="50%" />
+                <Skeleton height="12px" width="30%" />
+              </div>
+            ))}
+          </div>
+        ) : filteredStories.length > 0 ? (
+          <div className={`${styles.storiesGrid} ${styles.fadeIn}`}>
             {filteredStories.map(story => (
               <StoryCard
                 key={story.id}
@@ -167,7 +184,7 @@ function StoriesPageInner() {
             ))}
           </div>
         ) : (
-          <div className={styles.emptyState}>
+          <div className={`${styles.emptyState} ${styles.fadeIn}`}>
             {(searchQuery || filter !== 'all') ? (
               <>
                 <p className={styles.emptyTitle}>No stories match your search</p>
