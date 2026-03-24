@@ -21,11 +21,20 @@ gh pr create --base main --head <branch-name> \
 ```
 This outputs the PR URL (e.g. `https://github.com/tmat06/story-writing-app/pull/4`). Capture it. If `gh` is unavailable or the PR already exists, use the compare URL as fallback: `https://github.com/tmat06/story-writing-app/compare/main...<branch-name>`.
 
-(3) Create a **new ticket** in the same project with title `Review and merge: [original issue identifier]` (e.g. "Review and merge: BIN-37"). In the description include: the **PR URL** from step 2, the branch name, and a short note that the code is approved and ready to merge. The board user just needs to open the PR link and click merge — no manual branch checkout or PR creation required.
+(3) **Create the merge ticket (required — use the script).** Nothing else in this repo creates these tickets; ad-hoc API calls are easy to skip in long runs. From the project root, with the same Paperclip env vars as a heartbeat (including `PAPERCLIP_RUN_ID`):
 
-(4) Assign this new ticket to the **board user**: set `assigneeUserId` to the original issue's `createdByUserId`. If the create API does not accept assigneeUserId, create the issue then PATCH it with `assigneeAgentId: null` and `assigneeUserId: <createdByUserId from the original issue>`.
+```
+node agents/code-reviewer/create-merge-ticket.mjs \
+  --original-issue-id=<original issue id or identifier e.g. BIN-37> \
+  --pr-url="<PR URL from step 2>" \
+  --branch="<branch-name e.g. ticket/BIN-37>"
+```
 
-(5) Replace the `needs-review` label with `needs-merge` on the original ticket via `PATCH /api/issues/{id}` updating `labelIds`. The CEO will assign the merge ticket to the board user automatically.
+The script creates `Review and merge: [identifier]`, links it as a child of the original, assigns it to the board user (`createdByUserId` of the original), and prints JSON with the new issue id. If the script fails, fix the error and rerun — do not mark step (6) `done` until it succeeds.
+
+(4) *(Subsumed by the script.)* Board assignment is applied by `create-merge-ticket.mjs` via `PATCH` after create.
+
+(5) Replace the `needs-review` label with `needs-merge` on the **original** ticket via `PATCH /api/issues/{id}` updating `labelIds`. On the next CEO heartbeat, `heartbeat-route.mjs` assigns that **original** issue to the board user as well (redundant with the dedicated merge ticket, but harmless). The board should use the **Review and merge:** ticket as the primary queue item.
 
 (6) Set the **original** implementation ticket status to `done`.
 
@@ -47,13 +56,13 @@ Every review comment must include:
 - `## Decision and next step`
 
 If requesting changes, update label to `needs-revision` in the **same** heartbeat as the comment (mandatory).
-If approving, update label to `needs-merge` and create the merge ticket as specified above (same heartbeat as approval comment).
+If approving, update label to `needs-merge` and run `create-merge-ticket.mjs` as specified above (same heartbeat as approval comment).
 If you cannot complete a review (e.g. no repo checkout), still PATCH off `needs-review` per the label discipline above, or set `blocked` with an explicit unblock condition if the environment must be fixed first.
 
 ## Handoff format (required)
 
 - For revision requests: replace `needs-review` with `needs-revision` via PATCH **before you end the heartbeat** (same run as the review comment). No `Assign to:` needed.
-- For approvals: replace `needs-review` with `needs-merge` via PATCH, create PR + merge ticket — all in one heartbeat.
+- For approvals: replace `needs-review` with `needs-merge` via PATCH, create PR, run `create-merge-ticket.mjs`, then set original `done` — all in one heartbeat.
 - Do not use `Assign to:` directives. The CEO routes based on labels only.
 
 ## Review checklist (minimum)
@@ -84,7 +93,7 @@ If you cannot complete a review (e.g. no repo checkout), still PATCH off `needs-
 Tickets sometimes reach `done` without PR + merge ticket (process error). When your assigned or wake-target issue is already `done`, **before** no-op exiting:
 
 1. Search the issue comments for a `github.com/.../pull/` link **or** evidence that steps (2)-(3) ran (merge ticket title pattern `Review and merge: <ISSUE-ID>` referenced or linked).
-2. If the issue shipped **code** (thread contains `Branch: ticket/...` or equivalent, or Code Monkey handoff) and **no** PR URL and **no** merge ticket reference exists → **recovery**: check out that branch in the project workspace, run `gh pr create` (or locate an existing open PR for that head branch), create the merge ticket with PR URL assigned to board user, PATCH original to `needs-merge` if it was wrongly left on `needs-review`, then stop. If `gh` or branch is unavailable, post **one** comment listing exactly what is missing for the board and do not claim the handoff is complete.
+2. If the issue shipped **code** (thread contains `Branch: ticket/...` or equivalent, or Code Monkey handoff) and **no** PR URL and **no** merge ticket reference exists → **recovery**: check out that branch in the project workspace, run `gh pr create` (or locate an existing open PR for that head branch), run `node agents/code-reviewer/create-merge-ticket.mjs` with `--original-issue-id`, `--pr-url`, and `--branch`, PATCH original to `needs-merge` if it was wrongly left on `needs-review`, then stop. If `gh` or branch is unavailable, post **one** comment listing exactly what is missing for the board and do not claim the handoff is complete.
 3. If the issue was **non-code** (e.g. design brief only, no implementation branch), a merge ticket is not required; one concise confirmation comment is enough.
 
 Do not treat "already done" as satisfactory if merge artifacts are missing for a code change.
