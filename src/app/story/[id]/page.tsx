@@ -162,10 +162,8 @@ function StoryPageInner({ id }: { id: string }) {
       const pos = clampCursor(restore.cursorPosition, textareaRef.current.value.length);
       requestAnimationFrame(() => {
         if (!textareaRef.current) return;
-        if (textareaRef.current.value.length > 0) {
-          textareaRef.current.focus();
-          textareaRef.current.setSelectionRange(pos, pos);
-        }
+        textareaRef.current.focus();
+        textareaRef.current.setSelectionRange(pos, pos);
       });
     }
 
