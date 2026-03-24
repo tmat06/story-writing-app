@@ -32,6 +32,7 @@ export default function StoryActionMenu({
 }: StoryActionMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDuplicating, setIsDuplicating] = useState(false);
+  const [duplicateError, setDuplicateError] = useState(false);
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [showSeriesPicker, setShowSeriesPicker] = useState(false);
@@ -55,13 +56,18 @@ export default function StoryActionMenu({
   const handleDuplicate = () => {
     if (isDuplicating) return;
     setIsDuplicating(true);
+    setDuplicateError(false);
     setMenuOpen(false);
     try {
       const newStory = duplicateStory(storyId);
       if (newStory) {
         onUpdate();
         onDuplicate?.(newStory.id);
+      } else {
+        setDuplicateError(true);
       }
+    } catch {
+      setDuplicateError(true);
     } finally {
       setIsDuplicating(false);
     }
@@ -225,6 +231,12 @@ export default function StoryActionMenu({
             Export Story Bundle
           </button>
         </div>
+      )}
+
+      {duplicateError && (
+        <p className={styles.duplicateError} role="alert">
+          Duplication failed. Please try again.
+        </p>
       )}
 
       {renameDialogOpen && (

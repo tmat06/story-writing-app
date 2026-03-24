@@ -192,3 +192,11 @@
   font-size: var(--font-size-sm);
   color: var(--color-cement-400);
 }
+
+.duplicateError {
+  margin: var(--spacing-xs) 0 0 0;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-error, #c0392b);
+  background: transparent;
+}

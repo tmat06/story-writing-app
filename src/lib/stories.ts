@@ -115,12 +115,12 @@ export function duplicateStory(sourceId: string): Story | null {
     const rawNotes = localStorage.getItem(`story-${sourceId}-notes`);
     if (rawNotes) {
       const sourceNotes = JSON.parse(rawNotes) as import('@/types/note').Note[];
-      const newNotes = sourceNotes.map(note => ({
-        ...note,
+      const newNotes = sourceNotes.map(({ sceneId: origSceneId, ...rest }) => ({
+        ...rest,
         id: crypto.randomUUID(),
         storyId: newId,
-        ...(note.sceneId && sceneIdMap[note.sceneId]
-          ? { sceneId: sceneIdMap[note.sceneId] }
+        ...(origSceneId && sceneIdMap[origSceneId]
+          ? { sceneId: sceneIdMap[origSceneId] }
           : {}),
       }));
       localStorage.setItem(`story-${newId}-notes`, JSON.stringify(newNotes));
