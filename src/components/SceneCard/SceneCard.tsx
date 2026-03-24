@@ -78,15 +78,6 @@ export function SceneCard({
       }}
       aria-label={`Open scene: ${scene.title}`}
     >
-      <button
-        className={styles.jumpBtn}
-        onClick={handleJump}
-        aria-label={`Open scene ${scene.title} in editor`}
-        tabIndex={0}
-      >
-        Open in editor
-      </button>
-
       <div className={styles.dragHandle} aria-label="Drag to reorder">
         ⋮⋮
       </div>
@@ -96,6 +87,8 @@ export function SceneCard({
           <h3 className={styles.title}>{scene.title}</h3>
           <span className={styles.chapter}>{scene.chapter}</span>
         </div>
+
+        <p className={styles.summary}>{scene.summary}</p>
 
         <div className={styles.metadata} onClick={(e) => e.stopPropagation()}>
           {editingField === 'intent' ? (
@@ -205,8 +198,6 @@ export function SceneCard({
           )}
         </div>
 
-        <p className={styles.summary}>{scene.summary}</p>
-
         <div className={styles.footer}>
           <select
             value={scene.status}
@@ -220,6 +211,14 @@ export function SceneCard({
             <option value="done">Done</option>
           </select>
           <span className={styles.wordCount}>{wordCount}</span>
+          <button
+            className={styles.openEditorBtn}
+            onClick={handleJump}
+            aria-label={`Open scene ${scene.title} in editor`}
+            tabIndex={0}
+          >
+            Open in editor ↗
+          </button>
         </div>
       </div>
     </div>
