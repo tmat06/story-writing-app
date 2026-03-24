@@ -247,7 +247,6 @@
   width: 100%;
   box-sizing: border-box;
   padding: var(--spacing-xs) var(--spacing-sm);
-  font-family: var(--font-sans);
   font-size: var(--font-size-xs);
   color: var(--color-black-700);
   background-color: var(--color-white);
