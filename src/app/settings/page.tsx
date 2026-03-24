@@ -88,7 +88,7 @@ export default function SettingsPage() {
           <div className={styles.settingRow}>
             <label htmlFor="focus-by-default" className={styles.settingLabel}>
               <span className={styles.settingLabelText}>Enter focus mode by default</span>
-              <span className={styles.settingLabelDescription}>Automatically enables distraction-free mode when opening a story</span>
+              <span id="focus-by-default-desc" className={styles.settingLabelDescription}>Automatically enables distraction-free mode when opening a story</span>
             </label>
             <Switch
               id="focus-by-default"
