@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getStories, createStory } from '@/lib/stories';
 import { getSeries } from '@/lib/series';
@@ -17,32 +17,26 @@ function StoriesPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filter, setFilter] = useState<'all' | 'active' | 'archived' | 'series'>('all');
-  const [sort, setSort] = useState<'updated' | 'title' | 'created'>('updated');
+  const searchQuery = searchParams.get('q') ?? '';
+  const filter = (searchParams.get('filter') ?? 'all') as 'all' | 'active' | 'archived' | 'series';
+  const sort = (searchParams.get('sort') ?? 'updated') as 'updated' | 'title' | 'created';
 
   useEffect(() => {
     setStories(getStories());
     setAllSeries(getSeries());
   }, []);
 
-  useEffect(() => {
-    const q = searchParams.get('q') ?? '';
-    const f = searchParams.get('filter') ?? 'all';
-    const s = searchParams.get('sort') ?? 'updated';
-    setSearchQuery(q);
-    setFilter(f as 'all' | 'active' | 'archived' | 'series');
-    setSort(s as 'updated' | 'title' | 'created');
-  }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (searchQuery) params.set('q', searchQuery);
-    if (filter !== 'all') params.set('filter', filter);
-    if (sort !== 'updated') params.set('sort', sort);
-    const qs = params.toString();
-    router.replace(qs ? `/stories?${qs}` : '/stories', { scroll: false });
-  }, [searchQuery, filter, sort]);
+  const updateParams = useCallback(
+    (q: string, f: typeof filter, s: typeof sort) => {
+      const params = new URLSearchParams();
+      if (q) params.set('q', q);
+      if (f !== 'all') params.set('filter', f);
+      if (s !== 'updated') params.set('sort', s);
+      const qs = params.toString();
+      router.replace(qs ? `/stories?${qs}` : '/stories', { scroll: false });
+    },
+    [router]
+  );
 
   const filteredStories = useMemo(() => {
     let result = stories;
@@ -62,9 +56,7 @@ function StoriesPageInner() {
   }, [stories, searchQuery, filter, sort]);
 
   const handleClearSearch = () => {
-    setSearchQuery('');
-    setFilter('all');
-    setSort('updated');
+    updateParams('', 'all', 'updated');
   };
 
   const handleUpdate = () => {
@@ -109,7 +101,7 @@ function StoriesPageInner() {
               placeholder="Search stories..."
               aria-label="Search stories"
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={e => updateParams(e.target.value, filter, sort)}
             />
           </div>
         </div>
@@ -131,7 +123,7 @@ function StoriesPageInner() {
             <button
               key={f}
               className={filter === f ? styles.filterPillActive : styles.filterPill}
-              onClick={() => setFilter(f)}
+              onClick={() => updateParams(searchQuery, f, sort)}
               aria-pressed={filter === f}
             >
               {f === 'all' ? 'All' : f === 'active' ? 'Active' : f === 'archived' ? 'Archived' : 'Series-linked'}
@@ -143,7 +135,7 @@ function StoriesPageInner() {
           id="story-sort"
           className={styles.sortSelect}
           value={sort}
-          onChange={e => setSort(e.target.value as typeof sort)}
+          onChange={e => updateParams(searchQuery, filter, e.target.value as typeof sort)}
           aria-label="Sort stories"
         >
           <option value="updated">Last edited (newest)</option>
