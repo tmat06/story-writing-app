@@ -101,7 +101,7 @@ export default function Home() {
                         {rs === 'overdue' ? 'Overdue' : 'Follow-up due'}
                       </span>
                       <a
-                        href={`/story/${sub.storyId}?tab=submissions`}
+                        href={`/story/${sub.storyId}?view=submissions`}
                         className={styles.followUpLink}
                       >
                         Open →

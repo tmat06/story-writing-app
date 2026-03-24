@@ -190,7 +190,9 @@ export function markFollowedUp(storyId: string, id: string): void {
   const entries = getSubmissions(storyId);
   const entry = entries.find((e) => e.id === id);
   if (!entry) return;
+  const today = new Date().toISOString().slice(0, 10);
   updateSubmission(storyId, id, {
+    sentDate: today,
     snoozedUntil: null,
     reminderDismissed: false,
     reminderLog: [
