@@ -14,7 +14,7 @@ interface SceneCardProps {
   isDropTarget?: boolean;
   isFocused?: boolean;
   isSelected?: boolean;
-  onSelect?: (e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent) => void;
+  onSelect?: (sceneId: string) => void;
 }
 
 export function SceneCard({
@@ -73,8 +73,8 @@ export function SceneCard({
       data-synced={isSynced || undefined}
       aria-selected={!!isSelected}
       onClick={(e) => {
-        if (onSelect && (e.ctrlKey || e.metaKey || e.shiftKey)) {
-          onSelect(e);
+        if (e.ctrlKey || e.metaKey || e.shiftKey) {
+          onSelect?.(scene.id);
         } else {
           onClick();
         }
@@ -82,8 +82,10 @@ export function SceneCard({
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === ' ') {
           e.preventDefault();
+          onSelect?.(scene.id);
+        } else if (e.key === 'Enter') {
           onClick();
         }
       }}
@@ -92,11 +94,11 @@ export function SceneCard({
       <div className={styles.checkboxWrap}>
         <input
           type="checkbox"
+          tabIndex={-1}
           checked={!!isSelected}
           aria-label={`Select scene: ${scene.title}`}
-          onChange={onSelect as React.ChangeEventHandler<HTMLInputElement>}
+          onChange={() => onSelect?.(scene.id)}
           onClick={(e) => e.stopPropagation()}
-          tabIndex={isSelected ? 0 : -1}
         />
       </div>
       <div className={styles.dragHandle} aria-label="Drag to reorder">

@@ -47,7 +47,7 @@ interface SortableSceneCardProps {
   isDropTarget?: boolean;
   isFocused?: boolean;
   isSelected?: boolean;
-  onSelect?: (e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent) => void;
+  onSelect?: (sceneId: string) => void;
 }
 
 function SortableSceneCard({
@@ -266,9 +266,8 @@ export function Corkboard({
   }), [displayScenes]);
   const total = displayScenes.length;
 
-  const handleSceneSelect = (sceneId: string, e: React.MouseEvent | React.ChangeEvent) => {
-    const isShift = 'shiftKey' in e && (e as React.MouseEvent).shiftKey;
-    if (isShift && lastSelectedIdRef.current) {
+  const handleSceneSelect = (sceneId: string, shiftActive: boolean = false) => {
+    if (shiftActive && lastSelectedIdRef.current) {
       const ids = displayScenes.map(s => s.id);
       const a = ids.indexOf(lastSelectedIdRef.current);
       const b = ids.indexOf(sceneId);
@@ -484,7 +483,7 @@ export function Corkboard({
                 isDropTarget={overId === scene.id && activeId !== scene.id}
                 isFocused={focusedSceneId === scene.id}
                 isSelected={selectedSceneIds.has(scene.id)}
-                onSelect={(e) => handleSceneSelect(scene.id, e)}
+                onSelect={(id) => handleSceneSelect(id)}
               />
             ))}
           </div>
