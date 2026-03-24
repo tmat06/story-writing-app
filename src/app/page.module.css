@@ -84,13 +84,93 @@
   color: var(--color-elephant-500);
 }
 
+.followUpsCard {
+  padding: var(--spacing-xl);
+  background: var(--color-white);
+  border: 1px solid var(--color-fashion-300);
+  border-left: 3px solid var(--color-amber-500);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.followUpList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.followUpItem {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs) var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--color-fashion-300);
+}
+
+.followUpItem:last-child {
+  border-bottom: none;
+}
+
+.followUpRecipient {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-black-700);
+}
+
+.followUpStory {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  flex: 1;
+}
+
+.chipOverdue {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  background: var(--color-amber-100);
+  color: var(--color-carbon-600);
+  border: 1px solid var(--color-amber-500);
+  white-space: nowrap;
+}
+
+.chipDue {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  background: var(--color-amber-100);
+  color: var(--color-amber-500);
+  white-space: nowrap;
+}
+
+.followUpLink {
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.followUpLink:hover {
+  color: var(--color-elephant-500);
+}
+
 @media (max-width: 767px) {
   .dashboard {
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
   }
 
-  .card {
+  .card,
+  .followUpsCard {
     padding: var(--spacing-lg);
   }
 }

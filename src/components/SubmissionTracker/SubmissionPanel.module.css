@@ -206,6 +206,28 @@
   outline-offset: 2px;
 }
 
+.sectionDivider {
+  height: 1px;
+  background: var(--color-fashion-300);
+  margin: var(--spacing-xs) 0;
+}
+
+.sectionLabel {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-elephant-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.helperText {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-cement-400);
+  line-height: var(--line-height-normal);
+}
+
 @media (max-width: 767px) {
   .panel {
     max-width: 100%;

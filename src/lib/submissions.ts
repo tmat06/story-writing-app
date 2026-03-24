@@ -1,7 +1,22 @@
-import type { SubmissionEntry, SubmissionStatus } from '@/types/submission';
+import type { SubmissionEntry, SubmissionStatus, ReminderStatus, ReminderLogEntry } from '@/types/submission';
 
 function storageKey(storyId: string): string {
   return `story-${storyId}-submissions`;
+}
+
+/**
+ * Normalize a raw entry from localStorage, filling in missing reminder fields.
+ */
+function normalizeEntry(raw: unknown): SubmissionEntry {
+  const e = raw as unknown as SubmissionEntry & Record<string, unknown>;
+  return {
+    ...e,
+    followUpAfterDays: (e.followUpAfterDays as number | null) ?? null,
+    expectedResponseWindowDays: (e.expectedResponseWindowDays as number | null) ?? null,
+    snoozedUntil: (e.snoozedUntil as string | null) ?? null,
+    reminderDismissed: (e.reminderDismissed as boolean) ?? false,
+    reminderLog: (e.reminderLog as ReminderLogEntry[]) ?? [],
+  };
 }
 
 /**
@@ -17,10 +32,10 @@ export function getSubmissions(storyId: string): SubmissionEntry[] {
 
   if (stored) {
     try {
-      const entries = JSON.parse(stored) as SubmissionEntry[];
-      return entries.sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
+      const entries = JSON.parse(stored) as unknown[];
+      return entries
+        .map(normalizeEntry)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     } catch (error) {
       console.error('Failed to parse stored submissions:', error);
     }
@@ -129,6 +144,117 @@ export function isOverdue(dateStr: string | null): boolean {
   if (!dateStr) return false;
   const today = new Date().toISOString().slice(0, 10);
   return dateStr < today;
+}
+
+/** Pure date arithmetic: add `days` to an ISO date string, returns ISO date string (YYYY-MM-DD). */
+function addDays(isoDate: string, days: number): string {
+  const d = new Date(isoDate);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * Compute the reminder urgency status for a submission entry.
+ */
+export function computeReminderStatus(entry: SubmissionEntry): ReminderStatus {
+  if (
+    entry.archivedAt ||
+    entry.status === 'closed' ||
+    entry.reminderDismissed ||
+    !entry.sentDate
+  ) {
+    return 'none';
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (entry.snoozedUntil && today < entry.snoozedUntil) {
+    return 'none';
+  }
+
+  const sentDate = entry.sentDate.slice(0, 10);
+  const followUpDue = addDays(sentDate, entry.followUpAfterDays ?? 14);
+  const overdueBoundary = entry.expectedResponseWindowDays
+    ? addDays(sentDate, entry.expectedResponseWindowDays)
+    : addDays(followUpDue, 14);
+
+  if (today > overdueBoundary) return 'overdue';
+  if (today >= followUpDue) return 'follow_up_due';
+  return 'on_track';
+}
+
+/**
+ * Mark a submission as followed up. Appends a log entry and resets snooze/dismiss.
+ */
+export function markFollowedUp(storyId: string, id: string): void {
+  const entries = getSubmissions(storyId);
+  const entry = entries.find((e) => e.id === id);
+  if (!entry) return;
+  const today = new Date().toISOString().slice(0, 10);
+  updateSubmission(storyId, id, {
+    sentDate: today,
+    snoozedUntil: null,
+    reminderDismissed: false,
+    reminderLog: [
+      ...entry.reminderLog,
+      { at: new Date().toISOString(), action: 'followed_up' },
+    ],
+  });
+}
+
+/**
+ * Snooze a submission reminder for the given number of days.
+ */
+export function snoozeReminder(storyId: string, id: string, days = 7): void {
+  const entries = getSubmissions(storyId);
+  const entry = entries.find((e) => e.id === id);
+  if (!entry) return;
+  const snoozedUntil = addDays(new Date().toISOString().slice(0, 10), days);
+  updateSubmission(storyId, id, {
+    snoozedUntil,
+    reminderLog: [
+      ...entry.reminderLog,
+      { at: new Date().toISOString(), action: 'snoozed', note: `${days}d` },
+    ],
+  });
+}
+
+/**
+ * Permanently dismiss the reminder for a submission.
+ */
+export function dismissReminder(storyId: string, id: string): void {
+  const entries = getSubmissions(storyId);
+  const entry = entries.find((e) => e.id === id);
+  if (!entry) return;
+  updateSubmission(storyId, id, {
+    reminderDismissed: true,
+    reminderLog: [
+      ...entry.reminderLog,
+      { at: new Date().toISOString(), action: 'dismissed' },
+    ],
+  });
+}
+
+/**
+ * Get all submissions across all stories (for Home digest).
+ * Iterates localStorage keys matching `story-*-submissions`.
+ */
+export function getAllSubmissionsAcrossStories(): SubmissionEntry[] {
+  if (typeof window === 'undefined') return [];
+  const all: SubmissionEntry[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !/^story-.+-submissions$/.test(key)) continue;
+    const stored = localStorage.getItem(key);
+    if (!stored) continue;
+    try {
+      const entries = JSON.parse(stored) as unknown[];
+      all.push(...entries.map(normalizeEntry));
+    } catch {
+      // skip corrupt keys
+    }
+  }
+  return all;
 }
 
 /**
