@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import type { TimerState } from '@/hooks/useSessionTimer';
 import { formatDuration } from '@/hooks/useSessionTimer';
 import type { SaveState } from '@/hooks/useAutosave';
@@ -25,6 +26,7 @@ interface FocusControlsProps {
   onExitFocus: () => void;
   saveState: SaveState;
   lastSaved: number | null;
+  onSessionComplete?: (wordsWritten: number, elapsedMinutes: number) => void;
 }
 
 export function FocusControls({
@@ -40,8 +42,21 @@ export function FocusControls({
   onExitFocus,
   saveState,
   lastSaved,
+  onSessionComplete,
 }: FocusControlsProps) {
   const remaining = targetMs !== null ? Math.max(0, targetMs - elapsedMs) : null;
+  const completeFiredRef = useRef(false);
+
+  useEffect(() => {
+    if (timerState === 'complete' && !completeFiredRef.current) {
+      completeFiredRef.current = true;
+      const mins = targetMs ? Math.round(targetMs / 60000) : Math.round(elapsedMs / 60000);
+      onSessionComplete?.(wordsWritten, mins);
+    }
+    if (timerState !== 'complete') {
+      completeFiredRef.current = false;
+    }
+  }, [timerState, targetMs, elapsedMs, wordsWritten, onSessionComplete]);
 
   return (
     <div className={styles.cluster} role="toolbar" aria-label="Focus mode controls">

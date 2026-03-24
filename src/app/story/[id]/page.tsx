@@ -41,6 +41,7 @@ import { useFocusMode } from "@/hooks/useFocusMode";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { useWriterPrefs } from "@/hooks/useWriterPrefs";
 import { FocusControls } from "@/components/FocusControls/FocusControls";
+import { recordStoryWordSnapshot, recordFocusMinutes } from "@/lib/dailyGoal";
 import { Tooltip } from "@/components/Tooltip/Tooltip";
 import { CommandOverflowMenu } from "@/components/CommandOverflowMenu/CommandOverflowMenu";
 import type { Scene, SceneStatus } from "@/types/scene";
@@ -327,6 +328,14 @@ function StoryPageInner({ id }: { id: string }) {
   }, [prefs.focusByDefault, enterFocus]);
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
 
+  // Record word snapshots for daily goal tracking after each autosave
+  useEffect(() => {
+    if (saveState === 'saved') {
+      recordStoryWordSnapshot(id, wordCount);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saveState]);
+
   const filteredSceneCount =
     corkboardStatusFilter === "all"
       ? scenes.length
@@ -570,6 +579,7 @@ function StoryPageInner({ id }: { id: string }) {
                     onExitFocus={exitFocus}
                     saveState={saveState}
                     lastSaved={lastSaved}
+                    onSessionComplete={(_, mins) => recordFocusMinutes(mins)}
                   />
                 )}
               </div>

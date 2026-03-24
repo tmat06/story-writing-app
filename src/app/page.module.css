@@ -179,4 +179,9 @@
   .dashboard {
     grid-template-columns: 1fr 1fr;
   }
+
+  /* DailyGoalWidget spans full row on tablet */
+  .dashboard > :first-child {
+    grid-column: 1 / -1;
+  }
 }

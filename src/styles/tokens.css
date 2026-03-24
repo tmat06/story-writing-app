@@ -25,6 +25,12 @@
   --color-amber-500: #B86A00;
   --color-amber-100: #FFF4E8;
 
+  /* Goal state semantic tokens */
+  --color-success-500: #2f7a4f;
+  --color-success-100: #e7f4ec;
+  --color-danger-500:  #9f3a38;
+  --color-danger-100:  #f7e9e9;
+
   /* Diagnostic semantic tokens */
   --color-diagnostic-ok: #d9e9dc;
   --color-diagnostic-warn: #f4e8c9;

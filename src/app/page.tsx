@@ -7,6 +7,7 @@ import { getStories } from '@/lib/stories';
 import { getAllSubmissionsAcrossStories, computeReminderStatus } from '@/lib/submissions';
 import StoryCard from '@/components/StoryCard/StoryCard';
 import NextUpQueue from '@/components/NextUpQueue/NextUpQueue';
+import DailyGoalWidget from '@/components/DailyGoalWidget/DailyGoalWidget';
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -57,6 +58,7 @@ export default function Home() {
       </section>
 
       <div className={styles.dashboard}>
+        <DailyGoalWidget />
         <NextUpQueue />
 
         {stories.length > 0 && (
