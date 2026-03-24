@@ -13,6 +13,8 @@ interface SceneCardProps {
   isSynced?: boolean;
   isDropTarget?: boolean;
   isFocused?: boolean;
+  isSelected?: boolean;
+  onSelect?: (e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent) => void;
 }
 
 export function SceneCard({
@@ -25,6 +27,8 @@ export function SceneCard({
   isSynced,
   isDropTarget,
   isFocused,
+  isSelected,
+  onSelect,
 }: SceneCardProps) {
   const router = useRouter();
   const [editingField, setEditingField] = useState<'intent' | 'pov' | 'characters' | null>(null);
@@ -65,9 +69,16 @@ export function SceneCard({
 
   return (
     <div
-      className={`${styles.card} ${isDragging ? styles.dragging : ''} ${isDropTarget ? styles.dropTarget : ''} ${isFocused ? styles.focused : ''}`}
+      className={`${styles.card} ${isDragging ? styles.dragging : ''} ${isDropTarget ? styles.dropTarget : ''} ${isFocused ? styles.focused : ''} ${isSelected ? styles.selected : ''}`}
       data-synced={isSynced || undefined}
-      onClick={onClick}
+      aria-selected={!!isSelected}
+      onClick={(e) => {
+        if (onSelect && (e.ctrlKey || e.metaKey || e.shiftKey)) {
+          onSelect(e);
+        } else {
+          onClick();
+        }
+      }}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -78,6 +89,16 @@ export function SceneCard({
       }}
       aria-label={`Open scene: ${scene.title}`}
     >
+      <div className={styles.checkboxWrap}>
+        <input
+          type="checkbox"
+          checked={!!isSelected}
+          aria-label={`Select scene: ${scene.title}`}
+          onChange={onSelect as React.ChangeEventHandler<HTMLInputElement>}
+          onClick={(e) => e.stopPropagation()}
+          tabIndex={isSelected ? 0 : -1}
+        />
+      </div>
       <div className={styles.dragHandle} aria-label="Drag to reorder">
         ⋮⋮
       </div>

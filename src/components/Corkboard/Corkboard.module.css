@@ -270,6 +270,82 @@
   animation: pulse 1.5s ease-in-out infinite;
 }
 
+/* Progress strip */
+.progressStripWrapper {
+  padding: 12px 16px var(--spacing-sm);
+}
+.progressStrip {
+  display: flex;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--color-fog-200);
+}
+.progressSegment { height: 100%; transition: width 160ms cubic-bezier(0.2, 0, 0, 1); }
+.segmentPlanned  { background: var(--color-carbon-600); }
+.segmentDrafting { background: var(--color-fashion-300); }
+.segmentDone     { background: var(--color-elephant-500); }
+.progressLabels {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+.labelPlanned  { color: var(--color-carbon-600); }
+.labelDrafting { color: var(--color-fashion-300); }
+.labelDone     { color: var(--color-elephant-500); }
+
+/* Selection row — always rendered when scenes exist */
+.selectionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 8px 12px;
+  margin: 0 var(--spacing-lg) var(--spacing-sm);
+  background: var(--color-polar-100);
+  border: 1px solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  flex-wrap: wrap;
+  min-height: 36px;
+}
+
+/* Bulk action group (shown only with active selection) */
+.bulkActionGroup {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.selectionCount {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-700);
+}
+.bulkBtn {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--color-cement-400);
+  background: var(--color-white);
+  cursor: pointer;
+  color: var(--color-black-700);
+  transition: background 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.bulkBtn:hover { background: var(--color-fog-200); }
+.bulkBtn:active { border-color: var(--color-cement-400); background: var(--color-fog-200); }
+.bulkBtnSecondary {
+  font-size: var(--font-size-xs);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-carbon-600);
+  transition: background 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.bulkBtnSecondary:hover { background: var(--color-fog-200); }
+
 @keyframes pulse {
   0%,
   100% {
