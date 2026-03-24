@@ -52,3 +52,7 @@
 .container button:not(:last-child) {
   border-right: var(--border-width) solid var(--color-fashion-300);
 }
+
+.compact button {
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
