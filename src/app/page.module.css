@@ -34,15 +34,6 @@
   box-shadow: var(--shadow-sm);
 }
 
-.quickResumeCard {
-  padding: var(--spacing-xl);
-  background: var(--color-white);
-  border: 1px solid var(--color-fashion-300);
-  border-left: 3px solid var(--color-carbon-600);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-}
-
 .cardTitle {
   margin: 0 0 var(--spacing-lg);
   font-size: var(--font-size-xl);
@@ -72,48 +63,6 @@
   font-size: var(--font-size-sm);
   color: var(--color-cement-400);
   line-height: var(--line-height-normal);
-}
-
-.resumeContainer {
-  padding: var(--spacing-md) 0;
-}
-
-.resumeTitle {
-  margin: 0 0 var(--spacing-xs);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-black-700);
-}
-
-.timestamp {
-  margin: 0 0 var(--spacing-md);
-  font-size: var(--font-size-sm);
-  color: var(--color-cement-400);
-}
-
-.resumeButton {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  background: var(--color-black-700);
-  color: white;
-  border: none;
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 100ms ease;
-}
-
-.resumeButton:hover {
-  background: var(--color-carbon-600);
-}
-
-.resumeButton:active {
-  transform: scale(0.98);
-}
-
-.resumeButton:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 2px;
 }
 
 .storyList {
@@ -221,7 +170,6 @@
   }
 
   .card,
-  .quickResumeCard,
   .followUpsCard {
     padding: var(--spacing-lg);
   }

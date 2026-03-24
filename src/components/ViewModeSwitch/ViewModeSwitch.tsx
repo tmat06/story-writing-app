@@ -6,12 +6,13 @@ export type ViewMode = 'editor' | 'corkboard' | 'submissions' | 'pacing' | 'diag
 interface ViewModeSwitchProps {
   mode: ViewMode;
   onChange: (mode: ViewMode) => void;
+  compact?: boolean;
 }
 
-export function ViewModeSwitch({ mode, onChange }: ViewModeSwitchProps) {
+export function ViewModeSwitch({ mode, onChange, compact }: ViewModeSwitchProps) {
   return (
     <div
-      className={styles.container}
+      className={`${styles.container}${compact ? ` ${styles.compact}` : ''}`}
       role="toolbar"
       aria-label="View mode selector"
     >
@@ -23,7 +24,7 @@ export function ViewModeSwitch({ mode, onChange }: ViewModeSwitchProps) {
           aria-label="Switch to editor view"
           aria-pressed={mode === 'editor'}
         >
-          Editor
+          {compact ? 'Write' : 'Editor'}
         </button>
       </Tooltip>
       <Tooltip content="Plan and rearrange scenes on a visual board.">
@@ -34,7 +35,7 @@ export function ViewModeSwitch({ mode, onChange }: ViewModeSwitchProps) {
           aria-label="Switch to corkboard view"
           aria-pressed={mode === 'corkboard'}
         >
-          Corkboard
+          {compact ? 'Board' : 'Corkboard'}
         </button>
       </Tooltip>
       <Tooltip content="Track your story's query and submission history.">
@@ -45,7 +46,7 @@ export function ViewModeSwitch({ mode, onChange }: ViewModeSwitchProps) {
           aria-label="Switch to submissions view"
           aria-pressed={mode === 'submissions'}
         >
-          Submissions
+          {compact ? 'Subs' : 'Submissions'}
         </button>
       </Tooltip>
       <Tooltip content="Visualize the tension and word count arc across your story.">
@@ -56,7 +57,7 @@ export function ViewModeSwitch({ mode, onChange }: ViewModeSwitchProps) {
           aria-label="Switch to pacing view"
           aria-pressed={mode === 'pacing'}
         >
-          Pacing
+          {compact ? 'Pacing' : 'Pacing'}
         </button>
       </Tooltip>
       <Tooltip content="Spot POV and character-balance issues across your manuscript.">
@@ -67,7 +68,7 @@ export function ViewModeSwitch({ mode, onChange }: ViewModeSwitchProps) {
           aria-label="Switch to diagnostics view"
           aria-pressed={mode === 'diagnostics'}
         >
-          Diagnostics
+          {compact ? 'Diag' : 'Diagnostics'}
         </button>
       </Tooltip>
     </div>

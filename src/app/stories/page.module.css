@@ -221,12 +221,12 @@
 .filterPill,
 .filterPillActive {
   padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-full, 9999px);
+  border-radius: 9999px;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
-  border: 1px solid var(--color-fog-300);
+  border: 1px solid var(--color-fog-200);
 }
 
 .filterPill {
@@ -235,7 +235,7 @@
 }
 
 .filterPill:hover {
-  background: var(--color-fog-100);
+  background: var(--color-polar-100);
   color: var(--color-black-700);
 }
 
@@ -257,7 +257,7 @@
   font-size: var(--font-size-sm);
   color: var(--color-elephant-500);
   background: var(--color-white);
-  border: 1px solid var(--color-fog-300);
+  border: 1px solid var(--color-fog-200);
   border-radius: var(--border-radius-md);
   cursor: pointer;
 }
@@ -283,12 +283,12 @@
   cursor: pointer;
   background: transparent;
   color: var(--color-elephant-500);
-  border: 1px solid var(--color-fog-300);
+  border: 1px solid var(--color-fog-200);
   transition: all 0.15s;
 }
 
 .clearSearchButton:hover {
-  background: var(--color-fog-100);
+  background: var(--color-polar-100);
   color: var(--color-black-700);
 }
 

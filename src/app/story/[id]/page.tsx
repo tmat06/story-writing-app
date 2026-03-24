@@ -42,6 +42,7 @@ import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { useWriterPrefs } from "@/hooks/useWriterPrefs";
 import { FocusControls } from "@/components/FocusControls/FocusControls";
 import { Tooltip } from "@/components/Tooltip/Tooltip";
+import { CommandOverflowMenu } from "@/components/CommandOverflowMenu/CommandOverflowMenu";
 import type { Scene, SceneStatus } from "@/types/scene";
 import styles from "./page.module.css";
 
@@ -76,6 +77,8 @@ function StoryPageInner({ id }: { id: string }) {
     SceneStatus | "all"
   >("all");
 
+  const [overflowOpen, setOverflowOpen] = useState(false);
+
   const trackerRef = useRef<SubmissionTrackerHandle>(null);
   const restoredRef = useRef(false);
 
@@ -91,6 +94,9 @@ function StoryPageInner({ id }: { id: string }) {
   } = useAutosave(id);
 
   const { loadRestore, scheduleUpdate, optOut, setOptOut } = useResumeState(id);
+
+  // Close overflow menu when view mode changes
+  useEffect(() => { setOverflowOpen(false); }, [viewMode]);
 
   // Load story title and seriesId from localStorage
   useEffect(() => {
@@ -126,6 +132,10 @@ function StoryPageInner({ id }: { id: string }) {
     }
     if (scene) {
       setFocusedSceneId(scene);
+    }
+    const panel = searchParams.get("panel") as "revision" | "feedback" | "notes" | "collab" | null;
+    if (panel && ["notes", "revision", "collab", "feedback"].includes(panel)) {
+      setSidebarTab(panel);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentionally run once on mount
@@ -334,9 +344,10 @@ function StoryPageInner({ id }: { id: string }) {
       data-high-contrast={prefs.highContrast ? "true" : undefined}
       data-reduced-motion={prefs.reducedMotion ? "true" : undefined}
     >
-      {/* COMMAND RAIL — single sticky row */}
+      {/* COMMAND RAIL — adaptive two-row on mobile, single-row on desktop */}
       <div className={styles.commandRail}>
-        <div className={styles.commandRailLeft}>
+        {/* ROW 1: title + save status */}
+        <div className={styles.crRow1}>
           <input
             type="text"
             className={styles.titleInput}
@@ -345,46 +356,38 @@ function StoryPageInner({ id }: { id: string }) {
             value={storyTitle}
             onChange={(e) => handleTitleChange(e.target.value)}
           />
+          <div className={styles.crRow1Right}>
+            {viewMode === "editor" && (
+              <SaveStatus saveState={saveState} lastSaved={lastSaved} onRetry={retrySave} />
+            )}
+            {viewMode === "corkboard" && (
+              <span className={styles.saveStatusText}>
+                {saveState === "saving" && "Saving…"}
+                {(saveState === "saved" || (saveState === "idle" && lastSaved)) && lastSaved && "Saved"}
+              </span>
+            )}
+          </div>
         </div>
-        <div className={styles.commandRailCenter}>
-          <ViewModeSwitch
-            mode={viewMode}
-            onChange={(mode) => {
-              setViewMode(mode);
-              scheduleUpdate({
-                sceneId: focusedSceneId ?? null,
-                cursorPosition: textareaRef.current?.selectionStart ?? 0,
-                viewMode: mode,
-              });
-            }}
-          />
-        </div>
-        <div className={styles.commandRailRight}>
-          {viewMode === "editor" && (
-            <SaveStatus
-              saveState={saveState}
-              lastSaved={lastSaved}
-              onRetry={retrySave}
+
+        {/* ROW 2: ViewModeSwitch + primary action + overflow (mobile) / inline actions (desktop) */}
+        <div className={styles.crRow2}>
+          <div className={styles.crViewSwitch}>
+            <ViewModeSwitch
+              mode={viewMode}
+              compact
+              onChange={(mode) => {
+                setViewMode(mode);
+                scheduleUpdate({
+                  sceneId: focusedSceneId ?? null,
+                  cursorPosition: textareaRef.current?.selectionStart ?? 0,
+                  viewMode: mode,
+                });
+              }}
             />
-          )}
-          {viewMode === "corkboard" && (
-            <span className={styles.saveStatusText}>
-              {saveState === "saving" && "Saving…"}
-              {(saveState === "saved" || (saveState === "idle" && lastSaved)) &&
-                lastSaved &&
-                "Saved"}
-            </span>
-          )}
-          {viewMode === "submissions" && (
-            <button
-              className={styles.addSubmissionBtn}
-              onClick={() => trackerRef.current?.openAddPanel()}
-            >
-              Add Submission
-            </button>
-          )}
-          {viewMode === "editor" && !isFocusMode && (
-            <div className={styles.commandRailRightGroup}>
+          </div>
+          <div className={styles.crRow2Right}>
+            {/* Primary action: always visible (not in overflow) */}
+            {viewMode === "editor" && !isFocusMode && (
               <Tooltip content="Enter distraction-free writing mode.">
                 <button
                   type="button"
@@ -395,7 +398,40 @@ function StoryPageInner({ id }: { id: string }) {
                   Focus
                 </button>
               </Tooltip>
-              {storySeriesId && (
+            )}
+            {viewMode === "submissions" && (
+              <button
+                className={styles.addSubmissionBtn}
+                onClick={() => trackerRef.current?.openAddPanel()}
+              >
+                Add Submission
+              </button>
+            )}
+
+            {/* Mobile overflow (hidden on desktop via CSS) */}
+            {viewMode === "editor" && !isFocusMode && (
+              <CommandOverflowMenu
+                className={styles.crOverflowBtn}
+                open={overflowOpen}
+                onToggle={() => setOverflowOpen((v) => !v)}
+                items={[
+                  ...(storySeriesId ? [{ label: "Series", onClick: () => router.push(`/series/${storySeriesId}`) }] : []),
+                  { label: "Share", onClick: () => setShowShareDialog(true) },
+                ]}
+              />
+            )}
+            {storySeriesId && (viewMode !== "editor" || isFocusMode) && (
+              <CommandOverflowMenu
+                className={styles.crOverflowBtn}
+                open={overflowOpen}
+                onToggle={() => setOverflowOpen((v) => !v)}
+                items={[{ label: "Series", onClick: () => router.push(`/series/${storySeriesId}`) }]}
+              />
+            )}
+
+            {/* Desktop inline secondary actions (hidden on mobile via CSS) */}
+            <div className={styles.crDesktopActions}>
+              {viewMode === "editor" && !isFocusMode && storySeriesId && (
                 <button
                   className={styles.seriesBibleBtn}
                   onClick={() => router.push(`/series/${storySeriesId}`)}
@@ -404,24 +440,26 @@ function StoryPageInner({ id }: { id: string }) {
                   Series
                 </button>
               )}
-              <button
-                className={styles.sharePreviewBtn}
-                onClick={() => setShowShareDialog(true)}
-                aria-label="Share preview link"
-              >
-                Share
-              </button>
+              {viewMode === "editor" && !isFocusMode && (
+                <button
+                  className={styles.sharePreviewBtn}
+                  onClick={() => setShowShareDialog(true)}
+                  aria-label="Share preview link"
+                >
+                  Share
+                </button>
+              )}
+              {storySeriesId && (viewMode !== "editor" || isFocusMode) && (
+                <button
+                  className={styles.seriesBibleBtn}
+                  onClick={() => router.push(`/series/${storySeriesId}`)}
+                  aria-label="Open Series Bible"
+                >
+                  Series
+                </button>
+              )}
             </div>
-          )}
-          {storySeriesId && (viewMode !== "editor" || isFocusMode) && (
-            <button
-              className={styles.seriesBibleBtn}
-              onClick={() => router.push(`/series/${storySeriesId}`)}
-              aria-label="Open Series Bible"
-            >
-              Series
-            </button>
-          )}
+          </div>
         </div>
       </div>
 
