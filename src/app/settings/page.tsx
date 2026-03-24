@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { useWriterPrefs } from '@/hooks/useWriterPrefs';
 import ConfirmDialog from '@/components/ConfirmDialog/ConfirmDialog';
+import SegmentedControl from '@/components/SegmentedControl/SegmentedControl';
+import Switch from '@/components/Switch/Switch';
 import styles from './page.module.css';
 
 export default function SettingsPage() {
@@ -15,6 +17,8 @@ export default function SettingsPage() {
 
   return (
     <div className={styles.page}>
+      <p className={styles.pageIntro}>Tune your writing environment.</p>
+
       {/* Editor Typography */}
       <section className={styles.settingsGroup} aria-labelledby="typography-heading">
         <h2 id="typography-heading" className={styles.groupTitle}>
@@ -22,55 +26,55 @@ export default function SettingsPage() {
         </h2>
         <div className={styles.groupContent}>
           <div className={styles.settingRow}>
-            <label htmlFor="font-size" className={styles.settingLabel}>
+            <div id="label-font-size" className={styles.settingLabel}>
               <span className={styles.settingLabelText}>Font size</span>
               <span className={styles.settingLabelDescription}>Controls the text size in the story editor</span>
-            </label>
-            <select
-              id="font-size"
-              className={styles.select}
+            </div>
+            <SegmentedControl
+              aria-labelledby="label-font-size"
+              options={[
+                { value: '14px', label: '14px' },
+                { value: '16px', label: '16px' },
+                { value: '18px', label: '18px' },
+                { value: '20px', label: '20px' },
+                { value: '22px', label: '22px' },
+              ]}
               value={prefs.fontSize}
-              onChange={(e) => updatePref('fontSize', e.target.value as typeof prefs.fontSize)}
-            >
-              <option value="14px">14px / Small</option>
-              <option value="16px">16px / Medium</option>
-              <option value="18px">18px / Default</option>
-              <option value="20px">20px / Large</option>
-              <option value="22px">22px / X-Large</option>
-            </select>
+              onChange={(v) => updatePref('fontSize', v)}
+            />
           </div>
           <div className={styles.settingRow}>
-            <label htmlFor="line-height" className={styles.settingLabel}>
+            <div id="label-line-height" className={styles.settingLabel}>
               <span className={styles.settingLabelText}>Line height</span>
               <span className={styles.settingLabelDescription}>Controls spacing between lines in the editor</span>
-            </label>
-            <select
-              id="line-height"
-              className={styles.select}
+            </div>
+            <SegmentedControl
+              aria-labelledby="label-line-height"
+              options={[
+                { value: '1.5', label: 'Compact' },
+                { value: '1.75', label: 'Relaxed' },
+                { value: '2.0', label: 'Spacious' },
+              ]}
               value={prefs.lineHeight}
-              onChange={(e) => updatePref('lineHeight', e.target.value as typeof prefs.lineHeight)}
-            >
-              <option value="1.5">1.5 / Compact</option>
-              <option value="1.75">1.75 / Relaxed (Default)</option>
-              <option value="2.0">2.0 / Spacious</option>
-            </select>
+              onChange={(v) => updatePref('lineHeight', v)}
+            />
           </div>
           <div className={styles.settingRow}>
-            <label htmlFor="editor-width" className={styles.settingLabel}>
+            <div id="label-editor-width" className={styles.settingLabel}>
               <span className={styles.settingLabelText}>Editor width</span>
               <span className={styles.settingLabelDescription}>Controls the maximum column width of the editor</span>
-            </label>
-            <select
-              id="editor-width"
-              className={styles.select}
+            </div>
+            <SegmentedControl
+              aria-labelledby="label-editor-width"
+              options={[
+                { value: '60ch', label: 'Narrow' },
+                { value: '72ch', label: 'Default' },
+                { value: '80ch', label: 'Wide' },
+                { value: '90ch', label: 'X-Wide' },
+              ]}
               value={prefs.editorWidth}
-              onChange={(e) => updatePref('editorWidth', e.target.value as typeof prefs.editorWidth)}
-            >
-              <option value="60ch">60ch / Narrow</option>
-              <option value="72ch">72ch / Default</option>
-              <option value="80ch">80ch / Wide</option>
-              <option value="90ch">90ch / Very Wide</option>
-            </select>
+              onChange={(v) => updatePref('editorWidth', v)}
+            />
           </div>
         </div>
       </section>
@@ -86,12 +90,10 @@ export default function SettingsPage() {
               <span className={styles.settingLabelText}>Enter focus mode by default</span>
               <span className={styles.settingLabelDescription}>Automatically enables distraction-free mode when opening a story</span>
             </label>
-            <input
+            <Switch
               id="focus-by-default"
-              type="checkbox"
-              className={styles.toggle}
               checked={prefs.focusByDefault}
-              onChange={(e) => updatePref('focusByDefault', e.target.checked)}
+              onChange={(v) => updatePref('focusByDefault', v)}
               aria-describedby="focus-by-default-desc"
             />
           </div>
@@ -109,12 +111,10 @@ export default function SettingsPage() {
               <span className={styles.settingLabelText}>Reduced motion</span>
               <span className={styles.settingLabelDescription}>Disables transitions and animations in the editor</span>
             </label>
-            <input
+            <Switch
               id="reduced-motion"
-              type="checkbox"
-              className={styles.toggle}
               checked={prefs.reducedMotion}
-              onChange={(e) => updatePref('reducedMotion', e.target.checked)}
+              onChange={(v) => updatePref('reducedMotion', v)}
             />
           </div>
           <div className={styles.settingRow}>
@@ -122,12 +122,10 @@ export default function SettingsPage() {
               <span className={styles.settingLabelText}>High-contrast text</span>
               <span className={styles.settingLabelDescription}>Increases text contrast for readability in the editor</span>
             </label>
-            <input
+            <Switch
               id="high-contrast"
-              type="checkbox"
-              className={styles.toggle}
               checked={prefs.highContrast}
-              onChange={(e) => updatePref('highContrast', e.target.checked)}
+              onChange={(v) => updatePref('highContrast', v)}
             />
           </div>
         </div>
@@ -142,15 +140,21 @@ export default function SettingsPage() {
         {saveStatus === 'saved' ? 'Preferences saved' : ''}
       </span>
 
-      <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.resetButton}
-          onClick={() => setShowResetDialog(true)}
-        >
-          Reset to defaults
-        </button>
-      </div>
+      <section className={styles.dangerZone} aria-labelledby="danger-heading">
+        <h2 id="danger-heading" className={styles.dangerTitle}>Reset preferences</h2>
+        <div className={styles.dangerContent}>
+          <p className={styles.dangerDescription}>
+            Restore all preferences to their original defaults. This cannot be undone.
+          </p>
+          <button
+            type="button"
+            className={styles.resetButton}
+            onClick={() => setShowResetDialog(true)}
+          >
+            Reset to defaults
+          </button>
+        </div>
+      </section>
 
       <ConfirmDialog
         isOpen={showResetDialog}
