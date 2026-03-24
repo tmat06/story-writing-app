@@ -334,28 +334,32 @@ function StoryPageInner({ id }: { id: string }) {
       data-high-contrast={prefs.highContrast ? "true" : undefined}
       data-reduced-motion={prefs.reducedMotion ? "true" : undefined}
     >
-      {/* SHELL HEADER — persistent across all views */}
-      <div className={styles.shellHeader}>
-        <input
-          type="text"
-          className={styles.titleInput}
-          placeholder="Untitled Story"
-          aria-label="Story title"
-          value={storyTitle}
-          onChange={(e) => handleTitleChange(e.target.value)}
-        />
-        <ViewModeSwitch
-          mode={viewMode}
-          onChange={(mode) => {
-            setViewMode(mode);
-            scheduleUpdate({
-              sceneId: focusedSceneId ?? null,
-              cursorPosition: textareaRef.current?.selectionStart ?? 0,
-              viewMode: mode,
-            });
-          }}
-        />
-        <div className={styles.shellHeaderRight}>
+      {/* COMMAND RAIL — single sticky row */}
+      <div className={styles.commandRail}>
+        <div className={styles.commandRailLeft}>
+          <input
+            type="text"
+            className={styles.titleInput}
+            placeholder="Untitled Story"
+            aria-label="Story title"
+            value={storyTitle}
+            onChange={(e) => handleTitleChange(e.target.value)}
+          />
+        </div>
+        <div className={styles.commandRailCenter}>
+          <ViewModeSwitch
+            mode={viewMode}
+            onChange={(mode) => {
+              setViewMode(mode);
+              scheduleUpdate({
+                sceneId: focusedSceneId ?? null,
+                cursorPosition: textareaRef.current?.selectionStart ?? 0,
+                viewMode: mode,
+              });
+            }}
+          />
+        </div>
+        <div className={styles.commandRailRight}>
           {viewMode === "editor" && (
             <SaveStatus
               saveState={saveState}
@@ -371,7 +375,45 @@ function StoryPageInner({ id }: { id: string }) {
                 "Saved"}
             </span>
           )}
-          {storySeriesId && (
+          {viewMode === "submissions" && (
+            <button
+              className={styles.addSubmissionBtn}
+              onClick={() => trackerRef.current?.openAddPanel()}
+            >
+              Add Submission
+            </button>
+          )}
+          {viewMode === "editor" && !isFocusMode && (
+            <div className={styles.commandRailRightGroup}>
+              <Tooltip content="Enter distraction-free writing mode.">
+                <button
+                  type="button"
+                  className={styles.focusModeButton}
+                  onClick={enterFocus}
+                  aria-label="Enter focus mode"
+                >
+                  Focus
+                </button>
+              </Tooltip>
+              {storySeriesId && (
+                <button
+                  className={styles.seriesBibleBtn}
+                  onClick={() => router.push(`/series/${storySeriesId}`)}
+                  aria-label="Open Series Bible"
+                >
+                  Series
+                </button>
+              )}
+              <button
+                className={styles.sharePreviewBtn}
+                onClick={() => setShowShareDialog(true)}
+                aria-label="Share preview link"
+              >
+                Share
+              </button>
+            </div>
+          )}
+          {storySeriesId && (viewMode !== "editor" || isFocusMode) && (
             <button
               className={styles.seriesBibleBtn}
               onClick={() => router.push(`/series/${storySeriesId}`)}
@@ -380,74 +422,43 @@ function StoryPageInner({ id }: { id: string }) {
               Series
             </button>
           )}
-          {viewMode === "editor" && (
-            <button
-              className={styles.sharePreviewBtn}
-              onClick={() => setShowShareDialog(true)}
-              aria-label="Share preview link"
-            >
-              Share Preview
-            </button>
-          )}
         </div>
       </div>
 
-      {/* SHELL TOOLBAR — view-specific actions, fixed min-height */}
-      <div className={styles.shellToolbar}>
-        {viewMode === "editor" && !isFocusMode && (
-          <Tooltip content="Enter distraction-free writing mode.">
+      {/* VIEW SUB-BAR — secondary corkboard controls only */}
+      {viewMode === "corkboard" && (
+        <div className={styles.viewSubBar}>
+          <span className={styles.toolbarSceneCount}>{sceneCountLabel}</span>
+          <div
+            className={styles.toolbarFilterGroup}
+            role="group"
+            aria-label="Filter by status"
+          >
+            {(["all", "planned", "drafting", "done"] as const).map((s) => (
+              <Tooltip key={s} content={CORKBOARD_FILTER_TOOLTIPS[s]}>
+                <button
+                  className={`${styles.filterBtn} ${corkboardStatusFilter === s ? styles.filterBtnActive : ""}`}
+                  onClick={() => setCorkboardStatusFilter(s)}
+                  aria-pressed={corkboardStatusFilter === s}
+                >
+                  {s === "all"
+                    ? "All"
+                    : s.charAt(0).toUpperCase() + s.slice(1)}
+                </button>
+              </Tooltip>
+            ))}
+          </div>
+          <Tooltip content="Add a new scene or story beat to your corkboard.">
             <button
-              type="button"
-              className={styles.focusModeButton}
-              onClick={enterFocus}
-              aria-label="Enter focus mode"
+              className={styles.addBeatBtn}
+              onClick={handleAddSceneDefault}
+              aria-label="Add new scene"
             >
-              Focus
+              + Add beat
             </button>
           </Tooltip>
-        )}
-        {viewMode === "corkboard" && (
-          <>
-            <span className={styles.toolbarSceneCount}>{sceneCountLabel}</span>
-            <div
-              className={styles.toolbarFilterGroup}
-              role="group"
-              aria-label="Filter by status"
-            >
-              {(["all", "planned", "drafting", "done"] as const).map((s) => (
-                <Tooltip key={s} content={CORKBOARD_FILTER_TOOLTIPS[s]}>
-                  <button
-                    className={`${styles.filterBtn} ${corkboardStatusFilter === s ? styles.filterBtnActive : ""}`}
-                    onClick={() => setCorkboardStatusFilter(s)}
-                    aria-pressed={corkboardStatusFilter === s}
-                  >
-                    {s === "all"
-                      ? "All"
-                      : s.charAt(0).toUpperCase() + s.slice(1)}
-                  </button>
-                </Tooltip>
-              ))}
-            </div>
-            <Tooltip content="Add a new scene or story beat to your corkboard.">
-              <button
-                className={styles.addBeatBtn}
-                onClick={handleAddSceneDefault}
-                aria-label="Add new scene"
-              >
-                + Add beat
-              </button>
-            </Tooltip>
-          </>
-        )}
-        {viewMode === "submissions" && (
-          <button
-            className={styles.addSubmissionBtn}
-            onClick={() => trackerRef.current?.openAddPanel()}
-          >
-            Add Submission
-          </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* SHELL BODY — view canvas */}
       <div className={styles.shellBody}>

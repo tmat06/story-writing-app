@@ -6,14 +6,35 @@
 
 .toolbar {
   display: flex;
-  gap: var(--spacing-md);
+  gap: 12px;
   align-items: center;
-  padding: var(--spacing-md) 0;
+  padding: 16px 0;
   border-bottom: 1px solid var(--color-fog-200);
 }
 
-.searchWrapper {
+.toolbarPrimary {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.toolbarDiscovery {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.toolbarUtility {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  border-left: 1px solid var(--color-fog-200);
+  padding-left: 12px;
+}
+
+.searchWrapper {
+  width: 100%;
 }
 
 .visuallyHidden {
@@ -30,13 +51,15 @@
 
 .searchInput {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  font-size: var(--font-size-base);
+  height: 40px;
+  padding: 0 var(--spacing-md);
+  font-size: var(--font-size-sm);
   color: var(--color-black-700);
   background: var(--color-white);
   border: var(--border-width) solid var(--color-fashion-300);
   border-radius: var(--border-radius-md);
   transition: border-color 100ms ease, box-shadow 100ms ease;
+  box-sizing: border-box;
 }
 
 .searchInput::placeholder {
@@ -46,77 +69,79 @@
 .searchInput:focus {
   outline: none;
   border-color: var(--color-carbon-600);
-  box-shadow: 0 0 0 2px var(--color-elephant-500);
-  background: var(--color-polar-100);
-}
-.searchInput:focus-visible {
-  outline: 2px solid var(--color-carbon-600);
-  outline-offset: 0;
-  box-shadow: none;
-}
-
-.filters {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.filterLabel {
-  font-size: var(--font-size-sm);
-  color: var(--color-elephant-500);
-  font-weight: var(--font-weight-medium);
+  box-shadow: 0 0 0 3px rgba(45, 45, 45, 0.24);
 }
 
 .newStoryButton {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-.newStoryButton {
+  transition: background 0.15s ease, transform 0.1s ease;
   background: var(--color-black-700);
-  color: white;
+  color: var(--color-white);
   border: none;
 }
 
 .newStoryButton:hover:not(:disabled) {
-  background: var(--color-black-900);
+  background: var(--color-black-800);
+  transform: translateY(-1px);
 }
 
 .newStoryButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
+.newStoryButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(45, 45, 45, 0.24);
+}
+
+.archiveToggle {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  background: var(--color-white);
+  color: var(--color-elephant-500);
+  border: 1px solid var(--color-fashion-300);
+}
+
+.archiveToggle:hover {
+  background: var(--color-polar-100);
+  color: var(--color-carbon-600);
+}
+
+.archiveToggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(45, 45, 45, 0.24);
+}
 
 .importBundleButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
   background: transparent;
   color: var(--color-cement-400);
   border: none;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
 .importBundleButton:hover {
   color: var(--color-elephant-500);
-  background: transparent;
+  background: var(--color-polar-100);
 }
 
-.importBundleButton:focus {
-  outline: 2px solid var(--color-fashion-300);
-  outline-offset: 2px;
-}
-
-.newStoryButton:focus {
-  outline: 2px solid var(--color-fashion-300);
-  outline-offset: 2px;
+.importBundleButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(45, 45, 45, 0.24);
 }
 
 .storiesGrid {
@@ -162,11 +187,16 @@
   .toolbar {
     flex-direction: column;
     align-items: stretch;
-    padding: var(--spacing-md) 0;
+    padding: 16px 0;
+    gap: var(--spacing-sm);
   }
 
-  .filters {
-    justify-content: space-between;
+  .toolbarUtility {
+    border-left: none;
+    border-top: 1px solid var(--color-fog-200);
+    padding-left: 0;
+    padding-top: var(--spacing-sm);
+    justify-content: flex-end;
   }
 
   .storiesGrid {
