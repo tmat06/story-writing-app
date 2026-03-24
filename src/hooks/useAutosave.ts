@@ -11,6 +11,7 @@ import {
   getSaveMetadata,
   debounce,
 } from '@/lib/autosave';
+import { touchStory } from '@/lib/stories';
 
 export type SaveState = 'idle' | 'saving' | 'saved' | 'failed';
 
@@ -51,6 +52,7 @@ export function useAutosave(storyId: string, initialContent?: string): UseAutosa
     setError(null);
     try {
       await saveContent(storyId, text);
+      touchStory(storyId);
       setSaveState('saved');
       setLastSaved(Date.now());
       setHasRecovery(false);

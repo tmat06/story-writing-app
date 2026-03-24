@@ -57,6 +57,14 @@ export function updateStory(
   return updated;
 }
 
+export function touchStory(id: string): void {
+  const stories = getStories();
+  const index = stories.findIndex(s => s.id === id);
+  if (index === -1) return;
+  stories[index] = { ...stories[index], updatedAt: Date.now() };
+  saveStories(stories);
+}
+
 export function deleteStory(id: string): void {
   const stories = getStories();
   const filtered = stories.filter(s => s.id !== id);
