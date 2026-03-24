@@ -94,13 +94,13 @@
 }
 
 .dropzoneHint {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   color: var(--color-cement-400);
   margin: 0;
 }
 
 .dropzoneFileName {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   color: var(--color-black-700);
   font-weight: var(--font-weight-medium);
   margin: 0;
@@ -174,7 +174,7 @@
 }
 
 .integrityMessage {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   color: var(--color-cement-400);
   margin: 0 0 var(--spacing-xs) 0;
 }
@@ -189,7 +189,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   color: var(--color-cement-400);
 }
 
@@ -218,7 +218,7 @@
 .cancelButton {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   background: transparent;
@@ -228,7 +228,7 @@
 }
 
 .cancelButton:hover {
-  background: var(--color-fog-100);
+  background: var(--color-polar-100);
 }
 
 .cancelButton:focus {
@@ -239,7 +239,7 @@
 .importButton {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   background: var(--color-black-700);
@@ -249,7 +249,7 @@
 }
 
 .importButton:hover:not(:disabled) {
-  background: var(--color-black-900);
+  background: var(--color-carbon-600);
 }
 
 .importButton:disabled {

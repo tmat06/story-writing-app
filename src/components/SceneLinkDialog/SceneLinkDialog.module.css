@@ -110,7 +110,7 @@
 
 .select:disabled {
   opacity: 0.5;
-  background: var(--color-fog-100);
+  background: var(--color-polar-100);
 }
 
 .addLinkButton {
