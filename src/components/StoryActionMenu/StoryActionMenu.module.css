@@ -45,7 +45,7 @@
   border: none;
   text-align: left;
   cursor: pointer;
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   color: var(--color-cement-400);
   transition: background 0.2s;
 }
@@ -100,7 +100,7 @@
   padding: var(--spacing-sm);
   border: 1px solid var(--color-fog-200);
   border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   margin-bottom: var(--spacing-lg);
 }
 
@@ -120,7 +120,7 @@
 .confirmButton {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -132,7 +132,7 @@
 }
 
 .cancelButton:hover {
-  background: var(--color-fog-100);
+  background: var(--color-polar-100);
 }
 
 .confirmButton {
@@ -142,7 +142,7 @@
 }
 
 .confirmButton:hover {
-  background: var(--color-black-900);
+  background: var(--color-carbon-600);
 }
 
 .cancelButton:focus,
