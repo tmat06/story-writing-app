@@ -18,16 +18,20 @@ export default function Navigation({ currentPath, isOpen, onLinkClick }: Navigat
     setHasSeries(getSeries().length > 0);
   }, []);
 
-  const baseNavItems = [
-    { href: '/', label: 'Home' },
-    { href: '/stories', label: 'Stories' },
-  ];
+  type NavItem = { href: string; label: string; secondary?: boolean };
 
-  const seriesItem = { href: '/series', label: 'Series' };
-
-  const navItems = hasSeries
-    ? [...baseNavItems, seriesItem, { href: '/settings', label: 'Settings' }]
-    : [...baseNavItems, { href: '/settings', label: 'Settings' }];
+  const navItems: NavItem[] = hasSeries
+    ? [
+        { href: '/', label: 'Home' },
+        { href: '/stories', label: 'Stories' },
+        { href: '/series', label: 'Series' },
+        { href: '/settings', label: 'Settings', secondary: true },
+      ]
+    : [
+        { href: '/', label: 'Home' },
+        { href: '/stories', label: 'Stories' },
+        { href: '/settings', label: 'Settings', secondary: true },
+      ];
 
   return (
     <nav className={`${styles.nav} ${isOpen ? styles.open : ''}`} aria-label="Main navigation">
@@ -38,15 +42,17 @@ export default function Navigation({ currentPath, isOpen, onLinkClick }: Navigat
       </div>
 
       <ul className={styles.navList} role="list">
-        {navItems.map((item) => {
+        {navItems.map((item, index) => {
           const isActive = item.href === '/series'
             ? currentPath.startsWith('/series')
             : currentPath === item.href;
+          const showSeparator = item.secondary && (index === 0 || !navItems[index - 1].secondary);
           return (
             <li key={item.href}>
+              {showSeparator && <div className={styles.navSeparator} aria-hidden="true" />}
               <Link
                 href={item.href}
-                className={`${styles.navLink} ${isActive ? styles.active : ''}`}
+                className={`${styles.navLink} ${item.secondary ? styles.navLinkSecondary : ''} ${isActive ? styles.active : ''}`}
                 aria-current={isActive ? 'page' : undefined}
                 onClick={onLinkClick}
               >
