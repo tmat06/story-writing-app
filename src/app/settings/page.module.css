@@ -5,6 +5,12 @@
   max-width: 800px;
 }
 
+.pageIntro {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
+}
+
 .settingsGroup {
   display: flex;
   flex-direction: column;
@@ -22,7 +28,7 @@
 }
 
 .groupContent {
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg);
   background-color: var(--color-polar-100);
   border: var(--border-width) solid var(--color-fashion-300);
   border-radius: var(--border-radius-md);
@@ -43,7 +49,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-md);
-  padding: var(--spacing-sm) 0;
+  padding: var(--spacing-md) 0;
 }
 
 .settingRow + .settingRow {
@@ -53,7 +59,7 @@
 .settingLabel {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 0.75rem;
 }
 
 .settingLabelText {
@@ -67,32 +73,6 @@
   color: var(--color-cement-400);
 }
 
-/* Select control */
-.select {
-  font-size: var(--font-size-sm);
-  color: var(--color-black-700);
-  background: var(--color-white);
-  border: var(--border-width) solid var(--color-fashion-300);
-  border-radius: var(--border-radius-sm);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  cursor: pointer;
-  min-width: 160px;
-}
-
-.select:focus-visible {
-  outline: 2px solid var(--color-black-700);
-  outline-offset: 2px;
-}
-
-/* Toggle (checkbox) control */
-.toggle {
-  width: 1.25rem;
-  height: 1.25rem;
-  cursor: pointer;
-  accent-color: var(--color-black-700);
-  flex-shrink: 0;
-}
-
 /* Save status */
 .saveStatus {
   font-size: var(--font-size-sm);
@@ -101,13 +81,37 @@
   margin-top: var(--spacing-sm);
 }
 
-/* Actions bar */
-.actions {
+/* Danger zone */
+.dangerZone {
   display: flex;
-  justify-content: flex-end;
-  padding-top: var(--spacing-lg);
-  border-top: var(--border-width) solid var(--color-fog-200);
-  margin-top: var(--spacing-lg);
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.dangerTitle {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-cement-400);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: var(--border-width) solid var(--color-fog-200);
+}
+
+.dangerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  background: var(--color-polar-100);
+  border: var(--border-width) solid var(--color-fog-200);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.dangerDescription {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-cement-400);
 }
 
 .resetButton {
@@ -119,6 +123,7 @@
   border-radius: var(--border-radius-sm);
   padding: var(--spacing-xs) var(--spacing-md);
   cursor: pointer;
+  transition: color var(--control-transition), border-color var(--control-transition);
 }
 
 .resetButton:hover {
@@ -142,5 +147,15 @@
 
   .groupTitle {
     font-size: var(--font-size-lg);
+  }
+
+  .settingRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dangerContent {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

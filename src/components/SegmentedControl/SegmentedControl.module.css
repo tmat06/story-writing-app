@@ -1,0 +1,42 @@
+.container {
+  display: inline-flex;
+  border: 1px solid var(--control-border);
+  border-radius: var(--border-radius-sm);
+  background: var(--control-bg);
+  overflow: hidden;
+}
+
+.segment {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: var(--color-cement-400);
+  cursor: pointer;
+  transition: background var(--control-transition), color var(--control-transition);
+  min-height: 40px;
+  white-space: nowrap;
+}
+
+.segment + .segment {
+  border-left: 1px solid var(--control-border);
+}
+
+.segment:hover:not(.segmentActive) {
+  background: var(--control-hover-bg);
+  color: var(--color-black-700);
+}
+
+.segmentActive {
+  background: var(--control-selected-bg);
+  color: var(--control-selected-fg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.segment:focus-visible {
+  outline: 2px solid var(--control-selected-bg);
+  outline-offset: -2px;
+  position: relative;
+  z-index: 1;
+}
