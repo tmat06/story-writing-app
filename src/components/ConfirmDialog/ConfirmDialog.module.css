@@ -52,12 +52,12 @@
 
 .cancelButton {
   background: transparent;
-  border: 1px solid var(--color-fog-200);
+  border: 1px solid var(--color-fog-300);
   color: var(--color-cement-400);
 }
 
 .cancelButton:hover {
-  background: var(--color-polar-100);
+  background: var(--color-fog-100);
 }
 
 .confirmButton {
@@ -80,9 +80,9 @@
   background: var(--color-carbon-600);
 }
 
-.cancelButton:focus,
-.confirmButton:focus,
-.destructiveButton:focus {
-  outline: 2px solid var(--color-fashion-300);
+.cancelButton:focus-visible,
+.confirmButton:focus-visible,
+.destructiveButton:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
   outline-offset: 2px;
 }

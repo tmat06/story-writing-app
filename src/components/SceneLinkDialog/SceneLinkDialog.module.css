@@ -95,17 +95,17 @@
 .select {
   width: 100%;
   padding: 8px var(--spacing-sm);
-  border: var(--border-width) solid var(--color-fog-200);
+  border: var(--border-width) solid var(--color-fog-300);
   border-radius: var(--border-radius-sm);
   font-size: 14px;
   background: var(--color-white);
   color: var(--color-black-700);
 }
 
-.select:focus {
-  outline: 2px solid var(--color-fashion-300);
+.select:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
   outline-offset: 0;
-  border-color: var(--color-fashion-300);
+  border-color: var(--color-fog-300);
 }
 
 .select:disabled {
@@ -178,7 +178,7 @@
 .unlinkButton {
   flex-shrink: 0;
   background: none;
-  border: var(--border-width) solid var(--color-fog-200);
+  border: var(--border-width) solid var(--color-fog-300);
   border-radius: var(--border-radius-sm);
   font-size: 12px;
   color: var(--color-cement-400);

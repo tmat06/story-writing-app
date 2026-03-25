@@ -15,12 +15,12 @@
 }
 
 .menuButton:hover {
-  background: var(--color-fog-200);
+  background: var(--color-fog-100);
   color: var(--color-black-700);
 }
 
-.menuButton:focus {
-  outline: 2px solid var(--color-fashion-300);
+.menuButton:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
   outline-offset: 2px;
 }
 
@@ -51,12 +51,12 @@
 }
 
 .menuItem:hover {
-  background: var(--color-fog-200);
+  background: var(--color-fog-100);
   color: var(--color-black-700);
 }
 
-.menuItem:focus {
-  outline: 2px solid var(--color-fashion-300);
+.menuItem:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
   outline-offset: -2px;
 }
 
@@ -98,16 +98,16 @@
 .renameInput {
   width: 100%;
   padding: var(--spacing-sm);
-  border: 1px solid var(--color-fog-200);
+  border: 1px solid var(--color-fog-300);
   border-radius: var(--border-radius-sm);
   font-size: var(--font-size-base);
   margin-bottom: var(--spacing-lg);
 }
 
 .renameInput:focus {
-  outline: 2px solid var(--color-fashion-300);
+  outline: 2px solid var(--color-carbon-600);
   outline-offset: 0;
-  border-color: var(--color-fashion-300);
+  border-color: var(--color-fog-300);
 }
 
 .renameActions {
@@ -127,12 +127,12 @@
 
 .cancelButton {
   background: transparent;
-  border: 1px solid var(--color-fog-200);
+  border: 1px solid var(--color-fog-300);
   color: var(--color-cement-400);
 }
 
 .cancelButton:hover {
-  background: var(--color-polar-100);
+  background: var(--color-fog-100);
 }
 
 .confirmButton {
@@ -145,9 +145,9 @@
   background: var(--color-carbon-600);
 }
 
-.cancelButton:focus,
-.confirmButton:focus {
-  outline: 2px solid var(--color-fashion-300);
+.cancelButton:focus-visible,
+.confirmButton:focus-visible {
+  outline: 2px solid var(--color-carbon-600);
   outline-offset: 2px;
 }
 
@@ -183,7 +183,7 @@
 }
 
 .seriesPickerItem:hover {
-  background: var(--color-fog-200);
+  background: var(--color-fog-100);
 }
 
 .seriesPickerDisabled {
