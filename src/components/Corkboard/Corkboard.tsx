@@ -47,7 +47,7 @@ interface SortableSceneCardProps {
   isDropTarget?: boolean;
   isFocused?: boolean;
   isSelected?: boolean;
-  onSelect?: (sceneId: string) => void;
+  onSelect?: (sceneId: string, shiftActive: boolean) => void;
 }
 
 function SortableSceneCard({
@@ -483,7 +483,7 @@ export function Corkboard({
                 isDropTarget={overId === scene.id && activeId !== scene.id}
                 isFocused={focusedSceneId === scene.id}
                 isSelected={selectedSceneIds.has(scene.id)}
-                onSelect={(id) => handleSceneSelect(id)}
+                onSelect={(id, shiftActive) => handleSceneSelect(id, shiftActive)}
               />
             ))}
           </div>

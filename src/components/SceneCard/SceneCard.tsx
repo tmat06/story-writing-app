@@ -14,7 +14,7 @@ interface SceneCardProps {
   isDropTarget?: boolean;
   isFocused?: boolean;
   isSelected?: boolean;
-  onSelect?: (sceneId: string) => void;
+  onSelect?: (sceneId: string, shiftActive: boolean) => void;
 }
 
 export function SceneCard({
@@ -74,7 +74,7 @@ export function SceneCard({
       aria-selected={!!isSelected}
       onClick={(e) => {
         if (e.ctrlKey || e.metaKey || e.shiftKey) {
-          onSelect?.(scene.id);
+          onSelect?.(scene.id, e.shiftKey);
         } else {
           onClick();
         }
@@ -87,7 +87,7 @@ export function SceneCard({
         if (e.target !== e.currentTarget) return;
         if (e.key === ' ') {
           e.preventDefault();
-          onSelect?.(scene.id);
+          onSelect?.(scene.id, false);
         } else if (e.key === 'Enter') {
           onClick();
         }
@@ -100,7 +100,7 @@ export function SceneCard({
           tabIndex={-1}
           checked={!!isSelected}
           aria-label={`Select scene: ${scene.title}`}
-          onChange={() => onSelect?.(scene.id)}
+          onChange={() => onSelect?.(scene.id, false)}
           onClick={(e) => e.stopPropagation()}
         />
       </div>
