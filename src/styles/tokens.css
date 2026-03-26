@@ -15,7 +15,9 @@
   --color-elephant-500: #4a4a4a;   /* Secondary text */
   --color-cement-400: #6b6b6b;     /* Tertiary/muted text */
   --color-fashion-300: #9a9a9a;    /* Borders/dividers */
-  --color-fog-200: #d4d4d4;        /* Subtle backgrounds */
+  --color-fog-100: #efefef;        /* Hover/background tint */
+  --color-fog-200: #d4d4d4;        /* Dividers / subtle backgrounds */
+  --color-fog-300: #bcbcbc;        /* Stronger control borders */
   --color-polar-100: #f5f5f5;      /* Lightest backgrounds */
 
   /* Pure white for contrast */
