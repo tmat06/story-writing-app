@@ -81,6 +81,10 @@
   margin-top: var(--spacing-sm);
 }
 
+.saveStatusError {
+  color: var(--color-amber-500);
+}
+
 /* Danger zone */
 .dangerZone {
   display: flex;

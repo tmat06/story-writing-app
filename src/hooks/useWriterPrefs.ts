@@ -29,10 +29,13 @@ function loadPrefs(): WriterPrefs {
   return { ...WRITER_PREFS_DEFAULTS };
 }
 
-function persistPrefs(prefs: WriterPrefs): void {
+function persistPrefs(prefs: WriterPrefs): boolean {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-  } catch { /* ignore */ }
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export type SaveStatus = 'idle' | 'saved' | 'error';
@@ -56,23 +59,19 @@ export function useWriterPrefs(): UseWriterPrefsReturn {
     key: K,
     value: WriterPrefs[K]
   ) => {
-    setPrefs((prev) => {
-      const next = { ...prev, [key]: value };
-      persistPrefs(next);
-      return next;
-    });
-    setSaveStatus('saved');
-    const t = setTimeout(() => setSaveStatus('idle'), 2000);
-    return () => clearTimeout(t);
-  }, []);
+    const next = { ...prefs, [key]: value };
+    const ok = persistPrefs(next);
+    setPrefs(next);
+    setSaveStatus(ok ? 'saved' : 'error');
+    setTimeout(() => setSaveStatus('idle'), 2000);
+  }, [prefs]);
 
   const resetPrefs = useCallback(() => {
     const defaults = { ...WRITER_PREFS_DEFAULTS };
+    const ok = persistPrefs(defaults);
     setPrefs(defaults);
-    persistPrefs(defaults);
-    setSaveStatus('saved');
-    const t = setTimeout(() => setSaveStatus('idle'), 2000);
-    return () => clearTimeout(t);
+    setSaveStatus(ok ? 'saved' : 'error');
+    setTimeout(() => setSaveStatus('idle'), 2000);
   }, []);
 
   return { prefs, updatePref, resetPrefs, saveStatus };

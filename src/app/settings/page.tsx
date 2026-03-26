@@ -137,7 +137,10 @@ export default function SettingsPage() {
         aria-live="polite"
         aria-atomic="true"
       >
-        {saveStatus === 'saved' ? 'Preferences saved' : ''}
+        {saveStatus === 'saved' && 'Preferences saved'}
+        {saveStatus === 'error' && (
+          <span className={styles.saveStatusError}>Preferences could not be saved</span>
+        )}
       </span>
 
       <section className={styles.dangerZone} aria-labelledby="danger-heading">
