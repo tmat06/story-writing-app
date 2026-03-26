@@ -9,14 +9,10 @@
   padding: 0;
 }
 
-.welcomeTitle {
-  display: none;
-}
-
 .welcomeText {
   margin: 0;
-  font-size: var(--font-size-sm);
-  color: var(--color-elephant-500);
+  font-size: var(--font-size-ui-sm);   /* 15 px, was --font-size-sm 14 px */
+  color: var(--color-cement-400);       /* muted, was --color-elephant-500 */
   line-height: var(--line-height-normal);
 }
 

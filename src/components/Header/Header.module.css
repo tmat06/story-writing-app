@@ -23,7 +23,7 @@
   color: var(--color-elephant-500);
   cursor: pointer;
   border-radius: var(--border-radius-sm);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color var(--transition-shell), color var(--transition-shell);
 }
 
 .menuButton:hover {

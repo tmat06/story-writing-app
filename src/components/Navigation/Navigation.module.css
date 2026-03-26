@@ -49,15 +49,15 @@
   padding: var(--spacing-sm) var(--spacing-md);
   color: var(--color-elephant-500);
   text-decoration: none;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-ui-sm);   /* was --font-size-sm */
   font-weight: 500;
-  transition: background-color 100ms ease;
-  border-left: 3px solid transparent;
+  transition: background-color var(--transition-shell);   /* was 100ms ease */
+  border-left: 2px solid transparent;  /* was 3px — design spec: 2px accent rail */
 }
 
 .navLink:hover {
   background-color: var(--color-polar-100);
-  color: var(--color-elephant-500);
+  color: var(--color-black-700);   /* was --color-elephant-500 */
 }
 
 .navLink:focus-visible {
