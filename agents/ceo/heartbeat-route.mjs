@@ -232,10 +232,12 @@ async function main() {
   }
   summary.scanned = issues.length;
 
-  // 3. Concurrency map — count todo/in_progress tickets per agent
+  // 3. Concurrency map — count only in_progress tickets per agent.
+  // Tickets in todo are queued but the agent isn't actively working yet,
+  // so they don't block routing additional work to that agent.
   const agentActiveCount = new Map();
   for (const issue of issues) {
-    if (issue.assigneeAgentId && (issue.status === 'todo' || issue.status === 'in_progress')) {
+    if (issue.assigneeAgentId && issue.status === 'in_progress') {
       agentActiveCount.set(issue.assigneeAgentId,
         (agentActiveCount.get(issue.assigneeAgentId) ?? 0) + 1);
     }
