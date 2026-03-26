@@ -48,14 +48,12 @@ export default function AppShell({ children }: AppShellProps) {
           isOpen={isMobileNavOpen}
           onLinkClick={handleNavLinkClick}
         />
-        {/* Overlay for mobile nav */}
-        {isMobileNavOpen && (
-          <div
-            className={styles.overlay}
-            onClick={handleNavLinkClick}
-            aria-hidden="true"
-          />
-        )}
+        {/* Overlay for mobile nav — always rendered, visibility controlled by CSS */}
+        <div
+          className={styles.overlay}
+          onClick={handleNavLinkClick}
+          aria-hidden="true"
+        />
       </div>
 
       <div className={styles.mainWrapper}>
