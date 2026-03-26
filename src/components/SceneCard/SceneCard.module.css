@@ -1,3 +1,27 @@
+/* Checkbox wrapper — hidden until hover or card is selected */
+.checkboxWrap {
+  position: absolute;
+  top: var(--spacing-xs);
+  left: var(--spacing-xs);
+  visibility: hidden;       /* NOT opacity:0 — keeps element out of tab order */
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 2;
+}
+.card:hover .checkboxWrap,
+.card:focus-within .checkboxWrap,
+.selected .checkboxWrap {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Selected card state */
+.selected {
+  border-color: var(--color-elephant-500);
+  background-color: color-mix(in srgb, var(--color-elephant-500) 8%, var(--color-white));
+  box-shadow: 0 0 0 2px var(--color-elephant-500);
+}
+
 .card {
   position: relative;
   display: flex;

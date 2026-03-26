@@ -28,6 +28,7 @@ import {
   getScenes,
   updateSceneOrder,
   updateSceneStatus,
+  bulkUpdateSceneStatus,
   addScene,
   updateSceneFields,
 } from "@/lib/scenes";
@@ -216,6 +217,11 @@ function StoryPageInner({ id }: { id: string }) {
 
   const handleSceneStatusChange = (sceneId: string, status: SceneStatus) => {
     updateSceneStatus(id, sceneId, status);
+    refreshScenes();
+  };
+
+  const handleBulkSceneStatusChange = (sceneIds: string[], status: SceneStatus) => {
+    bulkUpdateSceneStatus(id, sceneIds, status);
     refreshScenes();
   };
 
@@ -700,6 +706,7 @@ function StoryPageInner({ id }: { id: string }) {
             onSceneClick={handleSceneClick}
             onReorder={handleSceneReorder}
             onStatusChange={handleSceneStatusChange}
+            onBulkStatusChange={handleBulkSceneStatusChange}
             onAddScene={handleAddScene}
             onFieldChange={handleFieldChange}
             focusedSceneId={focusedSceneId}

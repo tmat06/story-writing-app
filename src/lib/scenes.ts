@@ -227,3 +227,24 @@ export function updateSceneStatus(
   const storageKey = `story-${storyId}-scenes`;
   localStorage.setItem(storageKey, JSON.stringify(scenes));
 }
+
+/**
+ * Bulk update status for multiple scenes
+ * Persists to localStorage for v1
+ *
+ * @param storyId - The story identifier
+ * @param sceneIds - The scenes to update
+ * @param status - New status value
+ *
+ * TODO: Replace with API call (PATCH /api/stories/:storyId/scenes/bulk)
+ */
+export function bulkUpdateSceneStatus(
+  storyId: string,
+  sceneIds: string[],
+  status: SceneStatus
+): void {
+  const scenes = getScenes(storyId);
+  const idSet = new Set(sceneIds);
+  const updated = scenes.map(s => idSet.has(s.id) ? { ...s, status } : s);
+  localStorage.setItem(`story-${storyId}-scenes`, JSON.stringify(updated));
+}

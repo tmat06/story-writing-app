@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -28,6 +28,7 @@ interface CorkboardProps {
   onSceneClick: (sceneId: string) => void;
   onReorder: (sceneId: string, newOrder: number) => void;
   onStatusChange: (sceneId: string, status: SceneStatus) => void;
+  onBulkStatusChange: (sceneIds: string[], status: SceneStatus) => void;
   onAddScene: (scene: Omit<Scene, 'id' | 'order'>) => void;
   onFieldChange: (sceneId: string, field: 'intent' | 'pov' | 'characters', value: string) => void;
   statusFilter?: SceneStatus | 'all';
@@ -45,6 +46,8 @@ interface SortableSceneCardProps {
   isSynced?: boolean;
   isDropTarget?: boolean;
   isFocused?: boolean;
+  isSelected?: boolean;
+  onSelect?: (sceneId: string, shiftActive: boolean) => void;
 }
 
 function SortableSceneCard({
@@ -56,6 +59,8 @@ function SortableSceneCard({
   isSynced,
   isDropTarget,
   isFocused,
+  isSelected,
+  onSelect,
 }: SortableSceneCardProps) {
   const {
     attributes,
@@ -83,6 +88,8 @@ function SortableSceneCard({
         isSynced={isSynced}
         isDropTarget={isDropTarget}
         isFocused={isFocused}
+        isSelected={isSelected}
+        onSelect={onSelect}
       />
     </div>
   );
@@ -129,6 +136,7 @@ export function Corkboard({
   onSceneClick,
   onReorder,
   onStatusChange,
+  onBulkStatusChange,
   onAddScene,
   onFieldChange,
   statusFilter = 'all',
@@ -153,6 +161,8 @@ export function Corkboard({
   const prevScenesRef = useRef<Scene[]>(initialScenes);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
+  const [selectedSceneIds, setSelectedSceneIds] = useState<Set<string>>(new Set());
+  const lastSelectedIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     const prev = prevScenesRef.current;
@@ -235,6 +245,12 @@ export function Corkboard({
     }
   };
 
+  // Clear selection when filters change
+  useEffect(() => {
+    setSelectedSceneIds(new Set());
+    lastSelectedIdRef.current = null;
+  }, [statusFilter, chapterFilter]);
+
   const availableChapters = Array.from(new Set(scenes.map((s) => s.chapter))).sort();
 
   const displayScenes = scenes.filter((s) => {
@@ -242,6 +258,44 @@ export function Corkboard({
     const chapterMatch = chapterFilter.chapter === null || s.chapter === chapterFilter.chapter;
     return statusMatch && chapterMatch;
   });
+
+  const statusCounts = useMemo(() => ({
+    planned: displayScenes.filter(s => s.status === 'planned').length,
+    drafting: displayScenes.filter(s => s.status === 'drafting').length,
+    done: displayScenes.filter(s => s.status === 'done').length,
+  }), [displayScenes]);
+  const total = displayScenes.length;
+
+  const handleSceneSelect = (sceneId: string, shiftActive: boolean = false) => {
+    if (shiftActive && lastSelectedIdRef.current) {
+      const ids = displayScenes.map(s => s.id);
+      const a = ids.indexOf(lastSelectedIdRef.current);
+      const b = ids.indexOf(sceneId);
+      const [lo, hi] = a < b ? [a, b] : [b, a];
+      const rangeIds = ids.slice(lo, hi + 1);
+      setSelectedSceneIds(prev => {
+        const next = new Set(prev);
+        rangeIds.forEach(id => next.add(id));
+        return next;
+      });
+    } else {
+      setSelectedSceneIds(prev => {
+        const next = new Set(prev);
+        if (next.has(sceneId)) next.delete(sceneId); else next.add(sceneId);
+        return next;
+      });
+    }
+    lastSelectedIdRef.current = sceneId;
+  };
+
+  const handleSelectAll = () => {
+    setSelectedSceneIds(new Set(displayScenes.map(s => s.id)));
+  };
+
+  const handleClearSelection = () => {
+    setSelectedSceneIds(new Set());
+    lastSelectedIdRef.current = null;
+  };
 
   if (loading) {
     return (
@@ -301,6 +355,24 @@ export function Corkboard({
 
   return (
     <div className={styles.container}>
+      {total > 0 && (
+        <div className={styles.progressStripWrapper}>
+          <div className={styles.progressStrip}>
+            <div className={`${styles.progressSegment} ${styles.segmentPlanned}`}
+                 style={{ width: `${(statusCounts.planned / total) * 100}%` }} />
+            <div className={`${styles.progressSegment} ${styles.segmentDrafting}`}
+                 style={{ width: `${(statusCounts.drafting / total) * 100}%` }} />
+            <div className={`${styles.progressSegment} ${styles.segmentDone}`}
+                 style={{ width: `${(statusCounts.done / total) * 100}%` }} />
+          </div>
+          <div className={styles.progressLabels}>
+            <span className={styles.labelPlanned}>{statusCounts.planned} planned</span>
+            <span className={styles.labelDrafting}>{statusCounts.drafting} drafting</span>
+            <span className={styles.labelDone}>{statusCounts.done} done</span>
+          </div>
+        </div>
+      )}
+
       {availableChapters.length > 0 && (
         <div className={styles.chapterFilterRow} role="group" aria-label="Filter by chapter">
           <span className={styles.filterLabel}>Chapter</span>
@@ -324,8 +396,71 @@ export function Corkboard({
         </div>
       )}
 
+      {displayScenes.length > 0 && (
+        <div
+          className={styles.selectionRow}
+          role="toolbar"
+          aria-label="Scene selection controls"
+        >
+          <button
+            onClick={handleSelectAll}
+            className={styles.bulkBtnSecondary}
+          >
+            Select all
+          </button>
+
+          {selectedSceneIds.size > 0 && (
+            <>
+              <span className={styles.selectionCount}>
+                {selectedSceneIds.size} selected
+              </span>
+              <div
+                className={styles.bulkActionGroup}
+                role="group"
+                aria-label="Bulk scene status actions"
+              >
+                <button
+                  className={styles.bulkBtn}
+                  onClick={() => {
+                    onBulkStatusChange(Array.from(selectedSceneIds), 'planned');
+                    handleClearSelection();
+                  }}
+                >
+                  Set Planned
+                </button>
+                <button
+                  className={styles.bulkBtn}
+                  onClick={() => {
+                    onBulkStatusChange(Array.from(selectedSceneIds), 'drafting');
+                    handleClearSelection();
+                  }}
+                >
+                  Set Drafting
+                </button>
+                <button
+                  className={styles.bulkBtn}
+                  onClick={() => {
+                    onBulkStatusChange(Array.from(selectedSceneIds), 'done');
+                    handleClearSelection();
+                  }}
+                >
+                  Set Done
+                </button>
+              </div>
+              <button
+                onClick={handleClearSelection}
+                className={styles.bulkBtnSecondary}
+                aria-label="Clear selection"
+              >
+                ✕ Clear
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
       <DndContext
-        sensors={sensors}
+        sensors={selectedSceneIds.size > 0 ? [] : sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
@@ -347,6 +482,8 @@ export function Corkboard({
                 isSynced={syncedIds.has(scene.id)}
                 isDropTarget={overId === scene.id && activeId !== scene.id}
                 isFocused={focusedSceneId === scene.id}
+                isSelected={selectedSceneIds.has(scene.id)}
+                onSelect={(id, shiftActive) => handleSceneSelect(id, shiftActive)}
               />
             ))}
           </div>

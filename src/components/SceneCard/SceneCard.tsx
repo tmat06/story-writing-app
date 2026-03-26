@@ -13,6 +13,8 @@ interface SceneCardProps {
   isSynced?: boolean;
   isDropTarget?: boolean;
   isFocused?: boolean;
+  isSelected?: boolean;
+  onSelect?: (sceneId: string, shiftActive: boolean) => void;
 }
 
 export function SceneCard({
@@ -25,6 +27,8 @@ export function SceneCard({
   isSynced,
   isDropTarget,
   isFocused,
+  isSelected,
+  onSelect,
 }: SceneCardProps) {
   const router = useRouter();
   const [editingField, setEditingField] = useState<'intent' | 'pov' | 'characters' | null>(null);
@@ -65,19 +69,41 @@ export function SceneCard({
 
   return (
     <div
-      className={`${styles.card} ${isDragging ? styles.dragging : ''} ${isDropTarget ? styles.dropTarget : ''} ${isFocused ? styles.focused : ''}`}
+      className={`${styles.card} ${isDragging ? styles.dragging : ''} ${isDropTarget ? styles.dropTarget : ''} ${isFocused ? styles.focused : ''} ${isSelected ? styles.selected : ''}`}
       data-synced={isSynced || undefined}
-      onClick={onClick}
+      aria-selected={!!isSelected}
+      onClick={(e) => {
+        if (e.ctrlKey || e.metaKey || e.shiftKey) {
+          onSelect?.(scene.id, e.shiftKey);
+        } else {
+          onClick();
+        }
+      }}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        // CRITICAL: only handle direct keypresses on the card root,
+        // not events bubbling up from child controls (chips, inputs, selects).
+        if (e.target !== e.currentTarget) return;
+        if (e.key === ' ') {
           e.preventDefault();
+          onSelect?.(scene.id, false);
+        } else if (e.key === 'Enter') {
           onClick();
         }
       }}
       aria-label={`Open scene: ${scene.title}`}
     >
+      <div className={styles.checkboxWrap}>
+        <input
+          type="checkbox"
+          tabIndex={-1}
+          checked={!!isSelected}
+          aria-label={`Select scene: ${scene.title}`}
+          onChange={() => onSelect?.(scene.id, false)}
+          onClick={(e) => e.stopPropagation()}
+        />
+      </div>
       <div className={styles.dragHandle} aria-label="Drag to reorder">
         ⋮⋮
       </div>
