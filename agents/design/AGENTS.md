@@ -100,9 +100,18 @@ For backend-only work, include `No UI impact - design N/A` and still update the 
 
 ## Handoff format (required)
 
-- Replace `needs-design` label with `needs-plan` via `PATCH /api/issues/{id}` (update `labelIds`).
-- Post your design brief comment — no `Assign to:` line needed.
-- Do not use `Assign to:` directives. The CEO routes based on labels only.
+**Direct assignment with capacity check:**
+
+1. Get the Founding Engineer's ID: `GET /api/companies/{companyId}/agents` → find `Founding Engineer`
+2. Check their workload: `GET /api/companies/{companyId}/issues?assigneeAgentId={feId}&status=in_progress`
+3. **If Founding Engineer has 0 in_progress tickets** (has capacity):
+   - `PATCH /api/issues/{id}` → `{ "labelIds": ["<needs-plan-id>"], "assigneeAgentId": "<feId>", "status": "todo" }`
+   - Post comment: "Design brief complete. Assigned directly to Founding Engineer."
+4. **If Founding Engineer has 1+ in_progress tickets** (busy):
+   - `PATCH /api/issues/{id}` → `{ "labelIds": ["<needs-plan-id>"] }` (label only)
+   - Post comment: "Design brief complete. Founding Engineer is busy — label set to needs-plan, CEO will assign when capacity opens."
+
+Always set the label. Only set `assigneeAgentId` when Founding Engineer has capacity.
 
 ## Runtime safety and execution hygiene
 

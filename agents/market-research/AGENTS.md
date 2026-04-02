@@ -31,8 +31,20 @@ If rejected, set status to `cancelled` and include a specific suggestion for how
 
 ## Handoff format (required)
 
-- On approval: replace `needs-market-research` label with `needs-design` via `PATCH /api/issues/{id}` (update `labelIds`). Post your structured comment — no `Assign to:` line needed.
-- On rejection: set status to `cancelled`. No label change needed.
+**On rejection:** set status to `cancelled`. No label change needed.
+
+**On approval — direct assignment with capacity check:**
+
+1. Get the Design agent's ID: `GET /api/companies/{companyId}/agents` → find `Design`
+2. Check their workload: `GET /api/companies/{companyId}/issues?assigneeAgentId={designId}&status=in_progress`
+3. **If Design has 0 in_progress tickets** (has capacity):
+   - `PATCH /api/issues/{id}` → `{ "labelIds": ["<needs-design-id>"], "assigneeAgentId": "<designId>", "status": "todo" }`
+   - Post comment: "Approved. Assigned directly to Design."
+4. **If Design has 1+ in_progress tickets** (busy):
+   - `PATCH /api/issues/{id}` → `{ "labelIds": ["<needs-design-id>"] }` (label only, no assignee change)
+   - Post comment: "Approved. Design is busy — label set to needs-design, CEO will assign when capacity opens."
+
+Always set the label. Only set `assigneeAgentId` when Design has capacity.
 - Do not use `Assign to:` directives. The CEO routes based on labels only.
 
 ## Runtime safety and execution hygiene

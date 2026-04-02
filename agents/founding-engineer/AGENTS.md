@@ -27,9 +27,18 @@ Plans must be specific enough that Code Monkey can execute without guessing.
 
 ## Handoff format (required)
 
-- Replace the current pipeline label with `needs-implementation` via `PATCH /api/issues/{id}` (update `labelIds`).
-- Post your plan comment confirming it is ready — no `Assign to:` line needed.
-- Do not use `Assign to:` directives. The CEO routes based on labels only.
+**Direct assignment with capacity check:**
+
+1. Get the Code Monkey's ID: `GET /api/companies/{companyId}/agents` → find `Code Monkey`
+2. Check their workload: `GET /api/companies/{companyId}/issues?assigneeAgentId={cmId}&status=in_progress`
+3. **If Code Monkey has 0 in_progress tickets** (has capacity):
+   - `PATCH /api/issues/{id}` → `{ "labelIds": ["<needs-implementation-id>"], "assigneeAgentId": "<cmId>", "status": "todo" }`
+   - Post comment: "Plan ready. Assigned directly to Code Monkey."
+4. **If Code Monkey has 1+ in_progress tickets** (busy):
+   - `PATCH /api/issues/{id}` → `{ "labelIds": ["<needs-implementation-id>"] }` (label only)
+   - Post comment: "Plan ready. Code Monkey is busy — label set to needs-implementation, CEO will assign when capacity opens."
+
+Always set the label. Only set `assigneeAgentId` when Code Monkey has capacity.
 
 ## Runtime safety and execution hygiene
 

@@ -12,7 +12,7 @@ Your job is to **implement** work from the ticket using the step-by-step plan wr
 - Work in the project root and follow existing code structure and conventions.
 - When you pick up an assigned ticket, read the full ticket and **find the step-by-step implementation plan** (in the description or in comments from the Founding Engineer). Implement each step in order. Use your expertise to make small technical decisions within the scope of the plan; if the plan is ambiguous or something is missing, add a short comment on the ticket rather than guessing.
 - Check out tasks before working. If you get **409** on checkout, add the label `checkout-stuck` to that issue (`PATCH /api/issues/{id}` appending the `checkout-stuck` label ID to existing `labelIds`); do not retry; do not call release. Pick another task or exit. The CEO will run clone-and-cancel on the next heartbeat (see docs/ASSIGNMENT_CONVENTION.md § Checkout 409 recovery).
-- When you finish implementation and are ready for review: set status to `in_review`, replace the `needs-implementation` label with `needs-review` via `PATCH /api/issues/{id}` updating `labelIds`, and post a comment that includes the branch name. The CEO will assign the issue to Code Reviewer. Do not set assignee yourself. Do not set to `done` until the Code Reviewer has approved.
+- When you finish implementation and are ready for review: set status to `in_review`, replace the `needs-implementation` label with `needs-review` via `PATCH /api/issues/{id}` updating `labelIds`, and post a comment that includes the branch name. Directly assign to Code Reviewer if they have capacity (see **Handoff format** below). Do not set to `done` until the Code Reviewer has approved.
 - **Status ownership:** Set `in_progress` when you checkout. Set `in_review` when handing off to Code Reviewer. Set `blocked` only when genuinely blocked — add a comment explaining why. Do not set `todo` or `done` — those belong to CEO and Code Reviewer.
 - When the Code Reviewer requests changes, they update the label to `needs-revision` and the CEO assigns the ticket back to the Founding Engineer, who revises the plan. You will receive the ticket again (label `needs-implementation`, assignee = you) after the Founding Engineer updates the plan. Implement according to the revised plan on the **same ticket branch**. Commit and push, then replace the label with `needs-review` for re-review.
 
@@ -31,10 +31,18 @@ Do not hand off without test evidence unless explicitly blocked; if blocked, exp
 
 ## Handoff format (required)
 
-- Replace `needs-implementation` label with `needs-review` via `PATCH /api/issues/{id}` (update `labelIds`).
-- Set status to `in_review`.
-- Post your handoff comment — no `Assign to:` line needed.
-- Do not use `Assign to:` directives. The CEO routes based on labels only.
+Set status to `in_review` first, then do the direct assignment with capacity check:
+
+1. Get the Code Reviewer's ID: `GET /api/companies/{companyId}/agents` → find `Code Reviewer`
+2. Check their workload: `GET /api/companies/{companyId}/issues?assigneeAgentId={crId}&status=in_progress`
+3. **If Code Reviewer has 0 in_progress tickets** (has capacity):
+   - `PATCH /api/issues/{id}` → `{ "labelIds": ["<needs-review-id>"], "assigneeAgentId": "<crId>", "status": "in_review" }`
+   - Post handoff comment including branch name. End with: "Assigned directly to Code Reviewer."
+4. **If Code Reviewer has 1+ in_progress tickets** (busy):
+   - `PATCH /api/issues/{id}` → `{ "labelIds": ["<needs-review-id>"], "status": "in_review" }` (label only, no assignee change)
+   - Post handoff comment including branch name. End with: "Code Reviewer is busy — label set to needs-review, CEO will assign when capacity opens."
+
+Always set the label and status. Only set `assigneeAgentId` when Code Reviewer has capacity.
 
 ## Runtime safety and execution hygiene
 

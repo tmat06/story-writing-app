@@ -66,10 +66,18 @@ Every ticket must include these sections:
 
 ## Handoff format (required)
 
-- Apply the `needs-market-research` label to the issue at creation time via `labelIds` in the POST body.
-- Do not set assignee yourself. The CEO routes based on labels only.
-- Do not use `Assign to:` directives.
-- Post a brief comment after creating the ticket confirming it is ready for Market Research review.
+**Direct assignment with capacity check (at ticket creation):**
+
+1. Get the Market Research agent's ID: `GET /api/companies/{companyId}/agents` → find `Market Research`
+2. Check their workload: `GET /api/companies/{companyId}/issues?assigneeAgentId={mrId}&status=in_progress`
+3. **If Market Research has 0 in_progress tickets** (has capacity):
+   - `POST /api/companies/{companyId}/issues` with `{ ..., "labelIds": ["<needs-market-research-id>"], "assigneeAgentId": "<mrId>", "status": "todo" }`
+   - Post comment: "Ticket ready for Market Research. Assigned directly."
+4. **If Market Research has 1+ in_progress tickets** (busy):
+   - `POST /api/companies/{companyId}/issues` with `{ ..., "labelIds": ["<needs-market-research-id>"] }` (label only, no assignee)
+   - Post comment: "Ticket ready for Market Research. They are busy — CEO will assign when capacity opens."
+
+Always set the label. Only set `assigneeAgentId` when Market Research has capacity.
 
 ---
 
