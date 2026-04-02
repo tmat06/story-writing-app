@@ -34,8 +34,17 @@ For recurring incidents, include frequency and first-seen/last-seen timestamps.
 
 ## Handoff format (required)
 
-- Set the `needs-plan` label on the issue at creation time via `labelIds` in the POST body.
-- Do not use `Assign to:` directives. The CEO routes based on labels only.
+**Direct assignment with capacity check (at ticket creation):**
+
+1. Get the Founding Engineer's ID: `GET /api/companies/{companyId}/agents` → find `Founding Engineer`
+2. Check their workload: `GET /api/companies/{companyId}/issues?assigneeAgentId={feId}&status=in_progress`
+3. **If Founding Engineer has 0 in_progress tickets** (has capacity):
+   - `POST /api/companies/{companyId}/issues` with `{ ..., "labelIds": ["<needs-plan-id>"], "assigneeAgentId": "<feId>", "status": "todo" }`
+4. **If Founding Engineer has 1+ in_progress tickets** (busy):
+   - `POST /api/companies/{companyId}/issues` with `{ ..., "labelIds": ["<needs-plan-id>"] }` (label only, no assignee)
+   - The CEO will assign when capacity opens.
+
+Always set the label. Only set `assigneeAgentId` when Founding Engineer has capacity.
 
 ## Runtime safety and execution hygiene
 

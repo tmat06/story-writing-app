@@ -27,13 +27,20 @@ changes requested
 Returning to Founding Engineer for revision.
 ```
 
-**Step A-2.** PATCH the issue — both fields required in one call:
-```
-PATCH /api/issues/{issueId}
-X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
-
-{ "status": "todo", "labelIds": ["<needs-revision label id>"] }
-```
+**Step A-2.** Direct assignment with capacity check:
+1. Get Founding Engineer's ID: `GET /api/companies/{companyId}/agents` → find `Founding Engineer`
+2. Check workload: `GET /api/companies/{companyId}/issues?assigneeAgentId={feId}&status=in_progress`
+3. **If 0 in_progress** (has capacity):
+   ```
+   PATCH /api/issues/{issueId}
+   { "status": "todo", "labelIds": ["<needs-revision-id>"], "assigneeAgentId": "<feId>" }
+   ```
+4. **If 1+ in_progress** (busy):
+   ```
+   PATCH /api/issues/{issueId}
+   { "status": "todo", "labelIds": ["<needs-revision-id>"] }
+   ```
+   CEO will assign when Founding Engineer has capacity.
 
 **Step A-3.** Re-fetch the issue and confirm `labelIds` contains `needs-revision` and `needs-review` is gone. If not, repeat Step A-2.
 

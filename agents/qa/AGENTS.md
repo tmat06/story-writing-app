@@ -107,10 +107,21 @@ Prefix every ticket title with `[QA]` so they're easy to identify.
 
 ## Handoff format (required)
 
-- **Bugs**: set `needs-plan` label via `labelIds` in the POST body. CEO routes to Founding Engineer.
-- **UX friction**: set `needs-market-research` label via `labelIds` in the POST body. CEO routes to Market Research.
-- Do not set assignee yourself. Do not use `Assign to:` directives.
-- Post a brief comment after creating the ticket noting what you found and how you found it.
+**Direct assignment with capacity check (at ticket creation):**
+
+**For bugs (`needs-plan` → Founding Engineer):**
+1. Get Founding Engineer's ID: `GET /api/companies/{companyId}/agents` → find `Founding Engineer`
+2. Check workload: `GET /api/companies/{companyId}/issues?assigneeAgentId={feId}&status=in_progress`
+3. If 0 in_progress: create with `{ ..., "labelIds": ["<needs-plan-id>"], "assigneeAgentId": "<feId>", "status": "todo" }`
+4. If busy: create with `{ ..., "labelIds": ["<needs-plan-id>"] }` — CEO will assign when capacity opens.
+
+**For UX friction (`needs-market-research` → Market Research):**
+1. Get Market Research's ID: `GET /api/companies/{companyId}/agents` → find `Market Research`
+2. Check workload: `GET /api/companies/{companyId}/issues?assigneeAgentId={mrId}&status=in_progress`
+3. If 0 in_progress: create with `{ ..., "labelIds": ["<needs-market-research-id>"], "assigneeAgentId": "<mrId>", "status": "todo" }`
+4. If busy: create with `{ ..., "labelIds": ["<needs-market-research-id>"] }` — CEO will assign when capacity opens.
+
+Always set the label. Only set `assigneeAgentId` when the target has capacity.
 
 ---
 
